@@ -7,10 +7,10 @@ export const Progress = () => {
         { label: "Mentor support", status: "done" },
         { label: "VC interest", status: "done" },
         { label: "Team formation", status: "done" },
-        { label: "Prototype build", status: "in-progress" },
-        { label: "Protocol development", status: "planned" },
-        { label: "Field tests", status: "planned" },
-        { label: "Deployment", status: "future" },
+        { label: "Autonomous Software", status: "done" },
+        { label: "Hardware Design", status: "done" },
+        { label: "Hardware Integration", status: "in-progress" },
+        { label: "Fleet Deployment", status: "future" },
     ];
 
     const getIcon = (status: string) => {
@@ -47,7 +47,7 @@ export const Progress = () => {
                                     <span className="text-lg font-medium text-gray-800">{item.label}</span>
                                     <div className="flex items-center gap-2">
                                         <span className={`text-sm font-bold uppercase tracking-wider ${item.status === 'done' ? 'text-green-600' :
-                                                item.status === 'in-progress' ? 'text-yellow-600' : 'text-gray-400'
+                                            item.status === 'in-progress' ? 'text-yellow-600' : 'text-gray-400'
                                             }`}>
                                             {getStatusText(item.status)}
                                         </span>
@@ -58,12 +58,12 @@ export const Progress = () => {
                         </div>
                     </div>
 
-                    <GlassCard className="text-center py-16 bg-drive-blue text-white">
-                        <h3 className="text-3xl font-bold mb-6">Join the Revolution</h3>
-                        <p className="text-xl text-black mb-8 max-w-md mx-auto font-medium">
-                            "Investors, OEMs, fleets, and mobility partners — let's build the future together."
+                    <GlassCard className="text-center py-16 bg-[#05080a] text-white border-white/5">
+                        <h3 className="text-3xl font-bold mb-6 text-blue-400">Join the Revolution</h3>
+                        <p className="text-xl text-gray-400 mb-8 max-w-md mx-auto font-medium">
+                            "Investors, OEMs, fleets, and mobility partners — let's build the automotive AI backbone together."
                         </p>
-                        <button className="px-8 py-4 bg-white text-drive-blue rounded-full font-bold text-lg hover:bg-blue-50 transition-colors shadow-xl">
+                        <button className="px-8 py-4 bg-blue-600 text-white rounded-full font-bold text-lg hover:bg-blue-500 transition-colors shadow-2xl shadow-blue-500/20">
                             Partner with DriveLink
                         </button>
                     </GlassCard>

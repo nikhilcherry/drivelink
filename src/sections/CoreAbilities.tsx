@@ -1,23 +1,23 @@
 
 import { GlassCard } from '../components/ui/GlassCard';
-import { Brain, Radio, Zap } from 'lucide-react';
+import { Shield, Zap, Cpu } from 'lucide-react';
 
 export const CoreAbilities = () => {
     const abilities = [
         {
-            icon: <Brain className="w-8 h-8 text-drive-blue" />,
-            title: "Understand Behavior",
-            description: "Analyzes speed, steering, braking, and acceleration patterns to understand vehicle intent in real-time."
+            icon: <Shield className="w-8 h-8 text-drive-blue" />,
+            title: "The Core Problem",
+            description: "High costs of high-definition maps, lack of data standardization, and siloed automotive ecosystems."
         },
         {
             icon: <Zap className="w-8 h-8 text-drive-blue" />,
-            title: "Predict Motion",
-            description: "Advanced algorithms predict future motion through short prediction windows, anticipating maneuvers before they happen."
+            title: "The Solution",
+            description: "Unified data protocol, decentralized AI training, and incentive-based data sharing."
         },
         {
-            icon: <Radio className="w-8 h-8 text-drive-blue" />,
-            title: "Communicate Intent",
-            description: "Shares predictions with nearby vehicles with sub-50ms latency, creating a cooperative intelligence layer."
+            icon: <Cpu className="w-8 h-8 text-drive-blue" />,
+            title: "Our Technology",
+            description: "Leveraging decentralized infrastructure to create the ultimate automotive AI backbone."
         }
     ];
 
@@ -26,10 +26,10 @@ export const CoreAbilities = () => {
             <div className="container mx-auto px-6">
                 <div className="text-center max-w-3xl mx-auto mb-20">
                     <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6 text-gray-900">
-                        The Missing <span className="text-gradient">Intelligence Layer</span>
+                        The Decentralized <span className="text-gradient">Backbone</span>
                     </h2>
                     <p className="text-xl text-gray-500">
-                        Today’s vehicles see things but don’t communicate. DriveLink changes that by enabling cars to "talk" to each other.
+                        Solving the core challenges of automotive AI through a unified, secure protocol.
                     </p>
                 </div>
 

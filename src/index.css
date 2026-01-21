@@ -10,6 +10,7 @@
   --animate-fade-in: fadeIn 1s ease-out forwards;
   --animate-slide-up: slideUp 0.8s ease-out forwards;
   --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --shadow-glass: 0 4px 30px rgba(0, 0, 0, 0.1);
 
   @keyframes fadeIn {
     0% {
@@ -47,15 +48,15 @@
 
 @layer utilities {
   .glass {
-    @apply bg-white/10 backdrop-blur-2xl border border-white/20 shadow-lg;
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-glass;
   }
 
   .glass-card {
-    @apply bg-white/40 backdrop-blur-xl border border-white/30 shadow-xl hover:shadow-2xl transition-all duration-300;
+    @apply bg-white/60 backdrop-blur-2xl border border-white/40 shadow-xl hover:shadow-2xl transition-all duration-500 ease-out hover:-translate-y-1;
   }
 
   .glass-dark {
-    @apply bg-black/40 backdrop-blur-xl border border-white/10 shadow-xl;
+    @apply bg-black/40 backdrop-blur-xl border border-white/5 shadow-2xl;
   }
 
   .text-gradient {

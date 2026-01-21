@@ -1,6 +1,6 @@
 
 import { GlassCard } from '../components/ui/GlassCard';
-import { Calendar, Users, Lightbulb, TrendingUp } from 'lucide-react';
+import { Calendar, Users, Lightbulb, TrendingUp, Trophy, Rocket, Cpu } from 'lucide-react';
 
 export const Story = () => {
     const events = [
@@ -42,13 +42,36 @@ export const Story = () => {
                     <p className="text-sm text-gray-600">CEO & Founder, Dariaan Consulting</p>
                 </>
             )
+        },
+        {
+            date: "December",
+            title: "SMVIT Competition",
+            icon: <Trophy className="w-6 h-6 text-orange-400" />,
+            content: "Participated in the SMVIT event. While we didn't take home a trophy, the technical advice we received was invaluable, helping us refine our system architecture and identify critical improvements."
+        },
+        {
+            date: "December 2025",
+            title: "Dariaan Labs Visit",
+            icon: <Rocket className="w-6 h-6 text-red-500" />,
+            content: "A turning point at Dariaan Labs. Deep technical feedback exposed our initial session gaps and wrong assumptions. This experience forced us to rethink our approach and fix fundamental issues in our protocol."
+        },
+        {
+            date: "December 2025",
+            title: "NMIT Collaboration",
+            icon: <Cpu className="w-6 h-6 text-indigo-500" />,
+            content: "Partnered with a technical team from NMIT for hardware support. Their expertise was crucial in moving our first autonomous system from theoretical models to a functional, working implementation."
         }
     ];
 
     return (
         <section className="py-24 bg-white">
             <div className="container mx-auto px-6">
-                <h2 className="text-4xl font-bold mb-16 text-center">Our <span className="text-gradient">Origin Story</span></h2>
+                <div className="text-center max-w-3xl mx-auto mb-20">
+                    <h2 className="text-4xl font-bold mb-6">Our <span className="text-gradient">Origin Story</span></h2>
+                    <p className="text-2xl font-light italic text-gray-700 leading-relaxed">
+                        "Imagine a world where every vehicle learns from every other vehicle—DriveLink is the protocol making that real."
+                    </p>
+                </div>
 
                 <div className="relative max-w-4xl mx-auto">
                     {/* Vertical Line */}
@@ -82,7 +105,7 @@ export const Story = () => {
                         <div className="inline-block p-6 rounded-2xl bg-gray-50 border border-gray-100">
                             <h3 className="text-lg font-bold mb-4">Current Pipeline</h3>
                             <div className="flex flex-wrap justify-center gap-4">
-                                {["Preparing follow-ups with Simple Energy", "Connecting with automation systems expert", "Engaging with GHAT Section Safe Mobility"].map((item, i) => (
+                                {["Autonomous Software Completed", "Hardware Design Finalized", "Next: Build & Integrate Hardware"].map((item, i) => (
                                     <span key={i} className="px-4 py-2 bg-white rounded-full text-sm font-medium text-gray-700 shadow-sm border border-gray-100">
                                         {item}
                                     </span>
