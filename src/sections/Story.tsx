@@ -1,6 +1,6 @@
 
 import { GlassCard } from '../components/ui/GlassCard';
-import { Calendar, Users, Lightbulb, TrendingUp, Trophy, Rocket, Cpu } from 'lucide-react';
+import { Calendar, Users, Lightbulb, TrendingUp, Trophy, Cpu } from 'lucide-react';
 
 export const Story = () => {
     const events = [
@@ -50,10 +50,16 @@ export const Story = () => {
             content: "Participated in the SMVIT event. While we didn't take home a trophy, the technical advice we received was invaluable, helping us refine our system architecture and identify critical improvements."
         },
         {
-            date: "December 2025",
-            title: "Dariaan Labs Visit",
-            icon: <Rocket className="w-6 h-6 text-red-500" />,
-            content: "A turning point at Dariaan Labs. Deep technical feedback exposed our initial session gaps and wrong assumptions. This experience forced us to rethink our approach and fix fundamental issues in our protocol."
+            date: "Recent",
+            title: "Manipal Bangalore Pitch",
+            icon: <Users className="w-6 h-6 text-blue-500" />,
+            content: "Pitched at Manipal Bangalore, showcasing our vision for cooperative mobility."
+        },
+        {
+            date: "Upcoming",
+            title: "IIT Delhi Finals",
+            icon: <Trophy className="w-6 h-6 text-orange-400" />,
+            content: "Selected for finals in IIT Delhi, validating our technical approach and business potential."
         },
         {
             date: "December 2025",

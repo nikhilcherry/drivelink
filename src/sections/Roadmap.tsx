@@ -18,12 +18,12 @@ export const Roadmap = () => {
 
     const milestones = [
         { date: "Completed", title: "Ideation & Concept Validation", status: "completed", details: ["Foundational research", "OEM problem mapping"] },
-        { date: "Completed", title: "Strategic Mentorship", status: "completed", details: ["PedalStart validation", "Dariaan Labs feedback", "NMIT support"] },
+        { date: "Completed", title: "Strategic Mentorship", status: "completed", details: ["PedalStart validation", "NMIT support"] },
         { date: "Completed", title: "Autonomous Stack v1.0", status: "completed", details: ["Core prediction software finalized", "System architecture fixed"] },
         { date: "Q1 2025", title: "Alpha Pilot Program", status: "upcoming", details: ["OEM partner integration", "Hardware-in-the-loop tests"] },
         { date: "Q2 2025", title: "Decentralized Data Node (v1)", status: "upcoming", details: ["Initial node launch", "Secure data verification"] },
         { date: "Q3 2025", title: "DRV Token Protocol Audit", status: "upcoming", details: ["Incentive layer security", "Smart contract validation"] },
-        { date: "2026+", title: "Universal Global Connectivity", status: "upcoming", details: ["Scale to global fleets", "Cross-OEM standardization"] },
+        { date: "Nov 2026", title: "All Prototypes Ready", status: "upcoming", details: ["Scale to global fleets", "Cross-OEM standardization"] },
     ];
 
     return (
