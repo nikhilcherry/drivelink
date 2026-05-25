@@ -58,8 +58,8 @@ export function PageInvestors({ setPage }: PageInvestorsProps) {
                 <li><b>Cross-OEM standardization</b> · v1.0 protocol freeze, smart-city pilots</li>
               </ul>
               <div style={{ display: 'flex', gap: 12, marginTop: 30, flexWrap: 'wrap' }}>
-                <a className="dlw-btn dlw-btn-primary" href="mailto:hello@drivelink.tech?subject=Investor%20deck%20request">Request investor deck</a>
-                <a className="dlw-btn dlw-btn-ghost" href="mailto:hello@drivelink.tech?subject=Intro%20call">Schedule intro</a>
+                <a className="dlw-btn dlw-btn-primary" href="mailto:tech.drivelink@gmail.com?subject=Investor%20deck%20request">Request investor deck</a>
+                <a className="dlw-btn dlw-btn-ghost" href="mailto:tech.drivelink@gmail.com?subject=Intro%20call">Schedule intro</a>
               </div>
             </div>
 
