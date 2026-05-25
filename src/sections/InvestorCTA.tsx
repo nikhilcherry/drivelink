@@ -20,10 +20,10 @@ export function InvestorCTA({ onPartner }: InvestorCTAProps) {
         </p>
         <div className="dlw-cta-row">
           <button className="dlw-btn dlw-btn-dark" onClick={onPartner}>Partner with DriveLink</button>
-          <a className="dlw-btn dlw-btn-on-dark-ghost" href="mailto:hello@drivelink.tech">Request investor deck</a>
+          <a className="dlw-btn dlw-btn-on-dark-ghost" href="mailto:tech.drivelink@gmail.com">Request investor deck</a>
         </div>
         <div className="dlw-cta-contact">
-          <span>hello@drivelink.tech</span>
+          <span>tech.drivelink@gmail.com</span>
           <span>·</span>
           <span>drivelink.tech</span>
           <span>·</span>
