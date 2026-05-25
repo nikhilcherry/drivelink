@@ -39,7 +39,7 @@ export function Footer({ setPage }: FooterProps) {
               <button onClick={() => setPage('team')}>Team</button>
               <a href="#story">Origin story</a>
               <button onClick={() => setPage('investors')}>Investors</button>
-              <a href="mailto:hello@drivelink.tech">Contact</a>
+              <a href="mailto:tech.drivelink@gmail.com">Contact</a>
             </div>
           </div>
 
