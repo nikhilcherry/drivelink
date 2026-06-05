@@ -1,7 +1,5 @@
 'use client';
-import { useState } from 'react';
-import { Nav } from '../components/Nav';
-import { Footer } from '../components/layout/Footer';
+import { useRouter } from 'next/navigation';
 import { HeroV2V } from '../sections/HeroV2V';
 import { Manifesto } from '../sections/Manifesto';
 import { HowItWorks } from '../sections/HowItWorks';
@@ -10,46 +8,22 @@ import { StorySection } from '../sections/StorySection';
 import { TeamSection } from '../sections/TeamSection';
 import { RoadmapSection } from '../sections/RoadmapSection';
 import { InvestorCTA } from '../sections/InvestorCTA';
-import { PageProduct } from './pages/PageProduct';
-import { PageTeam } from './pages/PageTeam';
-import { PageInvestors } from './pages/PageInvestors';
-import { PageDocs } from './pages/PageDocs';
-import { ScrollProgress } from '../components/anim/ScrollProgress';
-
-type Page = 'home' | 'product' | 'team' | 'investors' | 'docs';
+import { hrefFor, type Page } from '../lib/nav';
 
 export default function Home() {
-  const [page, setPage] = useState<Page>('home');
-
-  const navigate = (p: Page) => {
-    setPage(p);
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  };
+  const router = useRouter();
+  const go = (p: Page) => router.push(hrefFor(p));
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-page)' }}>
-      <ScrollProgress />
-      <Nav page={page} setPage={navigate} />
-
-      {page === 'home' && (
-        <main>
-          <HeroV2V onCTA={navigate} />
-          <Manifesto />
-          <HowItWorks />
-          <Stats />
-          <StorySection />
-          <TeamSection />
-          <RoadmapSection />
-          <InvestorCTA onPartner={() => navigate('investors')} />
-        </main>
-      )}
-
-      {page === 'product' && <PageProduct setPage={navigate} />}
-      {page === 'docs' && <PageDocs setPage={navigate} />}
-      {page === 'team' && <PageTeam setPage={navigate} />}
-      {page === 'investors' && <PageInvestors setPage={navigate} />}
-
-      <Footer setPage={navigate} />
-    </div>
+    <main>
+      <HeroV2V onCTA={go} />
+      <Manifesto />
+      <HowItWorks />
+      <Stats />
+      <StorySection />
+      <TeamSection />
+      <RoadmapSection />
+      <InvestorCTA onPartner={() => go('investors')} />
+    </main>
   );
 }

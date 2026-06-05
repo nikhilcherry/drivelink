@@ -1,12 +1,7 @@
+import Link from 'next/link';
 import { Zap } from 'lucide-react';
 
-type Page = 'home' | 'product' | 'team' | 'investors' | 'docs';
-
-interface FooterProps {
-  setPage: (page: Page) => void;
-}
-
-export function Footer({ setPage }: FooterProps) {
+export function Footer() {
   return (
     <footer className="dlw-footer">
       <div className="dlw-container">
@@ -26,19 +21,19 @@ export function Footer({ setPage }: FooterProps) {
           <div>
             <h4>Product</h4>
             <div className="dlw-footer-links">
-              <button onClick={() => setPage('product')}>Overview</button>
-              <a href="#how-it-works">How it works</a>
-              <button onClick={() => setPage('product')}>Protocol spec</button>
-              <a href="#roadmap">Roadmap</a>
+              <Link href="/product">Overview</Link>
+              <Link href="/#how-it-works">How it works</Link>
+              <Link href="/docs">Documentation</Link>
+              <Link href="/#roadmap">Roadmap</Link>
             </div>
           </div>
 
           <div>
             <h4>Company</h4>
             <div className="dlw-footer-links">
-              <button onClick={() => setPage('team')}>Team</button>
-              <a href="#story">Origin story</a>
-              <button onClick={() => setPage('investors')}>Investors</button>
+              <Link href="/team">Team</Link>
+              <Link href="/#story">Origin story</Link>
+              <Link href="/investors">Investors</Link>
               <a href="mailto:tech.drivelink@gmail.com">Contact</a>
             </div>
           </div>

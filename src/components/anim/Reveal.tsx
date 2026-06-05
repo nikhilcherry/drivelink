@@ -1,6 +1,6 @@
 'use client';
 import type { ReactNode } from 'react';
-import { motion, type Variants } from 'framer-motion';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 
 type Direction = 'up' | 'down' | 'left' | 'right' | 'fade';
 
@@ -21,8 +21,13 @@ interface RevealProps {
   once?: boolean;
 }
 
-/** Scroll-triggered entrance. Respects prefers-reduced-motion via framer-motion. */
+/**
+ * Scroll-triggered entrance. Uses an `amount`-based viewport (reliable on
+ * mobile, unlike negative root margins) and falls back to fully-visible when
+ * the user prefers reduced motion — so content is never stuck hidden.
+ */
 export function Reveal({ children, direction = 'up', delay = 0, className, as = 'div', once = true }: RevealProps) {
+  const reduce = useReducedMotion();
   const o = offset[direction];
   const variants: Variants = {
     hidden: { opacity: 0, x: o.x ?? 0, y: o.y ?? 0 },
@@ -38,9 +43,9 @@ export function Reveal({ children, direction = 'up', delay = 0, className, as = 
     <MotionTag
       className={className}
       variants={variants}
-      initial="hidden"
+      initial={reduce ? 'show' : 'hidden'}
       whileInView="show"
-      viewport={{ once, margin: '-60px' }}
+      viewport={{ once, amount: 0.2 }}
     >
       {children}
     </MotionTag>
@@ -59,6 +64,7 @@ export function RevealGroup({
   stagger?: number;
   delay?: number;
 }) {
+  const reduce = useReducedMotion();
   const container: Variants = {
     hidden: {},
     show: { transition: { staggerChildren: stagger, delayChildren: delay } },
@@ -67,9 +73,9 @@ export function RevealGroup({
     <motion.div
       className={className}
       variants={container}
-      initial="hidden"
+      initial={reduce ? 'show' : 'hidden'}
       whileInView="show"
-      viewport={{ once: true, margin: '-60px' }}
+      viewport={{ once: true, amount: 0.15 }}
     >
       {children}
     </motion.div>

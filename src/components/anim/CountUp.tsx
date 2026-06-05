@@ -15,7 +15,7 @@ interface CountUpProps {
 /** Animates a number from `from` to `to` the first time it scrolls into view. */
 export function CountUp({ to, from = 0, duration = 1.4, decimals = 0, prefix = '', suffix = '', className }: CountUpProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-40px' });
+  const inView = useInView(ref, { once: true, amount: 0.4 });
   const [value, setValue] = useState(from);
 
   useEffect(() => {

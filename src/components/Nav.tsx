@@ -1,13 +1,9 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { Zap, Menu, X } from 'lucide-react';
-
-type Page = 'home' | 'product' | 'team' | 'investors' | 'docs';
-
-interface NavProps {
-  page: Page;
-  setPage: (page: Page) => void;
-}
+import { hrefFor, pageFromPath, type Page } from '../lib/nav';
 
 const tabs: { id: Page; label: string }[] = [
   { id: 'home', label: 'Home' },
@@ -17,7 +13,9 @@ const tabs: { id: Page; label: string }[] = [
   { id: 'investors', label: 'Investors' },
 ];
 
-export function Nav({ page, setPage }: NavProps) {
+export function Nav() {
+  const pathname = usePathname();
+  const current = pageFromPath(pathname || '/');
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -28,39 +26,38 @@ export function Nav({ page, setPage }: NavProps) {
     return () => window.removeEventListener('scroll', f);
   }, []);
 
-  const navigate = (p: Page) => {
-    setPage(p);
+  // close the drawer whenever the route changes
+  useEffect(() => {
     setMobileOpen(false);
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  };
+  }, [pathname]);
 
   return (
     <>
       <nav className={'dlw-nav ' + (scrolled ? 'is-scrolled' : '')}>
         <div className="dlw-container dlw-nav-inner">
-          <button className="dlw-brand" onClick={() => navigate('home')}>
+          <Link className="dlw-brand" href="/">
             <span className="dlw-brand-mark">
               <Zap size={20} color="#fff" />
             </span>
             <span className="dlw-brand-wm">DriveLink</span>
-          </button>
+          </Link>
 
           <div className="dlw-nav-center">
             {tabs.map((t) => (
-              <button
+              <Link
                 key={t.id}
-                className={'dlw-nav-tab ' + (page === t.id ? 'is-active' : '')}
-                onClick={() => navigate(t.id)}
+                href={hrefFor(t.id)}
+                className={'dlw-nav-tab ' + (current === t.id ? 'is-active' : '')}
               >
                 {t.label}
-              </button>
+              </Link>
             ))}
           </div>
 
           <div className="dlw-nav-right">
-            <button className="dlw-nav-pill" onClick={() => navigate('investors')}>
+            <Link className="dlw-nav-pill" href="/investors">
               Partner with us
-            </button>
+            </Link>
           </div>
 
           <button className="dlw-nav-mobile" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Menu">
@@ -72,13 +69,14 @@ export function Nav({ page, setPage }: NavProps) {
       {mobileOpen && (
         <div className="dlw-nav-drawer">
           {tabs.map((t) => (
-            <button
+            <Link
               key={t.id}
-              className={'dlw-nav-drawer-tab ' + (page === t.id ? 'is-active' : '')}
-              onClick={() => navigate(t.id)}
+              href={hrefFor(t.id)}
+              className={'dlw-nav-drawer-tab ' + (current === t.id ? 'is-active' : '')}
+              onClick={() => setMobileOpen(false)}
             >
               {t.label}
-            </button>
+            </Link>
           ))}
         </div>
       )}

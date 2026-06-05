@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Nav } from "../components/Nav";
+import { Footer } from "../components/layout/Footer";
+import { ScrollProgress } from "../components/anim/ScrollProgress";
 
 export const metadata: Metadata = {
   title: "DriveLink · The Decentralized Backbone for Automotive AI",
@@ -21,7 +24,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <div style={{ minHeight: "100vh", background: "var(--bg-page)" }}>
+          <ScrollProgress />
+          <Nav />
+          {children}
+          <Footer />
+        </div>
+      </body>
     </html>
   );
 }

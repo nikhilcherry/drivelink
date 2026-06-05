@@ -672,3 +672,12 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 }
 .dlw-team-tag.founder { background: rgba(15,76,129,0.10); color: var(--drive-blue); border: 1px solid rgba(15,76,129,0.18); }
 .dlw-team-tag.core { background: rgba(16,185,129,0.10); color: #0f766e; border: 1px solid rgba(16,185,129,0.25); }
+
+/* Docs KPI counters — stable digits + mobile sizing (fix scroll-card jitter) */
+.dlw-doc-kpi .v { font-variant-numeric: tabular-nums; white-space: nowrap; }
+@media (max-width: 560px) {
+  .dlw-doc-kpis { gap: 12px; }
+  .dlw-doc-kpi { padding: 16px 10px; }
+  .dlw-doc-kpi .v { font-size: 1.5rem; }
+  .dlw-doc-kpi .k { font-size: 11px; }
+}
