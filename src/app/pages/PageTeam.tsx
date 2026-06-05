@@ -8,19 +8,24 @@ interface PageTeamProps {
 
 const founders = [
   {
-    initial: 'H', name: 'Hruday', role: 'CEO · Chief Systems Architect',
+    initial: 'H', name: 'Hruday', role: 'CEO · Chief Systems Architect', tag: 'Co-founder',
     bio: 'Leads the vision, protocol architecture, and strategic partnerships. Builds the standardization roadmap that takes DriveLink from prototype to global standard.',
     focus: ['Systems strategy', 'Protocol design', 'OEM partnerships'],
   },
   {
-    initial: 'N', name: 'Nikhil', role: 'CTO · Computer Science',
+    initial: 'N', name: 'Nikhil', role: 'CTO · Computer Science', tag: 'Co-founder',
     bio: 'Owns the prediction engine, the simulation environment, and V2V messaging intelligence. Writes the code that makes intent travel under 50 milliseconds.',
     focus: ['Prediction engine', 'Simulation', 'Mesh protocol'],
   },
   {
-    initial: 'K', name: 'Krishna', role: 'CPO · Mechanical Engineering',
+    initial: 'K', name: 'Krishna', role: 'CPO · Mechanical Engineering', tag: 'Co-founder',
     bio: 'Responsible for hardware feasibility, integration, and real-vehicle interfacing. Bridges the embedded module with mechanical reality.',
     focus: ['Hardware', 'Vehicle integration', 'Mechanical systems'],
+  },
+  {
+    initial: 'S', name: 'Shreyas', role: 'Lead ML Engineer · Decision Models', tag: 'Core team',
+    bio: 'Designs and trains the perception-based RandomForest policies behind every decision a DriveLink car makes — lane changes, exits, and cooperative merges — served live over WebSocket and validated in SUMO against real-world trajectory data.',
+    focus: ['Decision models', 'Perception-based ML', 'SUMO validation'],
   },
 ];
 
@@ -39,14 +44,15 @@ export function PageTeam({ setPage }: PageTeamProps) {
           <div className="dlw-section-head" style={{ maxWidth: 880 }}>
             <div className="dlw-eyebrow"><span className="num">T</span> Team</div>
             <h1 className="dlw-section-title" style={{ fontSize: 'clamp(2.6rem, 5.4vw, 4.8rem)', letterSpacing: '-0.04em' }}>
-              Built by three. <span className="dlw-text-gradient">Backed by many.</span>
+              The team building <span className="dlw-text-gradient">the backbone.</span>
             </h1>
-            <p className="dlw-section-sub">Systems, software, and hardware — owned end-to-end by the founding team.</p>
+            <p className="dlw-section-sub">Three co-founders and the technical core — systems, software, hardware, and the ML brain — owned end to end.</p>
           </div>
 
-          <div className="dlw-team-detail-grid">
+          <div className="dlw-team-detail-grid is-four">
             {founders.map((m, i) => (
               <div key={i} className="dlw-team-detail">
+                <span className={'dlw-team-tag ' + (m.tag === 'Co-founder' ? 'founder' : 'core')}>{m.tag}</span>
                 <div className="dlw-team-portrait" style={{ width: 96, height: 96, fontSize: 36 }}>{m.initial}</div>
                 <div className="dlw-team-role">{m.role}</div>
                 <h3 className="dlw-team-name">{m.name}</h3>

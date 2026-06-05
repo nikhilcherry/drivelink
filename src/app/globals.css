@@ -652,3 +652,23 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
   .dlw-doc-pnode-wrap { flex: 1 1 100%; }
   .dlw-doc-parrow { transform: rotate(90deg); margin: 0 auto; }
 }
+
+/* ============================================================
+   TEAM — 4-up grid + role badges (co-founder vs core team)
+   ============================================================ */
+.dlw-team-grid.is-four { grid-template-columns: repeat(4, 1fr); gap: 22px; }
+.dlw-team-detail-grid.is-four { grid-template-columns: repeat(4, 1fr); gap: 22px; }
+@media (max-width: 1080px) {
+  .dlw-team-grid.is-four, .dlw-team-detail-grid.is-four { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .dlw-team-grid.is-four, .dlw-team-detail-grid.is-four { grid-template-columns: 1fr; }
+}
+.dlw-team-detail { position: relative; }
+.dlw-team-tag {
+  position: absolute; top: 16px; right: 16px; z-index: 2;
+  font-family: var(--mono); font-size: 9.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 4px 9px; border-radius: 999px;
+}
+.dlw-team-tag.founder { background: rgba(15,76,129,0.10); color: var(--drive-blue); border: 1px solid rgba(15,76,129,0.18); }
+.dlw-team-tag.core { background: rgba(16,185,129,0.10); color: #0f766e; border: 1px solid rgba(16,185,129,0.25); }
