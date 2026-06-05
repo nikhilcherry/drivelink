@@ -1,6 +1,6 @@
 import { InvestorCTA } from '../../sections/InvestorCTA';
 
-type Page = 'home' | 'product' | 'team' | 'investors';
+type Page = 'home' | 'product' | 'team' | 'investors' | 'docs';
 
 interface PageTeamProps {
   setPage: (page: Page) => void;

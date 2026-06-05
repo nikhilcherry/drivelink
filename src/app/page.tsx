@@ -13,8 +13,10 @@ import { InvestorCTA } from '../sections/InvestorCTA';
 import { PageProduct } from './pages/PageProduct';
 import { PageTeam } from './pages/PageTeam';
 import { PageInvestors } from './pages/PageInvestors';
+import { PageDocs } from './pages/PageDocs';
+import { ScrollProgress } from '../components/anim/ScrollProgress';
 
-type Page = 'home' | 'product' | 'team' | 'investors';
+type Page = 'home' | 'product' | 'team' | 'investors' | 'docs';
 
 export default function Home() {
   const [page, setPage] = useState<Page>('home');
@@ -26,6 +28,7 @@ export default function Home() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-page)' }}>
+      <ScrollProgress />
       <Nav page={page} setPage={navigate} />
 
       {page === 'home' && (
@@ -42,6 +45,7 @@ export default function Home() {
       )}
 
       {page === 'product' && <PageProduct setPage={navigate} />}
+      {page === 'docs' && <PageDocs setPage={navigate} />}
       {page === 'team' && <PageTeam setPage={navigate} />}
       {page === 'investors' && <PageInvestors setPage={navigate} />}
 

@@ -1,6 +1,6 @@
 import { Zap } from 'lucide-react';
 
-type Page = 'home' | 'product' | 'team' | 'investors';
+type Page = 'home' | 'product' | 'team' | 'investors' | 'docs';
 
 interface FooterProps {
   setPage: (page: Page) => void;

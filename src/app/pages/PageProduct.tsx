@@ -1,7 +1,8 @@
 import { Car, Building2, RadioTower, Brain } from 'lucide-react';
 import { InvestorCTA } from '../../sections/InvestorCTA';
+import { SimPlayground } from '../../sections/SimPlayground';
 
-type Page = 'home' | 'product' | 'team' | 'investors';
+type Page = 'home' | 'product' | 'team' | 'investors' | 'docs';
 
 interface PageProductProps {
   setPage: (page: Page) => void;
@@ -53,6 +54,20 @@ export function PageProduct({ setPage }: PageProductProps) {
       </section>
 
       <section className="dlw-section dlw-section-paper">
+        <div className="dlw-container">
+          <div className="dlw-section-head" style={{ maxWidth: 880 }}>
+            <div className="dlw-eyebrow"><span className="num">SIM</span> Live simulation</div>
+            <h2 className="dlw-section-title">See the protocol drive traffic.</h2>
+            <p className="dlw-section-sub">
+              A real V2V traffic model running in your browser — car-following, negotiated lane changes,
+              and an on-ramp merge gate. Toggle the mesh and watch cooperation appear.
+            </p>
+          </div>
+          <SimPlayground />
+        </div>
+      </section>
+
+      <section className="dlw-section">
         <div className="dlw-container">
           <div className="dlw-section-head" style={{ maxWidth: 880 }}>
             <div className="dlw-eyebrow"><span className="num">MSG</span> Message format</div>

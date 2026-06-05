@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Zap, Menu, X } from 'lucide-react';
 
-type Page = 'home' | 'product' | 'team' | 'investors';
+type Page = 'home' | 'product' | 'team' | 'investors' | 'docs';
 
 interface NavProps {
   page: Page;
@@ -12,6 +12,7 @@ interface NavProps {
 const tabs: { id: Page; label: string }[] = [
   { id: 'home', label: 'Home' },
   { id: 'product', label: 'Product' },
+  { id: 'docs', label: 'Docs' },
   { id: 'team', label: 'Team' },
   { id: 'investors', label: 'Investors' },
 ];
