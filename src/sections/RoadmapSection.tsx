@@ -1,6 +1,9 @@
 'use client';
 import { useRef, useState, useEffect } from 'react';
 
+// TODO(founder): confirm roadmap items + dates. Order: completed milestones first, then
+// upcoming quarters ascending (Q3 2026 → Q4 2026 → Q1 2027 → Nov 2027). Keep status one of
+// 'completed' | 'upcoming' and quarter labels in the "Q# YYYY" / "Mon YYYY" format.
 const milestones = [
   { date: 'Completed', title: 'Ideation & Concept Validation', status: 'completed', details: ['Foundational research', 'OEM problem mapping'] },
   { date: 'Completed', title: 'Strategic Mentorship', status: 'completed', details: ['PedalStart validation', 'NMIT support'] },
