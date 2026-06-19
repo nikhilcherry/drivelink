@@ -18,7 +18,7 @@ export function HeroV2V({ onCTA }: HeroProps) {
           <div className="dlw-hero-chip">
             <span className="pulse-ring"><span className="core" /></span>
             <span>Automotive AI Infrastructure</span>
-            <span className="dlw-mono" style={{ color: 'var(--fg4)', fontSize: 11 }}>· v0.1</span>
+            <span className="dlw-mono" style={{ color: 'var(--fg4)', fontSize: 12 }}>· v0.1</span>
           </div>
 
           <h1 className="dlw-hero-title">
@@ -26,6 +26,11 @@ export function HeroV2V({ onCTA }: HeroProps) {
             <span className="dlw-text-gradient">Decentralized Backbone</span>
             {' '}for Automotive AI
           </h1>
+
+          {/* TODO(founder): confirm hero one-liner */}
+          <p className="dlw-hero-tagline">
+            The V2V communication layer modern vehicles are missing.
+          </p>
 
           <p className="dlw-hero-sub">
             &ldquo;Connecting OEMs, Data, and Intelligence via a low-latency, intent-first protocol.&rdquo;
@@ -43,8 +48,37 @@ export function HeroV2V({ onCTA }: HeroProps) {
         </div>
 
         <V2VSimulation />
+
+        <HeroMarquee />
       </div>
     </section>
+  );
+}
+
+// TODO(founder): confirm ticker phrases
+const MARQUEE_PHRASES = [
+  'Sub-50ms latency',
+  'Cross-OEM',
+  'Intent-first',
+  'drv-mesh',
+  'AIR 5 · IIT Delhi',
+  'Patent · pending',
+];
+
+function HeroMarquee() {
+  // Render the phrase list twice so the loop is seamless; aria-hidden = decorative.
+  const track = [...MARQUEE_PHRASES, ...MARQUEE_PHRASES];
+  return (
+    <div className="dlw-hero-marquee" aria-hidden="true">
+      <div className="dlw-hero-marquee-track">
+        {track.map((phrase, i) => (
+          <span className="dlw-hero-marquee-item" key={i}>
+            <span className="dot" />
+            {phrase}
+          </span>
+        ))}
+      </div>
+    </div>
   );
 }
 
