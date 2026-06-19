@@ -192,13 +192,21 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 }
 .dlw-hero-wrap { position: relative; z-index: 5; }
 .dlw-hero-top { display: flex; flex-direction: column; align-items: center; text-align: center; }
-.dlw-hero-chip { display: inline-flex; align-items: center; gap: 10px; padding: 7px 14px 7px 10px; border-radius: 999px; background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(15,76,129,0.10); color: var(--drive-blue); font-weight: 500; font-size: 13px; box-shadow: 0 2px 8px rgba(15,76,129,0.06); margin-bottom: 32px; }
+.dlw-hero-chip { display: inline-flex; align-items: center; gap: 10px; padding: 8px 16px 8px 12px; border-radius: 999px; background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(15,76,129,0.10); color: var(--drive-blue); font-weight: 500; font-size: 14.5px; box-shadow: 0 2px 8px rgba(15,76,129,0.06); margin-bottom: 32px; }
 .dlw-hero-chip .pulse-ring { width: 16px; height: 16px; border-radius: 999px; border: 1.5px solid var(--drive-blue); display: inline-flex; align-items: center; justify-content: center; position: relative; }
 .dlw-hero-chip .pulse-ring::before { content: ""; position: absolute; inset: -4px; border-radius: 999px; border: 1.5px solid var(--drive-blue); animation: dlw-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite; }
 .dlw-hero-chip .pulse-ring .core { width: 6px; height: 6px; border-radius: 999px; background: var(--drive-blue); }
-.dlw-hero-title { font-size: clamp(2.8rem, 7vw, 6.2rem); font-weight: 700; line-height: 0.98; letter-spacing: -0.04em; color: var(--fg1); margin: 0 0 26px; max-width: 1100px; }
+.dlw-hero-title { font-size: clamp(2.6rem, 8.5vw, 9rem); font-weight: 800; line-height: 0.92; letter-spacing: -0.045em; color: var(--fg1); margin: 0 0 22px; max-width: 1200px; overflow-wrap: break-word; }
+.dlw-hero-tagline { font-size: clamp(1.15rem, 1.9vw, 1.7rem); color: var(--fg2); font-weight: 500; letter-spacing: -0.01em; line-height: 1.35; max-width: 720px; margin: 0 auto 14px; }
 .dlw-hero-sub { font-size: clamp(1.05rem, 1.5vw, 1.4rem); color: var(--fg3); line-height: 1.55; font-weight: 300; font-style: italic; max-width: 680px; margin: 0 auto 40px; }
 .dlw-hero-ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-bottom: 60px; }
+/* Running-text ticker under the live mesh widget */
+.dlw-hero-marquee { position: relative; width: 100%; max-width: 1200px; margin: 28px auto 0; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+.dlw-hero-marquee-track { display: inline-flex; align-items: center; gap: 0; white-space: nowrap; will-change: transform; animation: dlw-marquee 28s linear infinite; }
+.dlw-hero-marquee-item { display: inline-flex; align-items: center; gap: 14px; padding: 0 14px; font-family: var(--mono); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--fg3); }
+.dlw-hero-marquee-item .dot { width: 5px; height: 5px; border-radius: 999px; background: var(--drive-blue); opacity: 0.5; flex-shrink: 0; }
+@keyframes dlw-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .dlw-hero-marquee-track { animation: none; transform: none; } }
 .dlw-hero-stage { position: relative; width: 100%; max-width: 1200px; margin: 24px auto 0; aspect-ratio: 16 / 7; border-radius: 24px; background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.2)); border: 1px solid rgba(15,76,129,0.08); box-shadow: 0 1px 0 rgba(255,255,255,1) inset, 0 40px 80px -20px rgba(15,76,129,0.15), 0 16px 40px -10px rgba(15,76,129,0.08); overflow: hidden; backdrop-filter: blur(20px); }
 .dlw-hero-stage svg { width: 100%; height: 100%; display: block; }
 .dlw-hero-stage .corner-label { position: absolute; padding: 6px 10px; border-radius: 8px; background: rgba(255,255,255,0.85); backdrop-filter: blur(8px); border: 1px solid rgba(15,76,129,0.10); font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--fg2); letter-spacing: 0.02em; display: flex; align-items: center; gap: 8px; }
@@ -373,6 +381,10 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-footer-links a, .dlw-footer-links button { font-size: 14px; color: rgba(255,255,255,0.8); transition: color .2s; background: none; border: none; padding: 0; text-align: left; cursor: pointer; font-family: inherit; }
 .dlw-footer-links a:hover, .dlw-footer-links button:hover { color: #fff; }
 .dlw-footer-bottom { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 12px; color: rgba(255,255,255,0.4); }
+.dlw-footer-address { display: flex; flex-direction: column; gap: 3px; margin-top: 16px; font-style: normal; font-size: 12.5px; line-height: 1.5; color: rgba(255,255,255,0.5); max-width: 280px; }
+.dlw-footer-address .dlw-footer-addr-label { color: rgba(255,255,255,0.75); font-weight: 600; }
+.dlw-footer-address a { color: rgba(255,255,255,0.8); transition: color .2s; }
+.dlw-footer-address a:hover { color: #fff; }
 
 /* ============================================================
    PRODUCT PAGE
@@ -672,6 +684,17 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 }
 .dlw-team-tag.founder { background: rgba(15,76,129,0.10); color: var(--drive-blue); border: 1px solid rgba(15,76,129,0.18); }
 .dlw-team-tag.core { background: rgba(16,185,129,0.10); color: #0f766e; border: 1px solid rgba(16,185,129,0.25); }
+
+/* Team social links — generous touch targets, color-only hover (no layout shift) */
+.dlw-team-socials { display: flex; gap: 8px; margin-top: 18px; }
+.dlw-team-social {
+  display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+  border-radius: 10px; color: var(--fg3); background: rgba(15,76,129,0.05);
+  border: 1px solid rgba(15,76,129,0.10); transition: color .2s, background .2s, border-color .2s;
+}
+.dlw-team-social:hover { color: var(--drive-blue); background: rgba(15,76,129,0.10); border-color: rgba(15,76,129,0.22); }
+.dlw-team-social:focus-visible { outline: 2px solid var(--drive-blue); outline-offset: 2px; }
+.dlw-team-social svg { width: 16px; height: 16px; }
 
 /* Docs KPI counters — stable digits + mobile sizing (fix scroll-card jitter) */
 .dlw-doc-kpi .v { font-variant-numeric: tabular-nums; white-space: nowrap; }
