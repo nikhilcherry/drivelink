@@ -16,6 +16,15 @@ export function Footer() {
             <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, margin: 0, maxWidth: 280 }}>
               The decentralized communication backbone for automotive AI. Intent-first, low-latency, cross-OEM.
             </p>
+
+            {/* TODO(founder): full address + company details */}
+            <address className="dlw-footer-address">
+              <span className="dlw-footer-addr-label">DriveLink Technologies</span>
+              <span>Registered office — full address line 1</span>
+              <span>Address line 2</span>
+              <span>Bengaluru, Karnataka, India</span>
+              <a href="mailto:tech.drivelink@gmail.com?subject=DriveLink%20enquiry">tech.drivelink@gmail.com</a>
+            </address>
           </div>
 
           <div>
@@ -34,7 +43,7 @@ export function Footer() {
               <Link href="/team">Team</Link>
               <Link href="/#story">Origin story</Link>
               <Link href="/investors">Investors</Link>
-              <a href="mailto:tech.drivelink@gmail.com">Contact</a>
+              <a href="mailto:tech.drivelink@gmail.com?subject=DriveLink%20enquiry">Contact</a>
             </div>
           </div>
 
