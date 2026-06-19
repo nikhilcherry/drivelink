@@ -33,22 +33,16 @@ const founders = [
     focus: ['Decision models', 'Perception-based ML', 'SUMO validation'],
     socials: { linkedin: '#', x: '#', github: '#' },
   },
-  {
-    // TODO(founder): Harish role + bio
-    initial: 'H', name: 'Harish', role: 'Core Team', tag: 'Core team',
-    bio: 'Placeholder bio — confirm Harish’s focus area and contributions.',
-    focus: ['TODO: focus 1', 'TODO: focus 2', 'TODO: focus 3'],
-    socials: { linkedin: '#', x: '#', github: '#' },
-  },
 ];
 
 const advisors = [
+  // TODO(founder): Harish mentor title + note
+  { name: 'Harish', role: 'Mentor', note: 'Placeholder — confirm Harish’s mentorship focus and guidance' },
   { name: 'Harsirjan Kour', role: 'Core Team · PedalStart', note: 'Early validation, founder mentorship' },
   { name: 'Sayanee Bhowmik', role: 'Ex-VC · Startup Mentor', note: 'Direction refinement, fundraising guidance' },
   { name: 'Debasis Chakraborty', role: 'CEO · Dariaan Consulting', note: 'First investor meeting, strategic input' },
   { name: 'CEO · Simple Energy', role: 'Industry advisor', note: 'EV fleet movement insights' },
   // TODO(founder): confirm where extra names go + who they are
-  { name: 'Advisor name TBC', role: 'Role · Organization', note: 'Placeholder — replace with real advisor/validation credit' },
   { name: 'Advisor name TBC', role: 'Role · Organization', note: 'Placeholder — replace with real advisor/validation credit' },
 ];
 
