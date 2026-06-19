@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Zap } from 'lucide-react';
+import { LogoMark } from '../ui/Logo';
 
 export function Footer() {
   return (
@@ -8,8 +8,8 @@ export function Footer() {
         <div className="dlw-footer-grid">
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-              <span style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg, #0F4C81, #1E60A3)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Zap size={14} color="#fff" />
+              <span style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg, #0F4C81, #2563EB 55%, #06B6D4)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+                <LogoMark size={16} />
               </span>
               <span style={{ fontWeight: 700, color: '#fff', letterSpacing: '-0.02em' }}>DriveLink</span>
             </div>

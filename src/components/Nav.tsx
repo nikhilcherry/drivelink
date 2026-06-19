@@ -2,7 +2,8 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Zap, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
+import { LogoMark } from './ui/Logo';
 import { hrefFor, pageFromPath, type Page } from '../lib/nav';
 
 const tabs: { id: Page; label: string }[] = [
@@ -37,7 +38,7 @@ export function Nav() {
         <div className="dlw-container dlw-nav-inner">
           <Link className="dlw-brand" href="/">
             <span className="dlw-brand-mark">
-              <Zap size={20} color="#fff" />
+              <LogoMark size={20} />
             </span>
             <span className="dlw-brand-wm">DriveLink</span>
           </Link>

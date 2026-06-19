@@ -160,7 +160,7 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-brand { display: flex; align-items: center; gap: 10px; background: none; border: none; padding: 0; }
 .dlw-brand-mark {
   width: 36px; height: 36px; border-radius: 10px;
-  background: linear-gradient(135deg, #0F4C81, #1E60A3);
+  background: linear-gradient(135deg, #0F4C81, #2563EB 55%, #06B6D4);
   display: flex; align-items: center; justify-content: center;
   color: #fff; box-shadow: 0 6px 16px -4px rgba(15,76,129,0.4);
   position: relative; overflow: hidden;
