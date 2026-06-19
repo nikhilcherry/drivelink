@@ -15,23 +15,15 @@ export function HeroV2V({ onCTA }: HeroProps) {
       <div className="dlw-hero-bg-grid" />
       <div className="dlw-container dlw-hero-wrap">
         <div className="dlw-hero-top">
-          <div className="dlw-hero-chip">
-            <span className="pulse-ring"><span className="core" /></span>
-            <span>Automotive AI Infrastructure</span>
-            <span className="dlw-mono" style={{ color: 'var(--fg4)', fontSize: 12 }}>· v0.1</span>
-          </div>
-
           <h1 className="dlw-hero-title">
-            DriveLink: The{' '}
-            <span className="dlw-text-gradient">Decentralized Backbone</span>
-            {' '}for Automotive AI
+            <span className="dlw-hero-brand">DriveLink</span>
           </h1>
 
-          {/* TODO(founder): confirm hero one-liner */}
-          <p className="dlw-hero-tagline">
-            The V2V communication layer modern vehicles are missing.
+          <p className="dlw-hero-headline">
+            The <span className="dlw-text-gradient">Decentralized Backbone</span> for Automotive&nbsp;AI
           </p>
 
+          {/* TODO(founder): confirm hero one-liner */}
           <p className="dlw-hero-sub">
             &ldquo;Connecting OEMs, Data, and Intelligence via a low-latency, intent-first protocol.&rdquo;
           </p>
