@@ -1,140 +1,174 @@
-DriveLink
-Vehicle-to-Vehicle Communication Operating System
+<div align="center">
 
-DriveLink is a next-generation Vehicle-to-Vehicle (V2V) communication operating system designed to enable real-time intent sharing, trajectory prediction, and cooperative mobility between vehicles. It adds the missing communication layer on top of modern sensor systems, making transportation significantly safer, smoother, and more efficient.
+# DriveLink
 
-Introduction
+### The Decentralized Backbone for Automotive AI
 
-Modern vehicles rely heavily on sensors such as cameras, radar, and lidar. These systems allow cars to see the environment but do not allow them to communicate with one another. As a result, vehicles frequently react after danger appears.
+Vehicles can already *see*. **DriveLink lets them speak** — broadcasting intent and predicted motion to nearby cars in **under 50 ms**, so traffic reacts *before* danger appears instead of after.
 
-DriveLink changes this paradigm.
-It allows vehicles to broadcast their immediate intent and predicted motion to nearby cars, enabling proactive, cooperative driving.
+[![Website](https://img.shields.io/badge/live-drivelink.tech-0F4C81)](https://drivelink.tech)
+[![Next.js](https://img.shields.io/badge/Next.js-15-000000?logo=nextdotjs)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Deploy](https://img.shields.io/badge/deploy-Vercel-000000?logo=vercel)](https://vercel.com)
 
-Core Capabilities
+[Website](https://drivelink.tech) · [Product](https://drivelink.tech/product) · [Docs](https://drivelink.tech/docs) · [Team](https://drivelink.tech/team) · [Investors](https://drivelink.tech/investors)
 
-Vehicle Understanding
-Reads vehicle parameters including speed, steering, braking, and acceleration to understand real-time behavior.
+</div>
 
-Prediction Engine
-Generates short time-window trajectory predictions to anticipate where the vehicle will be in the next second(s).
+---
 
-Low-Latency V2V Communication
-Communicates predicted motion and intent with nearby vehicles in under 50 milliseconds, enabling instantaneous cooperative reactions.
+## What is DriveLink?
 
-Why DriveLink Matters
+Modern vehicles rely on cameras, radar, and lidar. These let a car *perceive* its surroundings — but they don't let cars *communicate* with one another. As a result, vehicles behave as isolated agents and frequently react only **after** a hazard becomes visible.
 
-Reduces blind-spot and lane-change collisions
+**DriveLink is a Vehicle-to-Vehicle (V2V) communication layer that closes this gap.** It sits on top of existing sensor stacks and lets each vehicle broadcast its **immediate intent and predicted trajectory** to nearby cars — enabling proactive, cooperative driving rather than last-moment reaction.
 
-Eliminates unnecessary braking cascades (traffic waves)
+> Modern vehicles can see. They **cannot speak**. DriveLink is the missing communication layer — a low-latency, intent-first standard for vehicles to broadcast intent before they act.
 
-Enables smooth merging and coordinated lane behavior
+It is designed to be **decentralized** and **cross-OEM**: a shared protocol any manufacturer, fleet, or smart-city program can adopt.
 
-Supports next-generation autonomous driving systems
+---
 
-Provides a foundational communication standard for fleets and smart cities
+## Core capabilities
 
-DriveLink positions itself as a universal standard for mobility communication.
+| Capability | What it does |
+|---|---|
+| **Vehicle understanding** | Reads live parameters — speed, steering, braking, acceleration — to model real-time behavior. |
+| **Prediction engine** | Generates short-horizon trajectory predictions to anticipate where a vehicle will be in the next second(s). |
+| **Low-latency V2V** | Shares predicted motion and intent with nearby vehicles in **under 50 ms** for instantaneous cooperative reactions. |
 
-Target Segments
+## Architecture
 
-Electric vehicle fleets
+DriveLink is structured in three layers:
 
-Automotive OEMs
+1. **On-Vehicle Module** — a lightweight hardware module + embedded software that reads vehicle data and runs local prediction.
+2. **DriveLink Protocol** — a low-latency, intent-first V2V message standard.
+3. **Intelligence Layer** — scalable software for analytics, conflict-zone detection, and network-wide safety insights.
 
-Smart city mobility programs
+## Why it matters
 
-Autonomous R&D labs
+- Reduces blind-spot and lane-change collisions
+- Eliminates braking cascades and phantom traffic waves
+- Enables smooth merging and coordinated lane behavior
+- Provides a foundational communication standard for fleets and smart cities
+- Supports next-generation autonomous driving systems
 
-Architecture Overview
+**Target segments:** EV fleets · automotive OEMs · smart-city mobility programs · autonomous R&D labs
 
-DriveLink consists of three layers:
+## Traction
 
-On-Vehicle Module
-Lightweight hardware module + embedded software that reads vehicle data and performs local prediction.
+- 🏆 **All India Rank 5** — Pitch Arena National Finals, **IIT Delhi**
+- 📜 **Patent Grant Option** awarded at a national hackathon (4th place) for originality
+- 🔧 **NMIT hardware collaboration** — moved the first autonomous system from theory to a working implementation
+- 🤝 Validated through **PedalStart** mentorship and early industry conversations
 
-DriveLink Protocol
-A low-latency V2V message standard designed for intent-first communication.
+---
 
-Intelligence Layer
-Scalable software providing analytics, conflict zone detection, and safety insights across networks of vehicles.
+## About this repository
 
-Business Model
+This repo is the **official DriveLink marketing website** — a statically-exported Next.js app deployed at [drivelink.tech](https://drivelink.tech). It presents the product, the origin story, the team, and the roadmap, and features a **live in-browser V2V traffic simulation** in the hero (car-following, negotiated lane changes, and real-time V2V link rendering).
 
-DriveLink uses a hybrid revenue model:
+### Tech stack
 
-Fleet SaaS (per-vehicle subscription)
+| Area | Choice |
+|---|---|
+| Framework | **Next.js 15** (App Router), static export (`output: 'export'`) |
+| UI | **React 19** + **TypeScript** |
+| Styling | Tailwind v4 + a hand-built `dlw-*` design system (blueprint theme) in `globals.css` |
+| Animation | **Framer Motion**, IntersectionObserver scroll reveals, pointer-reactive FX |
+| Icons | **lucide-react** |
+| Simulation | Custom canvas engine (`src/lib/v2vSim.ts`) |
+| Hosting | **Vercel** |
 
-OEM per-vehicle licensing
+### Project structure
 
-Smart city infrastructure contracts
+```
+drivelink/
+├── public/                     # static assets
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx          # root layout — nav, footer, scroll/pointer FX
+│   │   ├── page.tsx            # landing page (composes the sections)
+│   │   ├── globals.css         # design system: blueprint theme, dlw-* classes
+│   │   ├── product|docs|team|investors/   # per-page routes
+│   │   └── pages/              # page bodies (PageProduct, PageDocs, …)
+│   ├── sections/               # landing sections (HeroV2V, RoadmapSection, TeamSection, …)
+│   ├── components/
+│   │   ├── Nav.tsx · layout/Footer.tsx
+│   │   ├── anim/               # ScrollProgress, RevealOnScroll, PointerFX
+│   │   └── ui/                 # Button, GlassCard
+│   ├── lib/                    # v2vSim.ts (live simulation), nav, utils
+│   └── hooks/
+├── next.config.js              # static export → dist/
+├── tailwind.config.js
+└── vercel.json
+```
 
-Data analytics revenue streams (intent heatmaps, conflict maps, optimization insights)
+---
 
-Founding Story
+## Getting started
 
-DriveLink began on November 10 when the founding team identified a critical gap in modern transportation: vehicles operate as isolated agents, unable to communicate intent. This inspired the creation of a cooperative intelligence layer for mobility.
+**Prerequisites:** Node.js 18+ and npm.
 
-Early validation and guidance came from PedalStart mentors:
+```bash
+# 1. install dependencies
+npm install
 
-Harsirjan Kour
+# 2. run the dev server  →  http://localhost:3000
+npm run dev
 
-Sayanee Bhowmik
+# 3. production build (static export to ./dist)
+npm run build
 
-Industry insights were provided by the CEO of Simple Energy.
+# 4. lint
+npm run lint
+```
 
-On November 26, the team created its first investor-ready pitch deck and presented it to Debasis Chakraborty (CEO, Dariaan Consulting). The team is actively engaged with Simple Energy, automotive automation experts, and GHAT Section Safe Mobility.
+> **Contributor note:** dev and the export build share the same output directory (`distDir: 'dist'`). **Stop the dev server before running `npm run build`** — running both at once corrupts `dist/` and the dev server starts throwing `require is not defined`. If that happens: stop dev → `rm -rf dist` → restart `npm run dev`.
 
-Team
+## Deployment
 
-CEO & Chief Systems Architect — Hruday
-Leads the vision, protocol architecture, and strategic partnerships.
+The site is a static export hosted on **Vercel**. `vercel.json` enables `cleanUrls`, so routes like `/product` and `/docs` resolve without a trailing `.html`. Pushing to `main` triggers an automatic redeploy.
 
-CTO — Nikhil (Computer Science & Engineering)
-Responsible for the prediction engine, simulation environments, and V2V messaging intelligence.
+---
 
-CPO — Krishna (Mechanical Engineering)
-Oversees hardware feasibility, system integration, and real-world vehicle implementation.
+## Team
 
-Roadmap
+| Role | Name |
+|---|---|
+| CEO · Chief Systems Architect | **Hruday** — vision, protocol architecture, partnerships, standardization roadmap |
+| CTO · Computer Science | **Nikhil** — prediction engine, simulation environment, V2V messaging intelligence |
+| CPO · Mechanical Engineering | **Krishna** — hardware feasibility, integration, real-vehicle interfacing |
+| Chief Development Officer | **Shreyas** — RandomForest decision models and real-time inference |
+| Mentor | **Harish** |
 
-Ideation (Nov 10)
+**Advisors & mentors:** Harsirjan Kour (PedalStart), Sayanee Bhowmik (ex-VC), Debasis Chakraborty (CEO, Dariaan Consulting), and industry input from Simple Energy.
 
-Initial pitch and validation from PedalStart
+## Roadmap
 
-Consultation with Simple Energy CEO
+| Status | Milestone |
+|---|---|
+| ✅ Shipped | Ideation & concept validation |
+| ✅ Shipped | Strategic mentorship (PedalStart, NMIT) |
+| ✅ Shipped | Autonomous Stack v1.0 |
+| ✅ Shipped | AIR 5 · IIT Delhi |
+| 🔵 In progress | Alpha Pilot Program — OEM integration & hardware-in-the-loop (Q3 2026) |
+| ⬜ Planned | Decentralized Data Node v1 (Q4 2026) |
+| ⬜ Planned | DRV Token Protocol Audit (Q1 2027) |
+| ⬜ Planned | Cross-OEM Standardization (Nov 2027) |
 
-First investor deck prepared (Nov 26)
+## Vision
 
-First investor interaction (Dariaan Consulting)
+DriveLink aims to become the **universal V2V communication standard** for vehicles worldwide — the cooperative intelligence layer for safer, smoother, more efficient mobility.
 
-Prototype module v0.1
+---
 
-Prediction Engine v0.1
+## Contact
 
-DriveLink Protocol v0.1
+- **Email:** [tech.drivelink@gmail.com](mailto:tech.drivelink@gmail.com)
+- **Web:** [drivelink.tech](https://drivelink.tech)
 
-Fleet pilot program
+## License
 
-Smart city integration
-
-Vision
-
-DriveLink aims to become the universal V2V communication standard for all vehicles worldwide.
-
-Contributing
-
-This repository will gradually expand to include:
-
-Simulation frameworks
-
-Prediction engine components
-
-Communication protocol libraries
-
-Hardware interfacing modules
-
-Contributions from researchers, engineers, and mobility innovators are encouraged once the public modules are released.
-
-License
-
-To be finalised based on the deployment and commercialization strategy.
+To be finalised based on deployment and commercialization strategy. © DriveLink. All rights reserved.
