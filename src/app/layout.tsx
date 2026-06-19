@@ -3,6 +3,8 @@ import "./globals.css";
 import { Nav } from "../components/Nav";
 import { Footer } from "../components/layout/Footer";
 import { ScrollProgress } from "../components/anim/ScrollProgress";
+import { RevealOnScroll } from "../components/anim/RevealOnScroll";
+import { PointerFX } from "../components/anim/PointerFX";
 
 export const metadata: Metadata = {
   title: "DriveLink · The Decentralized Backbone for Automotive AI",
@@ -25,8 +27,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div style={{ minHeight: "100vh", background: "var(--bg-page)" }}>
+        <div className="dlw-page" style={{ minHeight: "100vh" }}>
           <ScrollProgress />
+          <RevealOnScroll />
+          <PointerFX />
           <Nav />
           {children}
           <Footer />
