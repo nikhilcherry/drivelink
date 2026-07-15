@@ -1,9 +1,12 @@
-'use client';
-import { useRouter } from 'next/navigation';
-import { PageTeam } from '../pages/PageTeam';
-import { hrefFor, type Page } from '../../lib/nav';
+import { TeamClient } from "./TeamClient";
+import { pageMetadata } from "../../lib/seo";
+
+export const metadata = pageMetadata({
+  title: "Team · DriveLink",
+  description: "Meet the DriveLink founders, core team, and mentors building the V2V communication backbone for automotive AI.",
+  path: "/team",
+});
 
 export default function TeamRoute() {
-  const router = useRouter();
-  return <PageTeam setPage={(p: Page) => router.push(hrefFor(p))} />;
+  return <TeamClient />;
 }

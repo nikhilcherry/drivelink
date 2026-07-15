@@ -40,6 +40,7 @@ export function HeroV2V({ onCTA }: HeroProps) {
         </div>
 
         <V2VSimulation />
+        <p className="dlw-hero-caption">Browser simulation of the planned Bangalore mesh deployment.</p>
 
         <HeroMarquee />
       </div>
@@ -47,24 +48,29 @@ export function HeroV2V({ onCTA }: HeroProps) {
   );
 }
 
-// TODO(founder): confirm ticker phrases
 const MARQUEE_PHRASES = [
   'Sub-50ms latency',
   'Cross-OEM',
   'Intent-first',
   'drv-mesh',
   'AIR 5 · IIT Delhi',
-  'Patent · pending',
+  'Patent grant option · awarded',
 ];
 
 function HeroMarquee() {
-  // Render the phrase list twice so the loop is seamless; aria-hidden = decorative.
-  const track = [...MARQUEE_PHRASES, ...MARQUEE_PHRASES];
+  // Render the phrase list twice so the loop is seamless; the second copy is
+  // decorative-only so screen readers get the content exactly once.
   return (
-    <div className="dlw-hero-marquee" aria-hidden="true">
+    <div className="dlw-hero-marquee">
       <div className="dlw-hero-marquee-track">
-        {track.map((phrase, i) => (
-          <span className="dlw-hero-marquee-item" key={i}>
+        {MARQUEE_PHRASES.map((phrase, i) => (
+          <span className="dlw-hero-marquee-item" key={`a-${i}`}>
+            <span className="dot" />
+            {phrase}
+          </span>
+        ))}
+        {MARQUEE_PHRASES.map((phrase, i) => (
+          <span className="dlw-hero-marquee-item" key={`b-${i}`} aria-hidden="true">
             <span className="dot" />
             {phrase}
           </span>
@@ -118,9 +124,10 @@ function V2VSimulation() {
       const id = el.querySelector('.id');
       const spd = el.querySelector('.spd');
       const int = el.querySelector('.int');
+      const kmh = Math.round(c.v * 0.7);
       if (id) id.textContent = c.id;
-      if (spd) spd.textContent = `${Math.round(c.v * 0.7)} km/h`;
-      if (int) int.textContent = c.intent;
+      if (spd) spd.textContent = `${kmh} km/h`;
+      if (int) int.textContent = kmh === 0 ? 'Idle' : c.intent;
     };
 
     let raf = 0;
@@ -159,7 +166,7 @@ function V2VSimulation() {
     <div className="dlw-hero-stage" ref={stageRef} aria-hidden="true">
       <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
       <div className="corner-label tl">
-        <span className="dot" /> <span className="num">LIVE</span> · Bangalore Mesh Node
+        <span className="dot" /> <span className="num">LIVE SIMULATION</span> · Bangalore pilot corridor
       </div>
       <div className="corner-label tr">
         <span className="num" ref={latRef}>34ms</span> · avg V2V latency
@@ -169,11 +176,11 @@ function V2VSimulation() {
 
       <div className="dlw-car-hud" ref={hud0} style={{ left: 0, top: 0 }}>
         <div className="id">DRV-A1</div>
-        <div className="row"><span className="spd">0 km/h</span> · <span className="int">Cruising</span></div>
+        <div className="row"><span className="spd">46 km/h</span> · <span className="int">Cruising</span></div>
       </div>
       <div className="dlw-car-hud" ref={hud1} style={{ left: 0, top: 0 }}>
         <div className="id">DRV-D4</div>
-        <div className="row"><span className="spd">0 km/h</span> · <span className="int">Cruising</span></div>
+        <div className="row"><span className="spd">58 km/h</span> · <span className="int">Cruising</span></div>
       </div>
     </div>
   );

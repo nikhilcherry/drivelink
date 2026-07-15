@@ -1,29 +1,38 @@
-'use client';
-import { useRouter } from 'next/navigation';
-import { HeroV2V } from '../sections/HeroV2V';
-import { Manifesto } from '../sections/Manifesto';
-import { HowItWorks } from '../sections/HowItWorks';
-import { Stats } from '../sections/Stats';
-import { StorySection } from '../sections/StorySection';
-import { TeamSection } from '../sections/TeamSection';
-import { RoadmapSection } from '../sections/RoadmapSection';
-import { InvestorCTA } from '../sections/InvestorCTA';
-import { hrefFor, type Page } from '../lib/nav';
+import { HomeClient } from "./HomeClient";
+import { SITE_URL, pageMetadata } from "../lib/seo";
+
+export const metadata = pageMetadata({
+  title: "DriveLink · The Communication Backbone for Automotive AI",
+  description: "DriveLink adds the missing V2V communication layer to modern vehicles — a low-latency, intent-first protocol connecting OEMs, fleets, and smart cities.",
+  path: "/",
+});
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "DriveLink",
+  url: SITE_URL,
+  logo: `${SITE_URL}/icon.svg`,
+  founder: [
+    { "@type": "Person", name: "Hruday" },
+    { "@type": "Person", name: "Nikhil" },
+    { "@type": "Person", name: "Krishna" },
+  ],
+  sameAs: [
+    "https://github.com/nikhilcherry/drivelink-sim",
+    "https://github.com/nikhilcherry/drivelink_software",
+    "https://github.com/nikhilcherry",
+  ],
+};
 
 export default function Home() {
-  const router = useRouter();
-  const go = (p: Page) => router.push(hrefFor(p));
-
   return (
-    <main>
-      <HeroV2V onCTA={go} />
-      <Manifesto />
-      <HowItWorks />
-      <Stats />
-      <StorySection />
-      <TeamSection />
-      <RoadmapSection />
-      <InvestorCTA onPartner={() => go('investors')} />
-    </main>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
+      <HomeClient />
+    </>
   );
 }

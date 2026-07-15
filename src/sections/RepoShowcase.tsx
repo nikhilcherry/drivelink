@@ -24,6 +24,9 @@ interface LiveStats {
   langs: LangMap;
 }
 
+/** Cached stats, keyed by "owner/name", baked in at build time — never zero. */
+export type RepoStatsMap = Record<string, LiveStats>;
+
 const LANG_COLORS: Record<string, string> = {
   GDScript: '#478cbf',
   Python: '#3572A5',
@@ -102,8 +105,8 @@ function LangBar({ langs }: { langs: LangMap }) {
   );
 }
 
-function RepoCard({ repo, index }: { repo: RepoMeta; index: number }) {
-  const [live, setLive] = useState<LiveStats | null>(null);
+function RepoCard({ repo, index, cached }: { repo: RepoMeta; index: number; cached?: LiveStats }) {
+  const [live, setLive] = useState<LiveStats | null>(cached ?? null);
   const url = `https://github.com/${repo.owner}/${repo.name}`;
 
   useEffect(() => {
@@ -123,7 +126,9 @@ function RepoCard({ repo, index }: { repo: RepoMeta; index: number }) {
           langs: langs && Object.keys(langs).length ? langs : repo.langs,
         });
       })
-      .catch(() => {});
+      .catch(() => {
+        // Fetch failed (rate limit, offline, ...) — keep showing the cached build-time stats.
+      });
     return () => {
       alive = false;
     };
@@ -151,10 +156,10 @@ function RepoCard({ repo, index }: { repo: RepoMeta; index: number }) {
       <LangBar langs={langs} />
 
       <div className="dlw-repo-stats">
-        <span><Star size={14} /> {live?.stars ?? 0}</span>
-        <span><GitFork size={14} /> {live?.forks ?? 0}</span>
-        <span><CircleDot size={14} /> {live?.issues ?? 0}</span>
-        <span><GitCommitHorizontal size={14} /> {timeAgo(live?.pushedAt ?? null)}</span>
+        <span><Star size={14} /> {live?.stars ?? cached?.stars ?? '—'}</span>
+        <span><GitFork size={14} /> {live?.forks ?? cached?.forks ?? '—'}</span>
+        <span><CircleDot size={14} /> {live?.issues ?? cached?.issues ?? '—'}</span>
+        <span><GitCommitHorizontal size={14} /> {timeAgo(live?.pushedAt ?? cached?.pushedAt ?? null)}</span>
       </div>
 
       <ul className="dlw-repo-features">
@@ -179,11 +184,11 @@ function RepoCard({ repo, index }: { repo: RepoMeta; index: number }) {
   );
 }
 
-export function RepoShowcase() {
+export function RepoShowcase({ stats }: { stats?: RepoStatsMap }) {
   return (
     <div className="dlw-repo-grid">
       {REPOS.map((r, i) => (
-        <RepoCard key={r.name} repo={r} index={i} />
+        <RepoCard key={r.name} repo={r} index={i} cached={stats?.[`${r.owner}/${r.name}`]} />
       ))}
     </div>
   );

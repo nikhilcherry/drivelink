@@ -8,7 +8,7 @@ interface PageInvestorsProps {
 
 const traction = [
   { lbl: 'AIR', val: '5', sub: 'Pitch Arena · IIT Delhi' },
-  { lbl: 'Patent', val: 'Granted', sub: 'Option · April 2026' },
+  { lbl: 'Patent', val: 'Grant Option', sub: 'Awarded Apr 2026' },
   { lbl: 'Protocol', val: 'v0.1', sub: 'Spec frozen' },
   { lbl: 'Stack', val: 'Live', sub: 'Autonomous v1.0 deployed' },
 ];
@@ -49,12 +49,12 @@ export function PageInvestors({ setPage }: PageInvestorsProps) {
                 Seed round.<br />For the alpha pilot.
               </h2>
               <p className="dlw-section-sub" style={{ marginBottom: 22 }}>
-                We are raising a seed round to deploy the alpha pilot with two OEM partners, finalize hardware integration, and freeze v1.0 of the DriveLink Protocol.
+                Raising a seed round to reach an alpha pilot with two OEM partners by Q4 2026. Round size and terms in the deck.
               </p>
               <ul className="dlw-ask-list">
                 <li><b>Alpha pilot</b> · 2 OEM partners · hardware-in-the-loop tests</li>
-                <li><b>Decentralized Data Node v1</b> · launch + secure data verification</li>
-                <li><b>DRV Token Protocol audit</b> · incentive-layer security review</li>
+                <li><b>Decentralized Data Node v1</b> · vendor-neutral data verification node</li>
+                <li><b>Incentive layer</b> · security and design review</li>
                 <li><b>Cross-OEM standardization</b> · v1.0 protocol freeze, smart-city pilots</li>
               </ul>
               <div style={{ display: 'flex', gap: 12, marginTop: 30, flexWrap: 'wrap' }}>

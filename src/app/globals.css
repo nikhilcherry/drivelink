@@ -259,6 +259,7 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-hero-stage .corner-label.bl { bottom: 16px; left: 16px; }
 .dlw-hero-stage .corner-label.br { bottom: 16px; right: 16px; }
 .dlw-hero-stage .corner-label .num { color: var(--drive-blue); font-weight: 700; }
+.dlw-hero-caption { text-align: center; font-size: 12.5px; color: var(--fg4); margin: 12px auto 0; max-width: 1200px; }
 .dlw-hero-stage .corner-label .dot { width: 6px; height: 6px; border-radius: 999px; background: #22c55e; box-shadow: 0 0 8px #22c55e; animation: dlw-pulse 2s infinite; }
 .dlw-car-hud { position: absolute; transform: translate(-50%, -100%); padding: 8px 12px; border-radius: 10px; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border: 1px solid rgba(15,76,129,0.12); font-family: var(--mono); font-size: 10px; line-height: 1.4; box-shadow: 0 10px 20px -6px rgba(15,76,129,0.15); white-space: nowrap; pointer-events: none; }
 .dlw-car-hud .id { color: var(--drive-blue); font-weight: 700; }
@@ -360,6 +361,24 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-team-detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 40px; }
 @media (max-width: 900px) { .dlw-team-detail-grid { grid-template-columns: 1fr; } }
 .dlw-team-detail { padding: 40px 32px; border-radius: 20px; background: #fff; border: 1px solid rgba(15,76,129,0.08); box-shadow: 0 20px 40px -16px rgba(15,76,129,0.06); }
+
+.dlw-team-spotlight {
+  display: flex; gap: 36px; align-items: flex-start;
+  margin-top: 28px; padding: 40px 36px; border-radius: 20px;
+  background: #fff; border: 1px solid rgba(15,76,129,0.08);
+  box-shadow: 0 20px 40px -16px rgba(15,76,129,0.06);
+  transition: transform .3s var(--ease-out), box-shadow .3s var(--ease-out), border-color .3s;
+}
+.dlw-team-spotlight:hover { transform: translateY(-4px); border-color: rgba(15,76,129,0.2); box-shadow: 0 24px 44px -22px rgba(15,76,129,0.25); }
+.dlw-spotlight-avatar { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 120px; flex-shrink: 0; text-align: center; }
+.dlw-spotlight-avatar .dlw-team-portrait { margin-bottom: 0; }
+.dlw-spotlight-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--drive-blue); text-transform: uppercase; }
+.dlw-spotlight-main { flex: 1; min-width: 0; }
+@media (max-width: 700px) {
+  .dlw-team-spotlight { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .dlw-spotlight-avatar { width: auto; flex-direction: row; }
+}
+
 .dlw-team-focus { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; padding-top: 18px; border-top: var(--line); }
 .dlw-team-focus-pill { font-family: var(--mono); font-size: 10.5px; padding: 4px 10px; background: rgba(15,76,129,0.05); color: var(--drive-blue); border-radius: 4px; letter-spacing: 0.02em; }
 .dlw-advisor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 880px; margin: 0 auto; }
@@ -505,6 +524,13 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-market-card h3 { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 8px; color: var(--fg1); }
 .dlw-market-card p { font-size: 14.5px; color: var(--fg2); line-height: 1.6; margin: 0; }
 
+.dlw-faq-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; max-width: 980px; margin: 0 auto; }
+@media (max-width: 700px) { .dlw-faq-grid { grid-template-columns: 1fr; } }
+.dlw-faq-item { padding: 28px; border-radius: 16px; background: rgba(255,255,255,0.6); backdrop-filter: blur(20px); border: 1px solid rgba(15,76,129,0.08); transition: transform .3s, border-color .3s, box-shadow .3s; }
+.dlw-faq-item:hover { transform: translateY(-3px); border-color: rgba(15,76,129,0.25); box-shadow: 0 20px 40px -16px rgba(15,76,129,0.15); }
+.dlw-faq-item h3 { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 10px; color: var(--fg1); }
+.dlw-faq-item p { font-size: 14.5px; color: var(--fg2); line-height: 1.6; margin: 0; }
+
 /* ============================================================
    INVESTORS PAGE
    ============================================================ */
@@ -622,7 +648,7 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
   min-width: 86px;
 }
 .dlw-sim-stat .v { font-family: var(--mono); font-size: 15px; font-weight: 700; color: var(--drive-blue); line-height: 1.1; }
-.dlw-sim-stat .k { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--fg4); }
+.dlw-sim-stat .k { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--fg3); }
 
 .dlw-sim-controls {
   display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; margin-top: 20px; padding: 16px 20px;
@@ -860,7 +886,7 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 }
 .dlw-tier-label { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; color: var(--fg1); }
 .dlw-tier-rule { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(15,76,129,0.28), rgba(15,76,129,0.04)); }
-.dlw-tier-count { font-size: 11px; color: var(--fg4); letter-spacing: 0.12em; text-transform: uppercase; }
+.dlw-tier-count { font-size: 11px; color: var(--fg3); letter-spacing: 0.12em; text-transform: uppercase; }
 
 .dlw-roster { display: grid; gap: 20px; }
 .dlw-roster.is-founders { grid-template-columns: repeat(3, 1fr); margin-bottom: 8px; }
