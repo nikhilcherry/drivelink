@@ -21,7 +21,7 @@ const milestones: Milestone[] = [
   { date: 'Completed', title: 'AIR 5 · IIT Delhi', status: 'completed', Icon: Trophy, details: ['National validation', 'Patent grant option'] },
   { date: 'Q3 2026', title: 'Alpha Pilot Program', status: 'upcoming', Icon: Rocket, details: ['OEM partner integration', 'Hardware-in-the-loop tests'] },
   { date: 'Q4 2026', title: 'Decentralized Data Node v1', status: 'upcoming', Icon: Boxes, details: ['Initial node launch', 'Secure data verification'] },
-  { date: 'Q1 2027', title: 'DRV Token Protocol Audit', status: 'upcoming', Icon: ShieldCheck, details: ['Incentive-layer security', 'Smart-contract validation'] },
+  { date: 'Q1 2027', title: 'Incentive Layer · Design Review', status: 'upcoming', Icon: ShieldCheck, details: ['Data-contribution incentives', 'Security review'] },
   { date: 'Nov 2027', title: 'Cross-OEM Standardization', status: 'upcoming', Icon: Globe, details: ['Scale to global fleets', 'v1.0 protocol freeze'] },
 ];
 

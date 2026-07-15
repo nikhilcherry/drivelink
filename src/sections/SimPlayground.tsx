@@ -14,7 +14,7 @@ export function SimPlayground() {
   const [ramp, setRamp] = useState(true);
   const [heatmap, setHeatmap] = useState(true);
   const [speed, setSpeed] = useState(1);
-  const [stats, setStats] = useState<Stats>({ vehicles: 0, links: 0, latency: 0, flow: 0, conflicts: 0 });
+  const [stats, setStats] = useState<Stats>({ vehicles: 18, links: 42, latency: 34, flow: 58, conflicts: 2 });
 
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);

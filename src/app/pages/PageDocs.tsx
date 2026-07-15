@@ -5,13 +5,14 @@ import {
 } from 'lucide-react';
 import { Reveal, RevealGroup, RevealItem } from '../../components/anim/Reveal';
 import { CountUp } from '../../components/anim/CountUp';
-import { RepoShowcase } from '../../sections/RepoShowcase';
+import { RepoShowcase, type RepoStatsMap } from '../../sections/RepoShowcase';
 import { InvestorCTA } from '../../sections/InvestorCTA';
 
 type Page = 'home' | 'product' | 'team' | 'investors' | 'docs';
 
 interface Props {
   setPage: (p: Page) => void;
+  repoStats?: RepoStatsMap;
 }
 
 const toc = [
@@ -55,7 +56,7 @@ const roadmap = [
   { phase: 'Phase 5', title: 'OEM SDK & fleet analytics', status: 'Planned', body: 'Per-vehicle licensing on top of existing ADAS stacks, with fleet APIs and cross-OEM cooperation studies.' },
 ];
 
-export function PageDocs({ setPage }: Props) {
+export function PageDocs({ setPage, repoStats }: Props) {
   return (
     <main className="dlw-docs">
       {/* ---------- Hero ---------- */}
@@ -74,14 +75,15 @@ export function PageDocs({ setPage }: Props) {
 
           <RevealGroup className="dlw-doc-kpis">
             {[
-              { v: 3, label: 'ML decision models', suffix: '' },
-              { v: 5, label: 'Input features', suffix: '' },
-              { v: 0.99, label: 'Held-out accuracy', suffix: '', dec: 2 },
-              { v: 50, label: 'V2V delivery', suffix: 'ms', prefix: '<' },
+              { v: 3, from: 1, label: 'ML decision models', suffix: '' },
+              { v: 5, from: 2, label: 'Input features', suffix: '' },
+              { v: 0.99, from: 0.85, label: 'Held-out accuracy', suffix: '', dec: 2 },
+              { v: 50, from: 20, label: 'V2V delivery', suffix: 'ms', prefix: '<' },
             ].map((k) => (
               <RevealItem key={k.label} className="dlw-doc-kpi">
                 <span className="v">
-                  <CountUp to={k.v} decimals={k.dec ?? 0} prefix={k.prefix ?? ''} suffix={k.suffix} />
+                  {k.prefix}
+                  <CountUp to={k.v} from={k.from} decimals={k.dec ?? 0} suffix={k.suffix} />
                 </span>
                 <span className="k">{k.label}</span>
               </RevealItem>
@@ -345,7 +347,7 @@ export function PageDocs({ setPage }: Props) {
         <div className="dlw-container">
           <DocHead eyebrow="07 · Source" title="Open repositories" Icon={GitBranch}
             sub="The simulation client and the decision brain are public. Stats are pulled live from GitHub." />
-          <RepoShowcase />
+          <RepoShowcase stats={repoStats} />
         </div>
       </section>
 

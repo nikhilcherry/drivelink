@@ -6,25 +6,25 @@ interface Member {
   role: string;
   tag: string;
   bio: string;
-  socials: { linkedin: string; x: string; github: string };
+  socials: { linkedin?: string; x?: string; github?: string };
 }
 
-// TODO(founder): add real social URLs (replace the '#' placeholders below)
+// Social URLs are added per-member as they're confirmed; unset ones render no icon.
 const founders: Member[] = [
   {
     initial: 'H', name: 'Hruday', role: 'CEO · Chief Systems Architect', tag: 'Co-founder',
     bio: 'Leads vision, protocol architecture, partnerships, and the long-term standardization roadmap.',
-    socials: { linkedin: '#', x: '#', github: '#' },
+    socials: {},
   },
   {
     initial: 'N', name: 'Nikhil', role: 'CTO · Computer Science', tag: 'Co-founder',
     bio: 'Builds the prediction engine, simulation environment, and V2V messaging intelligence.',
-    socials: { linkedin: '#', x: '#', github: '#' },
+    socials: { github: 'https://github.com/nikhilcherry' },
   },
   {
     initial: 'K', name: 'Krishna', role: 'CPO · Mechanical Engineering', tag: 'Co-founder',
     bio: 'Handles hardware feasibility, integration, mechanical systems, and real-vehicle interfacing.',
-    socials: { linkedin: '#', x: '#', github: '#' },
+    socials: {},
   },
 ];
 
@@ -32,25 +32,25 @@ const core: Member[] = [
   {
     initial: 'S', name: 'Shreyas', role: 'Chief Development Officer', tag: 'Core team',
     bio: 'Architects the RandomForest decision models — lane change, turning, and V2V negotiation — and the real-time inference that drives every car.',
-    socials: { linkedin: '#', x: '#', github: '#' },
+    socials: { github: 'https://github.com/shreyasrajshekar' },
   },
 ];
 
 const mentors: Member[] = [
   {
-    // TODO(founder): Harish mentor title + bio
     initial: 'H', name: 'Harish', role: 'Mentor', tag: 'Mentor',
-    bio: 'Placeholder bio — confirm Harish’s mentorship focus and guidance to the team.',
-    socials: { linkedin: '#', x: '#', github: '#' },
+    bio: 'Guides DriveLink’s strategy and execution as the team’s core mentor.',
+    socials: {},
   },
 ];
 
 function Socials({ m }: { m: Member }) {
+  if (!m.socials.linkedin && !m.socials.x && !m.socials.github) return null;
   return (
     <div className="dlw-rost-socials">
-      <a href={m.socials.linkedin} target="_blank" rel="noopener noreferrer" aria-label={`${m.name} on LinkedIn`}><Linkedin size={15} /></a>
-      <a href={m.socials.x} target="_blank" rel="noopener noreferrer" aria-label={`${m.name} on X`}><Twitter size={15} /></a>
-      <a href={m.socials.github} target="_blank" rel="noopener noreferrer" aria-label={`${m.name} on GitHub`}><Github size={15} /></a>
+      {m.socials.linkedin && <a href={m.socials.linkedin} target="_blank" rel="noopener noreferrer" aria-label={`${m.name} on LinkedIn`}><Linkedin size={15} /></a>}
+      {m.socials.x && <a href={m.socials.x} target="_blank" rel="noopener noreferrer" aria-label={`${m.name} on X`}><Twitter size={15} /></a>}
+      {m.socials.github && <a href={m.socials.github} target="_blank" rel="noopener noreferrer" aria-label={`${m.name} on GitHub`}><Github size={15} /></a>}
     </div>
   );
 }

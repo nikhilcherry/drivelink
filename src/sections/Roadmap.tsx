@@ -22,7 +22,7 @@ export const Roadmap = () => {
         { date: "Completed", title: "Autonomous Stack v1.0", status: "completed", details: ["Core prediction software finalized", "System architecture fixed"] },
         { date: "Q1 2025", title: "Alpha Pilot Program", status: "upcoming", details: ["OEM partner integration", "Hardware-in-the-loop tests"] },
         { date: "Q2 2025", title: "Decentralized Data Node (v1)", status: "upcoming", details: ["Initial node launch", "Secure data verification"] },
-        { date: "Q3 2025", title: "DRV Token Protocol Audit", status: "upcoming", details: ["Incentive layer security", "Smart contract validation"] },
+        { date: "Q3 2025", title: "Incentive Layer · Design Review", status: "upcoming", details: ["Data-contribution incentives", "Security review"] },
         { date: "Nov 2026", title: "All Prototypes Ready", status: "upcoming", details: ["Scale to global fleets", "Cross-OEM standardization"] },
     ];
 

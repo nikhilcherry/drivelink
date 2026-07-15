@@ -7,43 +7,47 @@ interface PageTeamProps {
   setPage: (page: Page) => void;
 }
 
-// TODO(founder): add real social URLs (replace the '#' placeholders below)
-const founders = [
+interface Socials {
+  github?: string;
+  linkedin?: string;
+  x?: string;
+}
+
+// Social URLs are added per-member as they're confirmed; unset ones render no icon.
+const founders: {
+  initial: string; name: string; role: string; tag: string; bio: string; focus: string[]; socials: Socials;
+}[] = [
   {
     initial: 'H', name: 'Hruday', role: 'CEO · Chief Systems Architect', tag: 'Co-founder',
     bio: 'Leads the vision, protocol architecture, and strategic partnerships. Builds the standardization roadmap that takes DriveLink from prototype to global standard.',
     focus: ['Systems strategy', 'Protocol design', 'OEM partnerships'],
-    socials: { linkedin: '#', x: '#', github: '#' },
+    socials: {},
   },
   {
     initial: 'N', name: 'Nikhil', role: 'CTO · Computer Science', tag: 'Co-founder',
     bio: 'Owns the prediction engine, the simulation environment, and V2V messaging intelligence. Writes the code that makes intent travel under 50 milliseconds.',
     focus: ['Prediction engine', 'Simulation', 'Mesh protocol'],
-    socials: { linkedin: '#', x: '#', github: '#' },
+    socials: { github: 'https://github.com/nikhilcherry' },
   },
   {
     initial: 'K', name: 'Krishna', role: 'CPO · Mechanical Engineering', tag: 'Co-founder',
     bio: 'Responsible for hardware feasibility, integration, and real-vehicle interfacing. Bridges the embedded module with mechanical reality.',
     focus: ['Hardware', 'Vehicle integration', 'Mechanical systems'],
-    socials: { linkedin: '#', x: '#', github: '#' },
+    socials: {},
   },
   {
     initial: 'S', name: 'Shreyas', role: 'Chief Development Officer', tag: 'Core team',
     bio: 'Designs and trains the perception-based RandomForest policies behind every decision a DriveLink car makes — lane changes, exits, and cooperative merges — served live over WebSocket and validated in SUMO against real-world trajectory data.',
     focus: ['Decision models', 'Perception-based ML', 'SUMO validation'],
-    socials: { linkedin: '#', x: '#', github: '#' },
+    socials: { github: 'https://github.com/shreyasrajshekar' },
   },
 ];
 
 const advisors = [
-  // TODO(founder): Harish mentor title + note
-  { name: 'Harish', role: 'Mentor', note: 'Placeholder — confirm Harish’s mentorship focus and guidance' },
   { name: 'Harsirjan Kour', role: 'Core Team · PedalStart', note: 'Early validation, founder mentorship' },
   { name: 'Sayanee Bhowmik', role: 'Ex-VC · Startup Mentor', note: 'Direction refinement, fundraising guidance' },
   { name: 'Debasis Chakraborty', role: 'CEO · Dariaan Consulting', note: 'First investor meeting, strategic input' },
   { name: 'CEO · Simple Energy', role: 'Industry advisor', note: 'EV fleet movement insights' },
-  // TODO(founder): confirm where extra names go + who they are
-  { name: 'Advisor name TBC', role: 'Role · Organization', note: 'Placeholder — replace with real advisor/validation credit' },
 ];
 
 export function PageTeam({ setPage }: PageTeamProps) {
@@ -70,19 +74,46 @@ export function PageTeam({ setPage }: PageTeamProps) {
                 <div className="dlw-team-focus">
                   {m.focus.map((f, j) => <span key={j} className="dlw-team-focus-pill">{f}</span>)}
                 </div>
-                <div className="dlw-team-socials">
-                  <a className="dlw-team-social" href={m.socials.linkedin} target="_blank" rel="noopener noreferrer" aria-label={`${m.name} on LinkedIn`}>
-                    <Linkedin size={16} />
-                  </a>
-                  <a className="dlw-team-social" href={m.socials.x} target="_blank" rel="noopener noreferrer" aria-label={`${m.name} on X`}>
-                    <Twitter size={16} />
-                  </a>
-                  <a className="dlw-team-social" href={m.socials.github} target="_blank" rel="noopener noreferrer" aria-label={`${m.name} on GitHub`}>
-                    <Github size={16} />
-                  </a>
-                </div>
+                {(m.socials.linkedin || m.socials.x || m.socials.github) && (
+                  <div className="dlw-team-socials">
+                    {m.socials.linkedin && (
+                      <a className="dlw-team-social" href={m.socials.linkedin} target="_blank" rel="noopener noreferrer" aria-label={`${m.name} on LinkedIn`}>
+                        <Linkedin size={16} />
+                      </a>
+                    )}
+                    {m.socials.x && (
+                      <a className="dlw-team-social" href={m.socials.x} target="_blank" rel="noopener noreferrer" aria-label={`${m.name} on X`}>
+                        <Twitter size={16} />
+                      </a>
+                    )}
+                    {m.socials.github && (
+                      <a className="dlw-team-social" href={m.socials.github} target="_blank" rel="noopener noreferrer" aria-label={`${m.name} on GitHub`}>
+                        <Github size={16} />
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
+          </div>
+
+          <div className="dlw-team-spotlight">
+            <div className="dlw-spotlight-avatar">
+              <div className="dlw-team-portrait" style={{ width: 120, height: 120, fontSize: 44 }}>H</div>
+              <span className="dlw-spotlight-label">M-01 · Mentor</span>
+            </div>
+            <div className="dlw-spotlight-main">
+              <div className="dlw-team-role">Mentor · Strategic Guidance</div>
+              <h3 className="dlw-team-name">Harish</h3>
+              <p className="dlw-team-bio">
+                Guides DriveLink&apos;s strategy and execution as the team&apos;s core mentor. Harish pressure-tests every major decision, from protocol architecture to pitch narrative, and has shaped how DriveLink positions itself with OEMs and investors. His guidance carried the team through the IIT Delhi finals run and continues to steer the alpha pilot roadmap.
+              </p>
+              <div className="dlw-team-focus">
+                <span className="dlw-team-focus-pill">Strategic mentorship</span>
+                <span className="dlw-team-focus-pill">Pitch and positioning</span>
+                <span className="dlw-team-focus-pill">Execution review</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>

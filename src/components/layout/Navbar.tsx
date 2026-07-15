@@ -35,7 +35,7 @@ export const Navbar = () => {
             )}
         >
             <div className="container mx-auto px-6 flex items-center justify-between">
-                <a href="#" className="text-2xl font-bold tracking-tighter text-drive-blue flex items-center gap-2 group">
+                <a href="/" className="text-2xl font-bold tracking-tighter text-drive-blue flex items-center gap-2 group">
                     <div className="w-10 h-10 bg-gradient-to-br from-drive-blue to-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:scale-105 transition-transform">
                         <Zap className="w-6 h-6 fill-current" />
                     </div>

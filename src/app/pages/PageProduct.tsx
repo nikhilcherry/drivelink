@@ -21,6 +21,25 @@ const markets = [
   { Icon: Brain, name: 'Autonomous R&D Labs', body: 'Standardized intent layer for testbeds, simulation, and cross-OEM cooperation studies.' },
 ];
 
+const faqs = [
+  {
+    q: 'How is DriveLink different from DSRC and C-V2X?',
+    a: 'Those standards define the radio and transport. DriveLink is the intent layer above them: a compact, vendor-neutral message format for predicted trajectories and maneuvers, designed to run over any underlying V2X radio, WiFi mesh, or cellular link.',
+  },
+  {
+    q: 'Does this require new hardware in every car?',
+    a: 'The protocol is transport-agnostic. The reference module is a lightweight retrofit unit, but OEMs can implement drv-mesh on existing telematics hardware.',
+  },
+  {
+    q: 'What happens when only some cars have DriveLink?',
+    a: 'The protocol is designed for partial adoption. Equipped vehicles gain cooperative behavior with each other immediately; benefits scale with penetration rather than requiring it.',
+  },
+  {
+    q: 'Is the protocol open?',
+    a: 'The v0.1 spec and reference simulation are public on GitHub. Standardization with OEM partners is on the roadmap for v1.0.',
+  },
+];
+
 export function PageProduct({ setPage }: PageProductProps) {
   return (
     <main>
@@ -106,6 +125,23 @@ export function PageProduct({ setPage }: PageProductProps) {
                 <div className="dlw-market-ic"><m.Icon size={22} color="#0F4C81" /></div>
                 <h3>{m.name}</h3>
                 <p>{m.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="dlw-section dlw-section-paper">
+        <div className="dlw-container">
+          <div className="dlw-section-head center">
+            <div className="dlw-eyebrow"><span className="num">FAQ</span> Questions</div>
+            <h2 className="dlw-section-title">DriveLink vs. existing V2X.</h2>
+          </div>
+          <div className="dlw-faq-grid">
+            {faqs.map((f, i) => (
+              <div key={i} className="dlw-faq-item">
+                <h3>{f.q}</h3>
+                <p>{f.a}</p>
               </div>
             ))}
           </div>

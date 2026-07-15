@@ -1,9 +1,12 @@
-'use client';
-import { useRouter } from 'next/navigation';
-import { PageInvestors } from '../pages/PageInvestors';
-import { hrefFor, type Page } from '../../lib/nav';
+import { InvestorsClient } from "./InvestorsClient";
+import { pageMetadata } from "../../lib/seo";
+
+export const metadata = pageMetadata({
+  title: "Investors · DriveLink",
+  description: "DriveLink's traction, seed round, and the case for a decentralized V2V communication protocol as its own category — not just a feature.",
+  path: "/investors",
+});
 
 export default function InvestorsRoute() {
-  const router = useRouter();
-  return <PageInvestors setPage={(p: Page) => router.push(hrefFor(p))} />;
+  return <InvestorsClient />;
 }
