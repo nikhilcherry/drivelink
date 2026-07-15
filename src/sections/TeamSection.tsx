@@ -38,7 +38,7 @@ const core: Member[] = [
 
 const mentors: Member[] = [
   {
-    initial: 'H', name: 'Harish', role: 'Mentor', tag: 'Mentor',
+    initial: 'H', name: 'Dr. Harish L', role: 'Mentor', tag: 'Mentor',
     bio: 'Guides DriveLink’s strategy and execution as the team’s core mentor.',
     socials: {},
   },
