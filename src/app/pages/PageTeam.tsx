@@ -103,7 +103,7 @@ export function PageTeam({ setPage }: PageTeamProps) {
               <span className="dlw-spotlight-label">M-01 · Mentor</span>
             </div>
             <div className="dlw-spotlight-main">
-              <div className="dlw-team-role">Mentor · Strategic Guidance</div>
+              <div className="dlw-team-role">Mentor · Core Team Member · Strategic Guidance</div>
               <h3 className="dlw-team-name">Harish</h3>
               <p className="dlw-team-bio">
                 Guides DriveLink&apos;s strategy and execution as the team&apos;s core mentor. Harish pressure-tests every major decision, from protocol architecture to pitch narrative, and has shaped how DriveLink positions itself with OEMs and investors. His guidance carried the team through the IIT Delhi finals run and continues to steer the alpha pilot roadmap.
