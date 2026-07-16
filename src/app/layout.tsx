@@ -6,6 +6,7 @@ import { ScrollProgress } from "../components/anim/ScrollProgress";
 import { RevealOnScroll } from "../components/anim/RevealOnScroll";
 import { PointerFX } from "../components/anim/PointerFX";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "../lib/seo";
+import { Chatbot } from "../components/Chatbot";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -44,6 +45,7 @@ export default function RootLayout({
           <Nav />
           {children}
           <Footer />
+          <Chatbot />
         </div>
       </body>
     </html>
