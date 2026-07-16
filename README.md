@@ -131,6 +131,8 @@ npm run lint
 
 The site is a static export hosted on **Vercel**. `vercel.json` enables `cleanUrls`, so routes like `/product` and `/docs` resolve without a trailing `.html`. Pushing to `main` triggers an automatic redeploy.
 
+The floating chatbot (`src/components/Chatbot.tsx`) calls `/api/chat`, a standalone Vercel serverless function (`api/chat.js`, kept outside `src/app` since Next's own API routes aren't buildable under `output: 'export'`). It holds the Groq API key server-side — set `GROQ_API_KEY` (no `NEXT_PUBLIC_` prefix) in the Vercel project's Environment Variables. See `.env.example`. Without it configured, the function returns 503 and the widget falls back to a local, rule-based responder. `next dev` does not serve `/api/*`; use `vercel dev` to exercise the live path locally.
+
 ---
 
 ## Team

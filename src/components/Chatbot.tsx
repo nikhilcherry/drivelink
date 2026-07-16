@@ -44,11 +44,10 @@ export function Chatbot() {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  // Whether the last attempt to reach the AI backend succeeded; starts true so
+  // we try it first and drop to the local rule engine only after it fails.
+  const [aiAvailable, setAiAvailable] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // Directly check the Gemini key configuration statically at render time
-  const rawKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-  const isKeyConfigured = !!(rawKey && rawKey !== 'your_gemini_api_key_here' && rawKey !== '');
 
   // Define scrollToBottom before calling it in useEffect
   const scrollToBottom = () => {
@@ -141,69 +140,28 @@ export function Chatbot() {
     return "For this technical/complex query, please contact our team directly at tech.drivelink@gmail.com for a perfect response.";
   };
 
-  const callGeminiAPI = async (userMessage: string, history: Message[]) => {
-    const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-    if (!apiKey) {
-      throw new Error("No API key configured");
-    }
-
-    const systemPrompt = `You are the official DriveLink assistant chatbot on the website. DriveLink is a decentralized, low-latency (under 50ms) V2V (Vehicle-to-Vehicle) communication standard for Automotive AI, enabling vehicles to share intent and trajectory predictions.
-
-Your responses are strictly restricted to basic questions about DriveLink:
-1. Product/features (what is DriveLink, how it works, capabilities: vehicle understanding, prediction engine, low-latency V2V protocol).
-2. Team members (Hruday - CEO, Nikhil - CTO, Krishna - CPO, Shreyas - CDO, Harish - Mentor).
-3. Roadmap milestones (Alpha Pilot Program in Q3 2026, Decentralized Data Node v1 in Q4 2026, DRV Token Protocol Audit in Q1 2027, Cross-OEM Standardization in Nov 2027).
-4. Traction (AIR 5 IIT Delhi, Patent Grant Option, NMIT hardware collaboration, PedalStart).
-5. Contact information (email: tech.drivelink@gmail.com).
-
-CRITICAL RULE:
-If the user asks about anything technical/engineering-specific (e.g. "how do you achieve under 50ms latency", "what RF frequencies do you use", "give me the code", "explain the RandomForest model implementation details"), financial details, investments, partnerships, or any complex/ambiguous topic, or anything unrelated to basic DriveLink info, you MUST refuse to answer directly and politely refer them to contact the team:
-"For this technical/complex query, please contact our team directly at tech.drivelink@gmail.com for a perfect response."
-
-Keep your answers short (1-3 sentences maximum), friendly, professional, and clear.
-Do not make up any information.`;
-
-    const contents = [
-      ...history.slice(-6).map(msg => ({
-        role: msg.role === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.content }]
-      })),
-      {
-        role: 'user',
-        parts: [{ text: userMessage }]
-      }
-    ];
-
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents,
-          systemInstruction: {
-            parts: [{ text: systemPrompt }]
-          },
-          generationConfig: {
-            maxOutputTokens: 150,
-            temperature: 0.2
-          }
-        })
-      }
-    );
+  // Calls our own /api/chat serverless function, which holds the LLM API key
+  // server-side. Never call a third-party LLM API directly from the browser —
+  // any key passed via NEXT_PUBLIC_* ships in plaintext in the client bundle.
+  const callChatAPI = async (userMessage: string, history: Message[]) => {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: userMessage,
+        history: history.slice(-6),
+      }),
+    });
 
     if (!response.ok) {
-      throw new Error(`API error: ${response.statusText}`);
+      throw new Error(`API error: ${response.status}`);
     }
 
     const data = await response.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!text) {
-      throw new Error("No text returned from Gemini");
+    if (!data.reply) {
+      throw new Error('No reply returned from chat API');
     }
-    return text.trim();
+    return data.reply;
   };
 
   const handleSendMessage = async (textToSend?: string) => {
@@ -219,8 +177,8 @@ Do not make up any information.`;
     setIsLoading(true);
 
     try {
-      if (isKeyConfigured) {
-        const reply = await callGeminiAPI(text, newMessages.slice(0, -1));
+      if (aiAvailable) {
+        const reply = await callChatAPI(text, newMessages.slice(0, -1));
         setMessages(prev => [...prev, { role: 'model', content: reply }]);
       } else {
         // Fallback to local rule engine directly
@@ -231,6 +189,7 @@ Do not make up any information.`;
       }
     } catch (error) {
       console.error("Chatbot query failed, using local matcher:", error);
+      setAiAvailable(false);
       const reply = getLocalResponse(text);
       setMessages(prev => [...prev, { role: 'model', content: reply }]);
     } finally {
@@ -364,7 +323,7 @@ Do not make up any information.`;
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="text-[10px] px-2 py-0.5 rounded bg-zinc-100 text-zinc-500 border border-zinc-200/50 font-mono">
-                  {isKeyConfigured ? 'GEMINI_AI' : 'LOCAL_RULES'}
+                  {aiAvailable ? 'AI' : 'LOCAL_RULES'}
                 </span>
                 <button
                   onClick={() => setIsOpen(false)}
