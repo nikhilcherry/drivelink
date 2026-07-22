@@ -5,7 +5,6 @@ import { Manifesto } from '../sections/Manifesto';
 import { HowItWorks } from '../sections/HowItWorks';
 import { Stats } from '../sections/Stats';
 import { StorySection } from '../sections/StorySection';
-import { TeamSection } from '../sections/TeamSection';
 import { RoadmapSection } from '../sections/RoadmapSection';
 import { InvestorCTA } from '../sections/InvestorCTA';
 import { hrefFor, type Page } from '../lib/nav';
@@ -21,7 +20,6 @@ export function HomeClient() {
       <HowItWorks />
       <Stats />
       <StorySection />
-      <TeamSection />
       <RoadmapSection />
       <InvestorCTA onPartner={() => go('investors')} />
     </main>

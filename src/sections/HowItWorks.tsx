@@ -106,7 +106,7 @@ function HiwStage({ step }: { step: number }) {
 
       {step === 0 && (
         <g>
-          <g transform="translate(300 240)">
+          <g transform="translate(340 240)">
             <rect x="-50" y="-26" width="100" height="52" rx="14" fill="#0F4C81" />
             <rect x="-24" y="-18" width="40" height="36" rx="5" fill="rgba(255,255,255,0.7)" />
             <rect x="40" y="-18" width="6" height="36" rx="2" fill="rgba(255,255,255,0.9)" />

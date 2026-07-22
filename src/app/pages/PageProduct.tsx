@@ -88,33 +88,6 @@ export function PageProduct({ setPage }: PageProductProps) {
 
       <section className="dlw-section">
         <div className="dlw-container">
-          <div className="dlw-section-head" style={{ maxWidth: 880 }}>
-            <div className="dlw-eyebrow"><span className="num">MSG</span> Message format</div>
-            <h2 className="dlw-section-title">An intent packet, end to end.</h2>
-            <p className="dlw-section-sub">Every DriveLink message is small enough to fit in a single UDP datagram. Here&apos;s the on-wire shape.</p>
-          </div>
-
-          <div className="dlw-code-wrap">
-            <div className="dlw-code-head">
-              <span className="dlw-mono">intent.proto · DriveLink Protocol v0.1</span>
-              <span className="dlw-mono" style={{ color: 'var(--fg4)' }}>244 B avg payload</span>
-            </div>
-            <pre className="dlw-code"><code>{`message Intent {
-  string  vehicle_id  = 1;   // DRV-A1, OEM prefix optional
-  uint64  ts_us       = 2;   // monotonic since boot, μs
-  Pose    pose        = 3;   // {x, y, heading, lane_id}
-  Motion  motion      = 4;   // {speed, steer, accel}
-  Predict predict     = 5;   // 1.5 s probabilistic cone
-  Action  intent      = 6;   // LANE_CHANGE | BRAKE | MERGE | HOLD
-  uint32  confidence  = 7;   // 0-100
-  bytes   signature   = 8;   // node-signed
-}`}</code></pre>
-          </div>
-        </div>
-      </section>
-
-      <section className="dlw-section">
-        <div className="dlw-container">
           <div className="dlw-section-head center">
             <div className="dlw-eyebrow"><span className="num">USE</span> Built for</div>
             <h2 className="dlw-section-title">Four early markets.</h2>
