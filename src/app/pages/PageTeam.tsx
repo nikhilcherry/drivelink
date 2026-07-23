@@ -110,7 +110,7 @@ export function PageTeam({ setPage }: PageTeamProps) {
 
           <div className="dlw-team-spotlight">
             <div className="dlw-spotlight-avatar">
-              <div className="dlw-team-portrait" style={{ width: 120, height: 120, fontSize: 44 }}>H</div>
+              <Portrait photo="/team/harish.jpg" initial="H" name="Dr. Harish L" size={120} fontSize={44} />
               <span className="dlw-spotlight-label">M-01 · Mentor</span>
             </div>
             <div className="dlw-spotlight-main">
