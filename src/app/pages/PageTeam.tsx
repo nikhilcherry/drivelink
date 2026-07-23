@@ -15,16 +15,16 @@ interface Socials {
 
 // Social URLs are added per-member as they're confirmed; unset ones render no icon.
 const founders: {
-  initial: string; name: string; role: string; tag: string; bio: string; focus: string[]; socials: Socials;
+  initial: string; photo?: string; name: string; role: string; tag: string; bio: string; focus: string[]; socials: Socials;
 }[] = [
   {
-    initial: 'H', name: 'Hruday', role: 'CEO · Chief Systems Architect', tag: 'Co-founder',
+    initial: 'H', photo: '/team/hruday.jpg', name: 'Hruday', role: 'CEO · Chief Systems Architect', tag: 'Co-founder',
     bio: 'Leads the vision, protocol architecture, and strategic partnerships. Builds the standardization roadmap that takes DriveLink from prototype to global standard.',
     focus: ['Systems strategy', 'Protocol design', 'OEM partnerships'],
     socials: {},
   },
   {
-    initial: 'N', name: 'Nikhil', role: 'CTO · Computer Science', tag: 'Co-founder',
+    initial: 'N', photo: '/team/nikhil.jpg', name: 'Nikhil', role: 'CTO · Computer Science', tag: 'Co-founder',
     bio: 'Owns the prediction engine, the simulation environment, and V2V messaging intelligence. Writes the code that makes intent travel under 50 milliseconds.',
     focus: ['Prediction engine', 'Simulation', 'Mesh protocol'],
     socials: { github: 'https://github.com/nikhilcherry' },
@@ -36,7 +36,7 @@ const founders: {
     socials: {},
   },
   {
-    initial: 'S', name: 'Shreyas', role: 'Chief Development Officer', tag: 'Core team',
+    initial: 'S', photo: '/team/shreyas.jpg', name: 'Shreyas', role: 'Chief Development Officer', tag: 'Core team',
     bio: 'Designs and trains the perception-based RandomForest policies behind every decision a DriveLink car makes — lane changes, exits, and cooperative merges — served live over WebSocket and validated in SUMO against real-world trajectory data.',
     focus: ['Decision models', 'Perception-based ML', 'SUMO validation'],
     socials: { github: 'https://github.com/shreyasrajshekar' },
@@ -67,7 +67,9 @@ export function PageTeam({ setPage }: PageTeamProps) {
             {founders.map((m, i) => (
               <div key={i} className="dlw-team-detail">
                 <span className={'dlw-team-tag ' + (m.tag === 'Co-founder' ? 'founder' : 'core')}>{m.tag}</span>
-                <div className="dlw-team-portrait" style={{ width: 96, height: 96, fontSize: 36 }}>{m.initial}</div>
+                <div className="dlw-team-portrait" style={{ width: 96, height: 96, fontSize: 36 }}>
+                  {m.photo ? <img src={m.photo} alt={m.name} /> : m.initial}
+                </div>
                 <div className="dlw-team-role">{m.role}</div>
                 <h3 className="dlw-team-name">{m.name}</h3>
                 <p className="dlw-team-bio">{m.bio}</p>
