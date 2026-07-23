@@ -1,3 +1,5 @@
+'use client';
+import { useState } from 'react';
 import { Linkedin, Twitter, Github } from 'lucide-react';
 import { InvestorCTA } from '../../sections/InvestorCTA';
 
@@ -50,6 +52,15 @@ const advisors = [
   { name: 'CEO · Simple Energy', role: 'Industry advisor', note: 'EV fleet movement insights' },
 ];
 
+function Portrait({ photo, initial, name, size, fontSize }: { photo?: string; initial: string; name: string; size: number; fontSize: number }) {
+  const [failed, setFailed] = useState(false);
+  return (
+    <div className="dlw-team-portrait" style={{ width: size, height: size, fontSize }}>
+      {photo && !failed ? <img src={photo} alt={name} onError={() => setFailed(true)} /> : initial}
+    </div>
+  );
+}
+
 export function PageTeam({ setPage }: PageTeamProps) {
   return (
     <main>
@@ -67,9 +78,7 @@ export function PageTeam({ setPage }: PageTeamProps) {
             {founders.map((m, i) => (
               <div key={i} className="dlw-team-detail">
                 <span className={'dlw-team-tag ' + (m.tag === 'Co-founder' ? 'founder' : 'core')}>{m.tag}</span>
-                <div className="dlw-team-portrait" style={{ width: 96, height: 96, fontSize: 36 }}>
-                  {m.photo ? <img src={m.photo} alt={m.name} /> : m.initial}
-                </div>
+                <Portrait photo={m.photo} initial={m.initial} name={m.name} size={96} fontSize={36} />
                 <div className="dlw-team-role">{m.role}</div>
                 <h3 className="dlw-team-name">{m.name}</h3>
                 <p className="dlw-team-bio">{m.bio}</p>
