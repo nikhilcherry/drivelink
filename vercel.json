@@ -6,7 +6,7 @@
     {
       "source": "/docs",
       "missing": [{ "type": "host", "value": "core.drivelink.tech" }],
-      "destination": "https://core.drivelink.tech",
+      "destination": "https://core.drivelink.tech/docs",
       "permanent": true
     },
     {
