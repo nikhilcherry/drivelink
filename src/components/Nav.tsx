@@ -4,12 +4,11 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { LogoMark } from './ui/Logo';
-import { hrefFor, pageFromPath, type Page } from '../lib/nav';
+import { hrefFor, pageFromPath, useSiteBase, type Page } from '../lib/nav';
 
 const tabs: { id: Page; label: string }[] = [
   { id: 'home', label: 'Home' },
   { id: 'product', label: 'Product' },
-  { id: 'docs', label: 'Docs' },
   { id: 'team', label: 'Team' },
   { id: 'investors', label: 'Investors' },
 ];
@@ -17,6 +16,7 @@ const tabs: { id: Page; label: string }[] = [
 export function Nav() {
   const pathname = usePathname();
   const current = pageFromPath(pathname || '/');
+  const siteBase = useSiteBase();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -36,7 +36,7 @@ export function Nav() {
     <>
       <nav className={'dlw-nav ' + (scrolled ? 'is-scrolled' : '')}>
         <div className="dlw-container dlw-nav-inner">
-          <Link className="dlw-brand" href="/">
+          <Link className="dlw-brand" href={siteBase + hrefFor('home')}>
             <span className="dlw-brand-mark">
               <LogoMark size={20} />
             </span>
@@ -47,7 +47,7 @@ export function Nav() {
             {tabs.map((t) => (
               <Link
                 key={t.id}
-                href={hrefFor(t.id)}
+                href={siteBase + hrefFor(t.id)}
                 className={'dlw-nav-tab ' + (current === t.id ? 'is-active' : '')}
               >
                 {t.label}
@@ -56,7 +56,7 @@ export function Nav() {
           </div>
 
           <div className="dlw-nav-right">
-            <Link className="dlw-nav-pill" href="/investors">
+            <Link className="dlw-nav-pill" href={siteBase + hrefFor('investors')}>
               Partner with us
             </Link>
           </div>
@@ -72,7 +72,7 @@ export function Nav() {
           {tabs.map((t) => (
             <Link
               key={t.id}
-              href={hrefFor(t.id)}
+              href={siteBase + hrefFor(t.id)}
               className={'dlw-nav-drawer-tab ' + (current === t.id ? 'is-active' : '')}
               onClick={() => setMobileOpen(false)}
             >

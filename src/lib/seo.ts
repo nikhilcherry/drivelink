@@ -14,16 +14,19 @@ export function pageMetadata({
   title,
   description,
   path,
+  absoluteUrl,
 }: {
   title: string;
   description: string;
   path: string;
+  /** Overrides the canonical/og URL for pages served from a different domain (e.g. the docs subdomain). */
+  absoluteUrl?: string;
 }): Metadata {
-  const url = path === '/' ? SITE_URL : `${SITE_URL}${path}`;
+  const url = absoluteUrl ?? (path === '/' ? SITE_URL : `${SITE_URL}${path}`);
   return {
     title,
     description,
-    alternates: { canonical: path },
+    alternates: { canonical: absoluteUrl ?? path },
     openGraph: {
       title,
       description,

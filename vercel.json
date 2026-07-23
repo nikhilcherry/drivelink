@@ -4,10 +4,23 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/docs",
+      "missing": [{ "type": "host", "value": "core.drivelink.tech" }],
+      "destination": "https://core.drivelink.tech",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "drivelink.tech" }],
       "destination": "https://www.drivelink.tech/:path*",
       "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "core.drivelink.tech" }],
+      "destination": "/docs"
     }
   ]
 }

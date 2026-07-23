@@ -1,7 +1,10 @@
+'use client';
 import Link from 'next/link';
 import { LogoMark } from '../ui/Logo';
+import { useSiteBase } from '../../lib/nav';
 
 export function Footer() {
+  const siteBase = useSiteBase();
   return (
     <footer className="dlw-footer">
       <div className="dlw-container">
@@ -27,19 +30,19 @@ export function Footer() {
           <div>
             <h4>Product</h4>
             <div className="dlw-footer-links">
-              <Link href="/product">Overview</Link>
-              <Link href="/#how-it-works">How it works</Link>
-              <Link href="/docs">Documentation</Link>
-              <Link href="/#roadmap">Roadmap</Link>
+              <Link href={siteBase + '/product'}>Overview</Link>
+              <Link href={siteBase + '/#how-it-works'}>How it works</Link>
+              <Link href="https://core.drivelink.tech">Documentation</Link>
+              <Link href={siteBase + '/#roadmap'}>Roadmap</Link>
             </div>
           </div>
 
           <div>
             <h4>Company</h4>
             <div className="dlw-footer-links">
-              <Link href="/team">Team</Link>
-              <Link href="/#story">Origin story</Link>
-              <Link href="/investors">Investors</Link>
+              <Link href={siteBase + '/team'}>Team</Link>
+              <Link href={siteBase + '/#story'}>Origin story</Link>
+              <Link href={siteBase + '/investors'}>Investors</Link>
               <a href="mailto:tech.drivelink@gmail.com?subject=DriveLink%20enquiry">Contact</a>
             </div>
           </div>
