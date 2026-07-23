@@ -29,7 +29,7 @@ export function Nav() {
 
   // close the drawer whenever the route changes
   useEffect(() => {
-    setMobileOpen(false);
+    setMobileOpen(false); // eslint-disable-line react-hooks/set-state-in-effect -- resetting derived UI state on prop change
   }, [pathname]);
 
   return (

@@ -6,7 +6,7 @@
    Product page (interactive). Mirrors the DriveLink Godot sim.
    ============================================================ */
 
-export type SimOptions = {
+export interface SimOptions {
   lanes: number;
   density: number; // target vehicles per lane
   v2v: boolean; // enable V2V negotiation + mesh links
@@ -36,7 +36,7 @@ export const V2V_R = 175;
 
 const PALETTE = ['#0F4C81', '#1E3A8A', '#1E60A3', '#2563EB'];
 
-export type Car = {
+export interface Car {
   id: string;
   x: number;
   v: number;
@@ -53,7 +53,7 @@ export type Car = {
   rampJoined: boolean;
 };
 
-export type SimState = {
+export interface SimState {
   W: number;
   H: number;
   roadTop: number;
@@ -289,7 +289,7 @@ export function stepSim(s: SimState, dtRaw: number) {
 
 /* ---------------------- conflict detection ---------------------- */
 
-export type Conflict = { x: number; y: number; risk: number };
+export interface Conflict { x: number; y: number; risk: number }
 const CONFLICT_RANGE = 135;
 
 // Pairwise risk field: rear-end risk (same lane, closing) + side/merge risk
@@ -337,7 +337,7 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
   ctx.closePath();
 }
 
-export type RenderResult = { links: number; latency: number; conflicts: number };
+export interface RenderResult { links: number; latency: number; conflicts: number }
 
 export function renderSim(
   ctx: CanvasRenderingContext2D,

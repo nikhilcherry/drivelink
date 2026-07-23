@@ -6,7 +6,10 @@ export const metadata = pageMetadata({
   title: "Technical Docs · DriveLink",
   description: "How DriveLink actually works — system architecture, the RandomForest decision models, SUMO realism validation, and the V2V/V2I wire protocol.",
   path: "/docs",
-  absoluteUrl: "https://core.drivelink.tech",
+  // www.drivelink.tech/docs 308s away to the core.drivelink.tech subdomain (see
+  // vercel.json), so the canonical URL must point where the content is actually
+  // served, not at the redirect source.
+  absoluteUrl: "https://core.drivelink.tech/docs",
 });
 
 const REPO_SLUGS = ["nikhilcherry/drivelink-sim", "nikhilcherry/drivelink_software"];

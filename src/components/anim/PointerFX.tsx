@@ -30,7 +30,7 @@ export function PointerFX() {
     const fine = window.matchMedia('(pointer: fine)').matches;
     if (reduce || !fine) return;
 
-    const cleanups: Array<() => void> = [];
+    const cleanups: (() => void)[] = [];
 
     // --- cursor-following glow ---
     const glow = document.createElement('div');

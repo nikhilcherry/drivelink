@@ -65,7 +65,7 @@ export function Chatbot() {
   // Dismiss tooltip if user opens the chat
   useEffect(() => {
     if (isOpen) {
-      setShowTooltip(false);
+      setShowTooltip(false); // eslint-disable-line react-hooks/set-state-in-effect -- resetting derived UI state on prop change
     }
   }, [isOpen]);
 

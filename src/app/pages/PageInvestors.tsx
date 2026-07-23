@@ -1,10 +1,5 @@
 import { InvestorCTA } from '../../sections/InvestorCTA';
-
-type Page = 'home' | 'product' | 'team' | 'investors' | 'docs';
-
-interface PageInvestorsProps {
-  setPage: (page: Page) => void;
-}
+import { useScrollTo } from '../../hooks/useScrollTo';
 
 const traction = [
   { lbl: 'AIR', val: '5', sub: 'Pitch Arena · IIT Delhi' },
@@ -13,7 +8,8 @@ const traction = [
   { lbl: 'Stack', val: 'Live', sub: 'Autonomous v1.0 deployed' },
 ];
 
-export function PageInvestors({ setPage }: PageInvestorsProps) {
+export function PageInvestors() {
+  const scrollTo = useScrollTo();
   return (
     <main>
       <section className="dlw-section" style={{ paddingTop: 160 }}>
@@ -40,7 +36,7 @@ export function PageInvestors({ setPage }: PageInvestorsProps) {
         </div>
       </section>
 
-      <section className="dlw-section dlw-section-paper">
+      <section className="dlw-section dlw-section-paper" id="ask">
         <div className="dlw-container">
           <div className="dlw-two-col">
             <div>
@@ -75,7 +71,7 @@ export function PageInvestors({ setPage }: PageInvestorsProps) {
         </div>
       </section>
 
-      <InvestorCTA onPartner={() => {}} />
+      <InvestorCTA onPartner={() => scrollTo('ask')} />
     </main>
   );
 }

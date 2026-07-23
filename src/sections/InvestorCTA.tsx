@@ -1,5 +1,3 @@
-type Page = 'home' | 'product' | 'team' | 'investors' | 'docs';
-
 interface InvestorCTAProps {
   onPartner: () => void;
 }

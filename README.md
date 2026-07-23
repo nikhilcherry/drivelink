@@ -6,13 +6,13 @@
 
 Vehicles can already *see*. **DriveLink lets them speak** — broadcasting intent and predicted motion to nearby cars in **under 50 ms**, so traffic reacts *before* danger appears instead of after.
 
-[![Website](https://img.shields.io/badge/live-drivelink.tech-0F4C81)](https://drivelink.tech)
+[![Website](https://img.shields.io/badge/live-drivelink.tech-0F4C81)](https://www.drivelink.tech)
 [![Next.js](https://img.shields.io/badge/Next.js-15-000000?logo=nextdotjs)](https://nextjs.org)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Deploy](https://img.shields.io/badge/deploy-Vercel-000000?logo=vercel)](https://vercel.com)
 
-[Website](https://drivelink.tech) · [Product](https://drivelink.tech/product) · [Docs](https://drivelink.tech/docs) · [Team](https://drivelink.tech/team) · [Investors](https://drivelink.tech/investors)
+[Website](https://www.drivelink.tech) · [Product](https://www.drivelink.tech/product) · [Docs](https://www.drivelink.tech/docs) · [Team](https://www.drivelink.tech/team) · [Investors](https://www.drivelink.tech/investors)
 
 </div>
 
@@ -67,7 +67,7 @@ DriveLink is structured in three layers:
 
 ## About this repository
 
-This repo is the **official DriveLink marketing website** — a statically-exported Next.js app deployed at [drivelink.tech](https://drivelink.tech). It presents the product, the origin story, the team, and the roadmap, and features a **live in-browser V2V traffic simulation** in the hero (car-following, negotiated lane changes, and real-time V2V link rendering).
+This repo is the **official DriveLink marketing website** — a statically-exported Next.js app deployed at [drivelink.tech](https://www.drivelink.tech). It presents the product, the origin story, the team, and the roadmap, and features a **live in-browser V2V traffic simulation** in the hero (car-following, negotiated lane changes, and real-time V2V link rendering).
 
 ### Tech stack
 
@@ -169,7 +169,7 @@ DriveLink aims to become the **universal V2V communication standard** for vehicl
 ## Contact
 
 - **Email:** [tech.drivelink@gmail.com](mailto:tech.drivelink@gmail.com)
-- **Web:** [drivelink.tech](https://drivelink.tech)
+- **Web:** [drivelink.tech](https://www.drivelink.tech)
 
 ## License
 

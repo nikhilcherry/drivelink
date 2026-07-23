@@ -26,7 +26,7 @@ export const pageFromPath = (path: string): Page => {
 export function useSiteBase(): string {
   const [base, setBase] = useState('');
   useEffect(() => {
-    if (window.location.hostname === CORE_HOST) setBase(SITE_URL);
+    if (window.location.hostname === CORE_HOST) setBase(SITE_URL); // eslint-disable-line react-hooks/set-state-in-effect -- hydration-safe: starts "" to match SSR, flips post-mount
   }, []);
   return base;
 }

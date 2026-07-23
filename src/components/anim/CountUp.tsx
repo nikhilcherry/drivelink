@@ -27,7 +27,7 @@ export function CountUp({ to, from, duration = 1.4, decimals = 0, suffix = '', c
     if (!inView || from === undefined) return;
     const reduce = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce) {
-      setValue(to);
+      setValue(to); // eslint-disable-line react-hooks/set-state-in-effect -- skip the animation, jump straight to the final value
       return;
     }
     let raf = 0;

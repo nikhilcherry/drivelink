@@ -49,7 +49,7 @@ const advisors = [
   { name: 'Harsirjan Kour', role: 'Core Team · PedalStart', note: 'Early validation, founder mentorship' },
   { name: 'Sayanee Bhowmik', role: 'Ex-VC · Startup Mentor', note: 'Direction refinement, fundraising guidance' },
   { name: 'Debasis Chakraborty', role: 'CEO · Dariaan Consulting', note: 'First investor meeting, strategic input' },
-  { name: 'CEO · Simple Energy', role: 'Industry advisor', note: 'EV fleet movement insights' },
+  { name: 'Suhas Rajkumar', role: 'CEO · Simple Energy', note: 'EV fleet movement insights' },
 ];
 
 function Portrait({ photo, initial, name, size, fontSize }: { photo?: string; initial: string; name: string; size: number; fontSize: number }) {

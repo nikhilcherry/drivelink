@@ -5,7 +5,7 @@ import { createSim, stepSim, renderSim, resizeSim, type SimOptions, type SimStat
 const LOGICAL_W = 1000;
 const LOGICAL_H = 470;
 
-type Stats = { vehicles: number; links: number; latency: number; flow: number; conflicts: number };
+interface Stats { vehicles: number; links: number; latency: number; flow: number; conflicts: number }
 
 export function SimPlayground() {
   const [lanes, setLanes] = useState(3);
@@ -21,13 +21,17 @@ export function SimPlayground() {
   const simRef = useRef<SimState | null>(null);
   const optsRef = useRef<SimOptions>({ lanes, density, v2v, ramp, heatmap, speed });
 
-  // keep live (non-structural) options in sync without rebuilding
-  optsRef.current = { lanes, density, v2v, ramp, heatmap, speed };
-  if (simRef.current) {
-    simRef.current.opts.v2v = v2v;
-    simRef.current.opts.heatmap = heatmap;
-    simRef.current.opts.speed = speed;
-  }
+  // keep live (non-structural) options in sync without rebuilding — refs are
+  // mutated in an effect, not during render, so this stays safe under StrictMode
+  // double-invocation and concurrent rendering.
+  useEffect(() => {
+    optsRef.current = { lanes, density, v2v, ramp, heatmap, speed };
+    if (simRef.current) {
+      simRef.current.opts.v2v = v2v;
+      simRef.current.opts.heatmap = heatmap;
+      simRef.current.opts.speed = speed;
+    }
+  }, [lanes, density, v2v, ramp, heatmap, speed]);
 
   // rebuild the sim when structural options change
   useEffect(() => {

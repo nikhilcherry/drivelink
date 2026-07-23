@@ -3,8 +3,8 @@
    Redesign 2026 · Glassmorphic V2V Infrastructure
    ============================================================ */
 
-/* Fonts */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap");
+/* Fonts are self-hosted via next/font (see src/app/layout.tsx), which sets
+   --font-inter/--font-space-grotesk on <html> — no runtime Google Fonts request. */
 @import "tailwindcss";
 
 /* Base reset */
@@ -35,7 +35,7 @@ img, svg { display: block; max-width: 100%; }
   --line: 1px solid rgba(15,76,129,0.08);
   --line-strong: 1px solid rgba(15,76,129,0.18);
   --mono: ui-monospace, "JetBrains Mono", SFMono-Regular, Menlo, monospace;
-  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -45,7 +45,7 @@ img, svg { display: block; max-width: 100%; }
   --color-drive-blue: #0F4C81;
   --color-drive-dark: #0a0a0a;
   --color-drive-light: #f5f5f5;
-  --font-sans: Inter, sans-serif;
+  --font-sans: var(--font-inter), sans-serif;
   --shadow-glass: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
@@ -228,7 +228,7 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-hero-title { font-size: clamp(3.6rem, 17vw, 16rem); font-weight: 700; line-height: 0.86; letter-spacing: -0.05em; margin: 0 0 16px; }
 .dlw-hero-brand {
   display: inline-block;
-  font-family: "Space Grotesk", var(--font-sans);
+  font-family: var(--font-space-grotesk), var(--font-sans);
   font-weight: 700;
   background: linear-gradient(115deg, #0B3D91 0%, #2563EB 28%, #06B6D4 52%, #6366F1 76%, #2563EB 100%);
   background-size: 220% 100%;
