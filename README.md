@@ -12,7 +12,7 @@ Vehicles can already *see*. **DriveLink lets them speak** — broadcasting inten
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Deploy](https://img.shields.io/badge/deploy-Vercel-000000?logo=vercel)](https://vercel.com)
 
-[Website](https://www.drivelink.tech) · [Product](https://www.drivelink.tech/product) · [Docs](https://www.drivelink.tech/docs) · [Team](https://www.drivelink.tech/team) · [Investors](https://www.drivelink.tech/investors)
+[Website](https://www.drivelink.tech) · [Product](https://www.drivelink.tech/product) · [Docs](https://core.drivelink.tech/docs) · [Team](https://www.drivelink.tech/team) · [Investors](https://www.drivelink.tech/investors)
 
 </div>
 
