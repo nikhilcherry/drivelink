@@ -2,63 +2,75 @@
 
 Audit of `drivelink.tech` (live site) and the `nikhilcherry/drivelink` GitHub repo, performed 2026-07-23. Findings are ranked by severity/impact. Each one was verified directly (live HTTP requests, browser rendering, or repo source/history) rather than assumed.
 
+**Status: all items below were fixed and verified live the same day** (commits `5cfafe6`, `0806c0b`, and the Vercel env var change; see the ✅ note under each item for what actually shipped). Left in place as a record of what was found and how it was resolved.
+
 ---
 
 ## Critical
 
-### 1. Production is running a stale build — several commits behind `main`
-At audit time, `https://www.drivelink.tech` was serving commit `726bb78`, while `origin/main` on GitHub was already 5 commits ahead (up to `b6ae9fe`). That gap includes `eb2c5c6`, "*Fix core.drivelink.tech serving the home page instead of docs*" — a fix for the exact bug described below, **already merged but not deployed**.
+### 1. ✅ Production was running a stale build — several commits behind `main`
+At audit time, `https://www.drivelink.tech` was serving commit `726bb78`, while `origin/main` on GitHub was already 5 commits ahead. That gap included a fix for the exact `/docs` bug described below that was merged but never deployed.
 
-**Fix:** trigger a fresh Vercel deployment from the current `main` HEAD, and confirm the GitHub → Vercel auto-deploy-on-push integration is actually enabled (a several-commit lag suggests it silently stopped triggering).
+**Fixed:** redeployed production from the up-to-date `main` HEAD via `vercel --prod`. GitHub → Vercel auto-deploy is confirmed connected (`vercel git connect`); the lag looks like it was a one-off (a manual deploy that was never promoted to production), not a broken integration — worth keeping an eye on after the next few pushes.
 
-### 2. `/docs` and the footer "Documentation" link are broken in production
-- Visiting `https://www.drivelink.tech/docs` returns an HTTP 308 redirect to `https://core.drivelink.tech` — with the `/docs` path dropped, landing visitors on the **homepage**, not documentation.
-- The footer's "Documentation" link (`Footer.tsx`) resolves to the same dead end: `<a href="https://core.drivelink.tech">Documentation</a>`.
-- Root cause (already understood in-repo): the `core.drivelink.tech` → `/docs` Vercel rewrite only matched the literal `/` path, which Vercel's zero-config framework routing doesn't reliably honor. It's fixed on `main` by widening the rewrite to a wildcard — see Critical #1. Once deployed, re-verify `core.drivelink.tech/` actually renders docs content, not the marketing homepage.
+### 2. ✅ `/docs` and the footer "Documentation" link were broken in production
+`https://www.drivelink.tech/docs` 308-redirected to `https://core.drivelink.tech` with the path dropped, landing on the homepage instead of docs. The already-merged rewrite fix (widening `core.drivelink.tech`'s host-based rewrite from matching literal `/` to a wildcard) turned out to be *necessary but not sufficient*: once deployed, non-root paths on `core.drivelink.tech` correctly rewrote to `/docs`, but the literal root `/` still resolved to the homepage — Vercel's static-file/filesystem routing wins over a rewrite for the exact `/` path on a static export, regardless of Host header.
 
-### 3. Chatbot's real AI backend isn't configured — it's silently running on canned answers
-`POST /api/chat` returns `503 {"error":"AI backend not configured"}` in production. The `GROQ_API_KEY` environment variable referenced in `api/chat.js` isn't set in the Vercel project. The widget still shows "ONLINE" and degrades gracefully to a local rules-based fallback (`LOCAL_RULES` badge), so it isn't visibly broken — but the Groq integration shipped in the most recent commit (`fix: move chatbot LLM call server-side, switch to Groq`) is currently dead code in production.
+**Fixed:** stopped depending on the ambiguous root rewrite for the two real entry points — the `www.drivelink.tech/docs` redirect and the footer's "Documentation" link now both target `https://core.drivelink.tech/docs` explicitly, which resolves via normal static file serving with no routing ambiguity. Verified: redirect chain, footer link, and the page's own canonical tag all now consistently point at `https://core.drivelink.tech/docs`.
 
-**Fix:** set `GROQ_API_KEY` (and optionally `GROQ_MODEL`) in the Vercel project's Environment Variables, per `.env.example`.
+### 3. ✅ Chatbot's real AI backend wasn't configured — it was silently running on canned answers
+`POST /api/chat` returned `503`. `GROQ_API_KEY` wasn't set in Vercel's production environment.
+
+**Fixed:** added `GROQ_API_KEY` to the Vercel project's production env vars (reused the same key already configured in local `.env.local` for dev) and redeployed. Verified live: `/api/chat` now returns real Groq-generated replies (200).
 
 ---
 
 ## High
 
-### 4. Missing name on a team/advisor card
-On `/team`, the "Industry advisor" card renders no name — just an avatar showing "C·" and the line "CEO · Simple Energy" where a person's name should be. Either the name is missing from the data or the field mapping is wrong. Worth double-checking every card on that page renders a name, since a fabricated- or blank-looking card undercuts credibility on a page specifically meant to build trust with investors.
+### 4. ✅ Missing name on a team/advisor card
+The "Industry advisor" card's `name` field literally contained `'CEO · Simple Energy'` (the title, not a name) — a data-entry bug, which also explains the broken "C·" avatar initials.
 
-### 5. `/api/chat` has no rate limiting or abuse protection
-`api/chat.js` caps message length and history size, but nothing throttles request *frequency* per client. Since it proxies to a paid Groq API using a server-held key, a scripted flood of requests (trivial to send — it's a public POST endpoint) could run up API costs or exhaust quota with no defense. Worth adding basic IP-based rate limiting (e.g. Vercel's `@vercel/edge-rate-limit` or a simple in-memory/Upstash token bucket).
+**Fixed:** identified the actual person via public sources (Suhas Rajkumar, founder/CEO of Simple Energy) and corrected the record in `src/app/pages/PageTeam.tsx`. Verified live on `/team`.
+
+### 5. ✅ `/api/chat` had no rate limiting or abuse protection
+A public POST endpoint proxying to a paid Groq key with no request-frequency limit.
+
+**Fixed:** added a per-instance sliding-window rate limit (10 requests/60s per IP, `429` beyond that) in `api/chat.js`. Verified live: 12 rapid requests returned `200` for the first ~9, then `429` for the rest.
 
 ---
 
 ## Medium
 
-### 6. Duplicate live deployment creates SEO ambiguity
-`core.drivelink.tech` currently mirrors the *entire* site (not just docs) — every route (`/`, `/product`, `/team`, `/investors`) returns 200 with full content on both domains. Canonical tags mostly point back to `www.drivelink.tech`, but `core.drivelink.tech/docs`'s own canonical tag pointed at `https://core.drivelink.tech` (bare domain, no path) rather than `https://www.drivelink.tech/docs` — internally inconsistent. Once the rewrite fix (Critical #1/#2) is deployed and `core.drivelink.tech` is docs-only, re-check that every page served from that host either canonicalizes to `www.drivelink.tech/docs` or is excluded from indexing (`noindex`) so search engines don't treat it as duplicate content.
+### 6. ✅ Docs-subdomain canonical inconsistency
+`core.drivelink.tech/docs`'s canonical tag pointed at `https://core.drivelink.tech` (bare domain, wrong domain from `www` entirely) instead of a URL that actually serves the content.
 
-### 7. No LICENSE file
-The docs page states "*The v0.1 spec and reference simulation are public on GitHub*," implying openness, but the repo has no `LICENSE` file (`licenseInfo: null` via the GitHub API). Without one, the code is technically all-rights-reserved by default — anyone wanting to build on or reference the spec has no actual legal grounds to do so. Add an explicit license (or a clear "spec is public for reference, code is proprietary" note) if that's the intent.
+**Fixed:** `pageMetadata()` in `src/lib/seo.ts` gained an `absoluteUrl` override; `docs/page.tsx` now sets it explicitly to `https://core.drivelink.tech/docs`. Every other page on that subdomain (`/`, `/product`, `/team`, `/investors` — still fully mirrored there, which is expected/harmless) correctly self-canonicalizes back to `www.drivelink.tech`, so there's no remaining duplicate-content ambiguity.
 
-### 8. No CI, and lint errors are ignored at build time
-There's no `.github/workflows/` — nothing runs lint, type-check, or a build on PRs before merge. Compounding that, `next.config.js` sets `eslint: { ignoreDuringBuilds: true }`, so lint problems don't even fail a local production build. Given the deploy-lag issue above, some minimal CI (build + typecheck on push/PR) would catch breakage before it reaches `main`, let alone production.
+### 7. ✅ No LICENSE file
+The repo had no `LICENSE` (confirmed `licenseInfo: null` via GitHub API) despite the docs page implying the spec is public. The README, however, already states an explicit stance: *"To be finalised based on deployment and commercialization strategy. © DriveLink. All rights reserved."* — i.e. proprietary-for-now was already the deliberate call, just not formalized.
+
+**Fixed:** added a `LICENSE` file matching that exact stance (all rights reserved, license TBD, contact for inquiries) — deliberately **not** a permissive license like MIT, since that would contradict the team's own stated position while they're mid-raise and pursuing a patent grant.
+
+### 8. ✅ No CI, and lint errors were ignored at build time
+No `.github/workflows/`; `next.config.js` had `eslint: { ignoreDuringBuilds: true }`.
+
+**Fixed:** added `.github/workflows/ci.yml` (lint + build on every push/PR to `main`) — confirmed passing on GitHub Actions. Removed `ignoreDuringBuilds` and fixed all 21 resulting lint errors for real (unused imports, `type` → `interface`, an `Array<T>` style nit, a broken no-op button handler, and — the one substantive bug — `SimPlayground.tsx` was mutating refs directly during render instead of in an effect, an anti-pattern that's unsafe under StrictMode/concurrent rendering; moved it into a properly-dependency-tracked `useEffect`). Also ran `npm audit fix --force` to clear a critical Next.js CVE bundle (bumped 15.1.11 → 15.5.21); the 3 remaining moderate/high advisories are in Next's optional `sharp`/`postcss` image-optimization deps, which this static-export site doesn't use.
 
 ---
 
 ## Low
 
-### 9. Dead/orphaned component files
-`src/sections/Team.tsx`, `Story.tsx`, and `Roadmap.tsx` are not imported anywhere in the app — they were superseded by `TeamSection.tsx`, `StorySection.tsx`, and `RoadmapSection.tsx` but never deleted. Harmless, but worth clearing out as repo hygiene.
+### 9. ✅ Dead/orphaned component files
+Beyond the three originally spotted (`Team.tsx`, `Story.tsx`, `Roadmap.tsx`), a full reference sweep turned up two more: `Market.tsx`, `Hero.tsx`, `CoreAbilities.tsx`, `Progress.tsx`, and `components/layout/Navbar.tsx` (an entirely unused, unreferenced navbar). All removed.
 
-### 10. Fonts loaded from Google's CDN instead of self-hosted
-`Inter` and `Space Grotesk` are pulled from `fonts.googleapis.com`/`fonts.gstatic.com` at request time rather than via `next/font` (which self-hosts and inlines font files at build time). Self-hosting removes an extra DNS/TLS round trip on every first visit and avoids sending EU visitors' IPs to a third-party font host.
+### 10. ✅ Fonts loaded from Google's CDN instead of self-hosted
+**Fixed:** switched `Inter`/`Space Grotesk` to `next/font/google` in `layout.tsx`, which self-hosts the font files at build time. Verified: zero `fonts.googleapis.com`/`fonts.gstatic.com` references on the live page, `.woff2` files served from `/_next/static/media/`.
 
-### 11. GitHub repo metadata points at a stale preview URL
-The repo's "website" field is set to `https://drivelink-theta.vercel.app` (an old Vercel preview deployment) instead of `https://drivelink.tech`. Cosmetic, but it's the first link a visitor sees on the GitHub repo page.
+### 11. ✅ GitHub repo metadata pointed at a stale preview URL
+**Fixed:** `gh repo edit --homepage https://www.drivelink.tech`.
 
-### 12. Apex domain adds an unnecessary redirect hop
-Links in the README point to `https://drivelink.tech` (no `www`), which 307-redirects to `https://www.drivelink.tech`. Functionally fine, but pointing first-party links (README, social bios, pitch decks) directly at the canonical `www` host avoids the extra hop.
+### 12. ✅ Apex domain added an unnecessary redirect hop
+README links were already on `www.drivelink.tech` by audit time (fixed in an earlier commit); the one remaining stale link (`Docs` in the README badge row, pointing at the still-broken `/docs` path) was updated to the working `https://core.drivelink.tech/docs` URL.
 
 ---
 
