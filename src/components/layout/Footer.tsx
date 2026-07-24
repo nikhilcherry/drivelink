@@ -33,6 +33,7 @@ export function Footer() {
               <Link href={siteBase + '/product'}>Overview</Link>
               <Link href={siteBase + '/#how-it-works'}>How it works</Link>
               <Link href="https://core.drivelink.tech/docs">Documentation</Link>
+              <Link href={siteBase + '/v2v-communication'}>What is V2V?</Link>
               <Link href={siteBase + '/#roadmap'}>Roadmap</Link>
             </div>
           </div>

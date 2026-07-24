@@ -1,6 +1,6 @@
 import { DocsClient } from "./DocsClient";
 import type { RepoStatsMap } from "../../sections/RepoShowcase";
-import { pageMetadata } from "../../lib/seo";
+import { SITE_URL, pageMetadata } from "../../lib/seo";
 
 export const metadata = pageMetadata({
   title: "Technical Docs · DriveLink",
@@ -53,7 +53,38 @@ async function getRepoStats(): Promise<RepoStatsMap> {
   return stats;
 }
 
+const techArticleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  headline: "How DriveLink actually works",
+  description:
+    "System architecture, the RandomForest decision models, SUMO realism validation, and the V2V/V2I wire protocol behind DriveLink.",
+  url: "https://core.drivelink.tech/docs",
+  isPartOf: { "@type": "Organization", name: "DriveLink", url: SITE_URL },
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+    { "@type": "ListItem", position: 2, name: "Docs", item: "https://core.drivelink.tech/docs" },
+  ],
+};
+
 export default async function DocsRoute() {
   const repoStats = await getRepoStats();
-  return <DocsClient repoStats={repoStats} />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(techArticleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <DocsClient repoStats={repoStats} />
+    </>
+  );
 }

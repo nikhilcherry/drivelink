@@ -1,5 +1,5 @@
 import { InvestorsClient } from "./InvestorsClient";
-import { pageMetadata } from "../../lib/seo";
+import { pageMetadata, breadcrumbJsonLd } from "../../lib/seo";
 
 export const metadata = pageMetadata({
   title: "Investors · DriveLink",
@@ -8,5 +8,13 @@ export const metadata = pageMetadata({
 });
 
 export default function InvestorsRoute() {
-  return <InvestorsClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd("Investors", "/investors")) }}
+      />
+      <InvestorsClient />
+    </>
+  );
 }

@@ -43,3 +43,15 @@ export function pageMetadata({
     },
   };
 }
+
+/** BreadcrumbList JSON-LD for a page one level below the home page. */
+export function breadcrumbJsonLd(name: string, path: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name, item: `${SITE_URL}${path}` },
+    ],
+  };
+}

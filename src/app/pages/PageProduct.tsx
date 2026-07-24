@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Car, Building2, RadioTower, Brain } from 'lucide-react';
 import { InvestorCTA } from '../../sections/InvestorCTA';
 import { SimPlayground } from '../../sections/SimPlayground';
@@ -118,6 +119,9 @@ export function PageProduct({ setPage }: PageProductProps) {
               </div>
             ))}
           </div>
+          <p style={{ textAlign: 'center', marginTop: 32, fontSize: 14, color: 'var(--fg3)' }}>
+            New to V2V? Read the full <Link href="/v2v-communication">what is V2V communication</Link> explainer.
+          </p>
         </div>
       </section>
 

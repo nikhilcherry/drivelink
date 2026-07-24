@@ -11,18 +11,30 @@ const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "DriveLink",
+  alternateName: "DriveLink V2V",
   url: SITE_URL,
   logo: `${SITE_URL}/icon.svg`,
+  description:
+    "DriveLink is a Vehicle-to-Vehicle (V2V) communication protocol that lets cars broadcast intent and predicted trajectory in under 50ms, enabling proactive cooperative driving across OEMs, fleets, and smart cities.",
   founder: [
     { "@type": "Person", name: "Hruday" },
     { "@type": "Person", name: "Nikhil" },
     { "@type": "Person", name: "Krishna" },
   ],
   sameAs: [
+    "https://github.com/nikhilcherry/drivelink",
     "https://github.com/nikhilcherry/drivelink-sim",
     "https://github.com/nikhilcherry/drivelink_software",
     "https://github.com/nikhilcherry",
   ],
+};
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "DriveLink",
+  url: SITE_URL,
+  description: "The communication backbone for automotive AI — a V2V intent-sharing protocol.",
 };
 
 export default function Home() {
@@ -31,6 +43,10 @@ export default function Home() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
       />
       <HomeClient />
     </>
