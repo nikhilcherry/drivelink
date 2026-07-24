@@ -21,6 +21,10 @@ const organizationJsonLd = {
     { "@type": "Person", name: "Nikhil" },
     { "@type": "Person", name: "Krishna" },
   ],
+  award: [
+    "All India Rank 5 — Pitch Arena National Finals, IIT Delhi (2026)",
+    "Patent Grant Option — awarded for originality at a national hackathon",
+  ],
   sameAs: [
     "https://github.com/nikhilcherry/drivelink",
     "https://github.com/nikhilcherry/drivelink-sim",
