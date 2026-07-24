@@ -2,7 +2,7 @@ import { HomeClient } from "./HomeClient";
 import { SITE_URL, pageMetadata } from "../lib/seo";
 
 export const metadata = pageMetadata({
-  title: "DriveLink · The Communication Backbone for Automotive AI",
+  title: "DriveLink · V2V Communication Backbone for Automotive AI",
   description: "DriveLink adds the missing V2V communication layer to modern vehicles — a low-latency, intent-first protocol connecting OEMs, fleets, and smart cities.",
   path: "/",
 });

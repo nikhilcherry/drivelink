@@ -25,12 +25,12 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "DriveLink · The Communication Backbone for Automotive AI",
+  title: "DriveLink · V2V Communication Backbone for Automotive AI",
   description: "DriveLink adds the missing V2V communication layer to modern vehicles — a low-latency, intent-first protocol connecting OEMs, fleets, and smart cities.",
   keywords: ["V2V", "vehicle communication", "automotive AI", "DriveLink", "intent-first protocol"],
   alternates: { canonical: "/" },
   openGraph: {
-    title: "DriveLink · The Communication Backbone for Automotive AI",
+    title: "DriveLink · V2V Communication Backbone for Automotive AI",
     description: "V2V communication OS. Intent-first. Sub-50ms. Cross-OEM.",
     url: SITE_URL,
     siteName: SITE_NAME,
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "DriveLink · The Communication Backbone for Automotive AI",
+    title: "DriveLink · V2V Communication Backbone for Automotive AI",
     description: "V2V communication OS. Intent-first. Sub-50ms. Cross-OEM.",
     images: [OG_IMAGE],
   },
