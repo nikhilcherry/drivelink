@@ -1,5 +1,5 @@
 import { V2VClient } from "./V2VClient";
-import { SITE_URL, pageMetadata, breadcrumbJsonLd } from "../../lib/seo";
+import { SITE_URL, OG_IMAGE, pageMetadata, breadcrumbJsonLd } from "../../lib/seo";
 
 export const metadata = pageMetadata({
   title: "What is V2V (Vehicle-to-Vehicle) Communication? · DriveLink",
@@ -15,8 +15,16 @@ const articleJsonLd = {
   description:
     "How vehicle-to-vehicle communication works, how it differs from DSRC and C-V2X, why latency matters, and how DriveLink implements an intent-first V2V protocol.",
   url: `${SITE_URL}/v2v-communication`,
+  image: `${SITE_URL}${OG_IMAGE}`,
+  datePublished: "2026-07-24",
+  dateModified: "2026-07-24",
   author: { "@type": "Organization", name: "DriveLink", url: SITE_URL },
-  publisher: { "@type": "Organization", name: "DriveLink", url: SITE_URL },
+  publisher: {
+    "@type": "Organization",
+    name: "DriveLink",
+    url: SITE_URL,
+    logo: { "@type": "ImageObject", url: `${SITE_URL}/icon.svg` },
+  },
   mainEntityOfPage: `${SITE_URL}/v2v-communication`,
 };
 
