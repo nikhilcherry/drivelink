@@ -44,6 +44,14 @@ const faqJsonLd = {
     },
     {
       "@type": "Question",
+      name: "Is this the same DriveLink as Toyota's \"Drivelink\" telematics platform?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "No — they're unrelated products that happen to share a name. Toyota Connected's Drivelink is a consumer telematics platform (roadside assistance, stolen-vehicle location, collision notification) built with Twilio and AWS. This DriveLink, at drivelink.tech, is an independent, unaffiliated V2V protocol startup — a cross-OEM vehicle-to-vehicle intent-sharing standard, not a single-OEM telematics app.",
+      },
+    },
+    {
+      "@type": "Question",
       name: "Is V2V communication the same as autonomous driving?",
       acceptedAnswer: {
         "@type": "Answer",

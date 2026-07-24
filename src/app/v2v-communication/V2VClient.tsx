@@ -127,6 +127,15 @@ export function V2VClient() {
               <Link href={siteBase + '/product'}>product overview</Link> or the{' '}
               <a href="https://core.drivelink.tech/docs">technical docs</a> for the full architecture.
             </p>
+            <h3 style={h3Style}>Is this the same DriveLink as Toyota&apos;s &quot;Drivelink&quot; telematics platform?</h3>
+            <p style={proseP}>
+              No — they&apos;re unrelated products that happen to share a name. Toyota Connected&apos;s Drivelink is
+              a consumer telematics platform (roadside assistance, stolen-vehicle location, collision notification)
+              built with Twilio and AWS. <Link href={siteBase + '/'}>This DriveLink</Link>, at{' '}
+              <span className="dlw-mono">drivelink.tech</span>, is an independent, unaffiliated V2V protocol startup
+              — a cross-OEM vehicle-to-vehicle intent-sharing standard, not a single-OEM telematics app. If you
+              landed here looking for Toyota&apos;s in-car service, this isn&apos;t it.
+            </p>
             <h3 style={h3Style}>Is V2V communication the same as autonomous driving?</h3>
             <p style={proseP}>
               No. Autonomous driving is about a single vehicle making its own decisions; V2V communication is
