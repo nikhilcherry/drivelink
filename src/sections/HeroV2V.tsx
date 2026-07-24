@@ -17,6 +17,7 @@ export function HeroV2V({ onCTA }: HeroProps) {
         <div className="dlw-hero-top">
           <h1 className="dlw-hero-title">
             <span className="dlw-hero-brand">DriveLink</span>
+            <span className="dlw-sr-only"> — V2V Communication Protocol for Automotive AI</span>
           </h1>
 
           <p className="dlw-hero-headline">

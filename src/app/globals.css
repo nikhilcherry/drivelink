@@ -111,6 +111,11 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
   margin-right: 8px; font-size: 10px;
 }
 .dlw-mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+/* Visually hidden but screen-reader-accessible (standard WCAG technique, not display:none). */
+.dlw-sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
 
 .dlw-text-gradient {
   background: linear-gradient(90deg, #0F4C81, #2563eb);
