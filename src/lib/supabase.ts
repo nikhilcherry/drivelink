@@ -30,11 +30,11 @@ export type FocusArea = 'ml' | 'iot' | 'rnd';
 export interface ApplicationRow {
   full_name: string;
   email: string;
-  phone: string | null;
+  phone: string;
   github_url: string | null;
   linkedin_url: string | null;
   portfolio_url: string | null;
-  resume_path: string;
+  resume_path: string | null;
   domain: 'tech';
   focus_areas: FocusArea[];
   note: string | null;

@@ -64,6 +64,20 @@ export function validateNote(value: string): string | undefined {
   return undefined;
 }
 
+/**
+ * Loose on format — country codes, spacing, and separators all vary — but a
+ * phone number has to have enough digits to actually be one.
+ */
+export function validatePhone(value: string): string | undefined {
+  const v = value.trim();
+  if (!v) return 'Please enter your phone number.';
+  if (v.length > 40) return 'That phone number is too long.';
+  if (/[^0-9+\-.() ]/.test(v)) return 'Please use only digits and phone symbols like + - ( ).';
+  const digits = v.replace(/\D/g, '');
+  if (digits.length < 7 || digits.length > 15) return 'Please enter a valid phone number.';
+  return undefined;
+}
+
 export interface LinkField {
   /** Canonical host, e.g. "github.com". Empty for a free-form portfolio URL. */
   host: string;
