@@ -44,6 +44,7 @@ export function Footer() {
               <Link href={siteBase + '/team'}>Team</Link>
               <Link href={siteBase + '/#story'}>Origin story</Link>
               <Link href={siteBase + '/investors'}>Investors</Link>
+              <Link href={siteBase + '/hiring'}>Join us</Link>
               <a href="mailto:tech.drivelink@gmail.com?subject=DriveLink%20enquiry">Contact</a>
             </div>
           </div>
