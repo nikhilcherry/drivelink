@@ -969,3 +969,119 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
   .dlw-doc-kpi .v { font-size: 1.5rem; }
   .dlw-doc-kpi .k { font-size: 11px; }
 }
+
+/* ============================================================
+   FORMS / HIRING
+   The only genuinely interactive surface on the site, so focus
+   states are load-bearing here — never trade them for looks.
+   ============================================================ */
+.dlw-nav-drawer-tab.is-cta { background: var(--drive-blue); color: #fff; font-weight: 600; margin-top: 8px; }
+
+.dlw-hiring-perks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 44px; }
+.dlw-hiring-perk { padding: 24px 22px; border-radius: 16px; background: rgba(255,255,255,0.6); border: var(--line-strong); }
+.dlw-hiring-perk h3 { font-size: 1.02rem; font-weight: 650; letter-spacing: -0.015em; margin: 0 0 8px; }
+.dlw-hiring-perk p { font-size: 14px; line-height: 1.6; color: var(--fg2); margin: 0; }
+@media (max-width: 860px) { .dlw-hiring-perks { grid-template-columns: 1fr; } }
+
+.dlw-form {
+  max-width: 780px; margin: 0 auto; padding: 40px; border-radius: 22px;
+  background: rgba(255,255,255,0.72); backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: 0 24px 50px -18px rgba(15,76,129,0.14);
+}
+@media (max-width: 640px) { .dlw-form { padding: 26px 20px; border-radius: 18px; } }
+
+.dlw-fieldset { border: none; padding: 0; margin: 0 0 38px; }
+.dlw-fieldset:last-of-type { margin-bottom: 26px; }
+.dlw-fieldset > legend { padding: 0; margin-bottom: 20px; }
+.dlw-fieldset-note { font-size: 13px; color: var(--fg3); margin: -12px 0 18px; }
+
+.dlw-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.dlw-form-grid .dlw-field.full { grid-column: 1 / -1; }
+@media (max-width: 640px) { .dlw-form-grid { grid-template-columns: 1fr; } }
+
+.dlw-field { display: flex; flex-direction: column; gap: 7px; }
+.dlw-label { font-size: 13px; font-weight: 600; color: var(--fg1); letter-spacing: -0.005em; }
+.dlw-label .opt { font-weight: 400; color: var(--fg4); margin-left: 5px; }
+.dlw-input, .dlw-textarea {
+  width: 100%; padding: 12px 14px; border-radius: 12px;
+  background: rgba(255,255,255,0.7); border: var(--line-strong);
+  font-family: inherit; font-size: 15px; color: var(--fg1);
+  transition: border-color .2s, box-shadow .2s, background .2s;
+}
+.dlw-textarea { resize: vertical; min-height: 96px; line-height: 1.55; }
+.dlw-input::placeholder, .dlw-textarea::placeholder { color: var(--fg4); }
+.dlw-input:hover, .dlw-textarea:hover { border-color: rgba(15,76,129,0.3); }
+.dlw-input:focus-visible, .dlw-textarea:focus-visible {
+  outline: none; background: #fff;
+  border-color: var(--drive-blue); box-shadow: 0 0 0 3px rgba(15,76,129,0.16);
+}
+.dlw-input[aria-invalid="true"], .dlw-textarea[aria-invalid="true"] { border-color: #dc2626; }
+.dlw-input[aria-invalid="true"]:focus-visible { box-shadow: 0 0 0 3px rgba(220,38,38,0.16); }
+.dlw-field-hint { font-size: 12px; color: var(--fg4); }
+.dlw-field-error { font-size: 12.5px; font-weight: 500; color: #dc2626; }
+
+/* Choice chips — real radio/checkbox inputs, visually restyled. The input is
+   hidden with opacity, NOT display:none, so it stays focusable and announced. */
+.dlw-choice-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.dlw-choice-grid.single { grid-template-columns: minmax(0, 380px); }
+@media (max-width: 640px) { .dlw-choice-grid { grid-template-columns: 1fr 1fr; } }
+
+.dlw-choice { position: relative; display: block; cursor: pointer; }
+.dlw-choice input {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  margin: 0; opacity: 0; cursor: pointer;
+}
+.dlw-choice-body {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 16px 18px; border-radius: 14px;
+  background: rgba(255,255,255,0.6); border: var(--line-strong);
+  transition: border-color .2s, background .2s, box-shadow .2s, transform .2s var(--ease-out);
+}
+.dlw-choice:hover .dlw-choice-body { border-color: rgba(15,76,129,0.3); transform: translateY(-1px); }
+.dlw-choice input:checked + .dlw-choice-body {
+  border-color: var(--drive-blue); background: rgba(15,76,129,0.07);
+  box-shadow: inset 0 0 0 1px var(--drive-blue);
+}
+.dlw-choice input:focus-visible + .dlw-choice-body {
+  outline: 2px solid var(--drive-blue); outline-offset: 2px;
+}
+.dlw-choice-title { font-size: 15px; font-weight: 600; color: var(--fg1); letter-spacing: -0.01em; }
+.dlw-choice-sub { font-size: 12.5px; color: var(--fg3); line-height: 1.45; }
+
+/* Resume drop zone */
+.dlw-dropzone {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 30px 24px; border-radius: 16px; text-align: center; cursor: pointer;
+  border: 1.5px dashed rgba(15,76,129,0.28); background: rgba(255,255,255,0.5);
+  transition: border-color .2s, background .2s;
+}
+.dlw-dropzone:hover { border-color: rgba(15,76,129,0.5); background: rgba(15,76,129,0.03); }
+.dlw-dropzone.is-dragging { border-color: var(--drive-blue); background: rgba(15,76,129,0.07); }
+.dlw-dropzone.has-file { border-style: solid; border-color: var(--drive-blue); background: rgba(15,76,129,0.05); }
+.dlw-dropzone.has-error { border-color: #dc2626; }
+.dlw-dropzone input[type="file"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.dlw-dropzone:focus-within { outline: 2px solid var(--drive-blue); outline-offset: 3px; }
+.dlw-dropzone-title { font-size: 15px; font-weight: 600; color: var(--fg1); }
+.dlw-dropzone-sub { font-size: 12.5px; color: var(--fg3); }
+.dlw-dropzone-file { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 13px; color: var(--drive-blue); }
+
+/* Honeypot — off-screen rather than display:none, which some bots skip. */
+.dlw-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.dlw-form-foot { display: flex; flex-direction: column; gap: 14px; padding-top: 8px; border-top: var(--line); }
+.dlw-form-consent { font-size: 12.5px; color: var(--fg4); line-height: 1.55; margin: 0; }
+.dlw-form-status { font-size: 14px; font-weight: 500; line-height: 1.5; margin: 0; }
+.dlw-form-status.err { color: #dc2626; }
+.dlw-form-status.warn { color: #b45309; }
+.dlw-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+.dlw-form-done { max-width: 620px; margin: 0 auto; text-align: center; padding: 56px 32px; }
+.dlw-form-done h2 { font-size: clamp(1.7rem, 3vw, 2.3rem); letter-spacing: -0.03em; margin: 18px 0 12px; }
+.dlw-form-done p { font-size: 1rem; color: var(--fg2); line-height: 1.6; margin: 0 auto 26px; max-width: 460px; }
+.dlw-form-done-mark {
+  width: 62px; height: 62px; border-radius: 999px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(16,185,129,0.12); color: #0f766e; border: 1px solid rgba(16,185,129,0.3);
+}
+.dlw-form-done:focus-visible { outline: 2px solid var(--drive-blue); outline-offset: 4px; border-radius: 20px; }

@@ -56,8 +56,8 @@ export function Nav() {
           </div>
 
           <div className="dlw-nav-right">
-            <Link className="dlw-nav-pill" href={siteBase + hrefFor('investors')}>
-              Partner with us
+            <Link className="dlw-nav-pill" href={siteBase + hrefFor('hiring')}>
+              Join us
             </Link>
           </div>
 
@@ -79,6 +79,15 @@ export function Nav() {
               {t.label}
             </Link>
           ))}
+          {/* The CTA pill lives in .dlw-nav-right, which is display:none below
+              768px — without this entry it is unreachable on mobile entirely. */}
+          <Link
+            href={siteBase + hrefFor('hiring')}
+            className={'dlw-nav-drawer-tab is-cta ' + (current === 'hiring' ? 'is-active' : '')}
+            onClick={() => setMobileOpen(false)}
+          >
+            Join us
+          </Link>
         </div>
       )}
     </>
