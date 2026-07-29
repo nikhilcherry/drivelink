@@ -12,7 +12,7 @@ import {
   type ApplicationRow,
   type FocusArea,
 } from '../../lib/supabase';
-import { LINK_FIELDS, parseLink, validateName, validateNote } from '../../lib/applicantValidation';
+import { LINK_FIELDS, parseLink, validateName, validateNote, validatePhone } from '../../lib/applicantValidation';
 
 const FOCUS_AREAS: { id: FocusArea; label: string; sub: string }[] = [
   { id: 'ml', label: 'ML', sub: 'Prediction, intent models, training' },
@@ -84,6 +84,7 @@ export function ApplicationForm() {
 
     const fullName = get('full_name');
     const email = get('email');
+    const phone = get('phone');
     const note = get('note');
 
     const github = parseLink(get('github_url'), LINK_FIELDS.github);
@@ -97,11 +98,11 @@ export function ApplicationForm() {
         [
           ['full_name', validateName(fullName)],
           ['email', /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) ? undefined : 'Please enter a valid email address.'],
+          ['phone', validatePhone(phone)],
           ['github_url', github.error],
           ['linkedin_url', linkedin.error],
           ['portfolio_url', portfolio.error],
           ['note', validateNote(note)],
-          ['resume', file ? undefined : 'Please attach your resume.'],
           ['focus', focus.length ? undefined : 'Pick at least one focus area.'],
         ] as const
       ).filter(([, message]) => message)
@@ -120,24 +121,23 @@ export function ApplicationForm() {
       return;
     }
 
-    // Unreachable — the block above returns when `resume` is set. Present so
-    // the compiler can narrow `file` without a non-null assertion.
-    if (!file) return;
-
     if (!supabaseConfigured) {
       setSubmitError('Applications aren’t accepting submissions just yet. Email tech.drivelink@gmail.com and we’ll pick it up from there.');
       return;
     }
 
     try {
-      setStatus('uploading');
-      const resumePath = await uploadResume(file);
+      let resumePath: string | null = null;
+      if (file) {
+        setStatus('uploading');
+        resumePath = await uploadResume(file);
+      }
 
       setStatus('submitting');
       const row: ApplicationRow = {
         full_name: fullName,
         email,
-        phone: get('phone') || null,
+        phone,
         github_url: github.url,
         linkedin_url: linkedin.url,
         portfolio_url: portfolio.url,
@@ -207,11 +207,14 @@ export function ApplicationForm() {
           </div>
 
           <div className="dlw-field full">
-            <label className="dlw-label" htmlFor="phone">Phone <span className="opt">optional</span></label>
+            <label className="dlw-label" htmlFor="phone">Phone</label>
             <input
               className="dlw-input" id="phone" name="phone" type="tel"
               autoComplete="tel" placeholder="+91 98765 43210"
+              aria-invalid={err('phone') ? true : undefined}
+              aria-describedby={err('phone') ? 'phone-error' : undefined}
             />
+            {err('phone') && <span className="dlw-field-error" id="phone-error">{err('phone')}</span>}
           </div>
         </div>
       </fieldset>
@@ -261,7 +264,7 @@ export function ApplicationForm() {
 
       {/* ── Resume ────────────────────────────────────────── */}
       <fieldset className="dlw-fieldset">
-        <legend className="dlw-eyebrow"><span className="num">3</span> Resume</legend>
+        <legend className="dlw-eyebrow"><span className="num">3</span> Resume <span className="opt">optional</span></legend>
 
         <div
           className={
