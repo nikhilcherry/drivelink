@@ -12,8 +12,11 @@
  * endpoints are plain HTTP, the same way api/chat.js calls Groq with bare fetch.
  */
 
-const SUPABASE_URL = (process.env.NEXT_PUBLIC_SUPABASE_URL || '').replace(/\/+$/, '');
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const DEFAULT_SUPABASE_URL = 'https://luindvflrxpsaxpdqidx.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_7uLL2hmIYdFN6YYtfYsFYw_UMae5oEk';
+
+const SUPABASE_URL = (process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_SUPABASE_URL).replace(/\/+$/, '');
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || DEFAULT_SUPABASE_ANON_KEY;
 
 /** False until both env vars are set, so the form can say so instead of failing silently. */
 export const supabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
