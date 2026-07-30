@@ -11,9 +11,7 @@ export function Footer() {
         <div className="dlw-footer-grid">
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-              <span style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg, #0F4C81, #2563EB 55%, #06B6D4)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
-                <LogoMark size={16} />
-              </span>
+              <LogoMark size={28} style={{ borderRadius: 8 }} />
               <span style={{ fontWeight: 700, color: '#fff', letterSpacing: '-0.02em' }}>DriveLink</span>
             </div>
             <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, margin: 0, maxWidth: 280 }}>

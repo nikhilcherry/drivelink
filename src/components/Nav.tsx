@@ -37,9 +37,7 @@ export function Nav() {
       <nav className={'dlw-nav ' + (scrolled ? 'is-scrolled' : '')}>
         <div className="dlw-container dlw-nav-inner">
           <Link className="dlw-brand" href={siteBase + hrefFor('home')}>
-            <span className="dlw-brand-mark">
-              <LogoMark size={20} />
-            </span>
+            <LogoMark size={36} className="dlw-brand-mark" />
             <span className="dlw-brand-wm">DriveLink</span>
           </Link>
 

@@ -1,33 +1,45 @@
 interface LogoMarkProps {
+  /** Rendered size in px. For `tile` this is the square edge; otherwise it is the height. */
   size?: number;
+  /**
+   * `tile`  — the app-icon lockup (mark on the brand gradient tile), matching the favicon.
+   * `white` — the mark knocked out in white, for dark or brand-colored surfaces.
+   * `color` — the full-color mark, for light surfaces.
+   */
+  variant?: 'tile' | 'white' | 'color';
   className?: string;
+  style?: React.CSSProperties;
 }
 
+// Source mark is 1206 x 646.
+const ASPECT = 1206 / 646;
+
+const SRC: Record<NonNullable<LogoMarkProps['variant']>, string> = {
+  tile: '/logo-tile.png',
+  white: '/logo-white.png',
+  color: '/logo.png',
+};
+
 /**
- * DriveLink mark — two vehicle nodes (on a faint "road") linking up through a
- * mesh node above them: the V2V / decentralized-backbone idea in one glyph.
- * Uses currentColor so it inherits the badge's color (white on the gradient tile).
+ * DriveLink mark — the "DL" monogram built from a wheel/tread arc and a road
+ * that resolves into a forward arrow, linked by two V2V mesh nodes.
+ *
+ * next.config.js sets `output: 'export'`, so this uses a plain <img>: a static
+ * export ships no /_next/image endpoint for <Image> to hit.
  */
-export function LogoMark({ size = 20, className }: LogoMarkProps) {
+export function LogoMark({ size = 20, variant = 'tile', className, style }: LogoMarkProps) {
+  const width = variant === 'tile' ? size : Math.round(size * ASPECT);
+
   return (
-    <svg
-      width={size}
+    <img
+      src={SRC[variant]}
+      width={width}
       height={size}
-      viewBox="0 0 24 24"
-      fill="none"
       className={className}
+      style={{ display: 'block', ...style }}
+      alt=""
       aria-hidden="true"
-      focusable="false"
-    >
-      {/* road */}
-      <line x1="6" y1="16.5" x2="18" y2="16.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" opacity="0.45" />
-      {/* V2V links up to the mesh node */}
-      <path d="M6 16.5 L12 7 L18 16.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-      {/* mesh node */}
-      <circle cx="12" cy="7" r="2.2" fill="currentColor" />
-      {/* vehicle nodes */}
-      <circle cx="6" cy="16.5" r="2.7" fill="currentColor" />
-      <circle cx="18" cy="16.5" r="2.7" fill="currentColor" />
-    </svg>
+      draggable={false}
+    />
   );
 }

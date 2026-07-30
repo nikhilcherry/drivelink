@@ -270,7 +270,7 @@ export function Chatbot() {
                 transition={{ duration: 0.2 }}
                 className="flex items-center justify-center"
               >
-                <LogoMark size={24} />
+                <LogoMark size={17} variant="white" />
               </motion.div>
             )}
           </AnimatePresence>
@@ -310,9 +310,7 @@ export function Chatbot() {
             {/* Header */}
             <div className="relative z-10 px-5 py-4 border-b border-zinc-100 flex items-center justify-between bg-gradient-to-r from-zinc-50 to-transparent">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#0F4C81] to-[#2563EB] flex items-center justify-center text-white shadow-md">
-                  <LogoMark size={18} />
-                </div>
+                <LogoMark size={36} className="rounded-lg shadow-md" />
                 <div>
                   <h4 className="text-sm font-semibold tracking-tight text-zinc-800">DriveLink Assistant</h4>
                   <div className="flex items-center gap-1.5 mt-0.5">

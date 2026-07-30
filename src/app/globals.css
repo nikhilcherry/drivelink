@@ -163,14 +163,12 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 }
 .dlw-nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 32px; }
 .dlw-brand { display: flex; align-items: center; gap: 10px; background: none; border: none; padding: 0; }
+/* The gradient tile and rounded corners are baked into the logo asset itself,
+   so this only sizes it and keeps the brand shadow. */
 .dlw-brand-mark {
   width: 36px; height: 36px; border-radius: 10px;
-  background: linear-gradient(135deg, #0F4C81, #2563EB 55%, #06B6D4);
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; box-shadow: 0 6px 16px -4px rgba(15,76,129,0.4);
-  position: relative; overflow: hidden;
+  box-shadow: 0 6px 16px -4px rgba(15,76,129,0.4);
 }
-.dlw-brand-mark::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,0.18), transparent 40%); }
 .dlw-brand-wm { background: linear-gradient(90deg, #0F4C81, #1E3A8A); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 700; font-size: 20px; letter-spacing: -0.025em; }
 .dlw-nav-center { display: flex; align-items: center; gap: 4px; }
 .dlw-nav-tab { padding: 8px 14px; border-radius: 999px; color: var(--fg2); font-weight: 500; font-size: 14px; transition: color .2s, background .2s; background: transparent; border: none; }
