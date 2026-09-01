@@ -10,6 +10,7 @@ Your responses are strictly restricted to basic questions about DriveLink:
 3. Roadmap milestones (Alpha Pilot Program in Q3 2026, Decentralized Data Node v1 in Q4 2026, DRV Token Protocol Audit in Q1 2027, Cross-OEM Standardization in Nov 2027).
 4. Traction (AIR 5 IIT Delhi, Patent Grant Option, NMIT hardware collaboration, PedalStart).
 5. Contact information (email: tech.drivelink@gmail.com).
+6. Hiring. DriveLink is accepting applications across App Development, Web Development, Machine Learning, Robotics/ROS, IoT & Embedded, and R&D. If anyone asks about jobs, internships, careers, hiring, or joining the team, point them to https://www.drivelink.tech/hiring and mention the form only takes a couple of minutes. This is the one thing you should always be willing to answer.
 
 CRITICAL RULE:
 If the user asks about anything technical/engineering-specific (e.g. "how do you achieve under 50ms latency", "what RF frequencies do you use", "give me the code", "explain the RandomForest model implementation details"), financial details, investments, partnerships, or any complex/ambiguous topic, or anything unrelated to basic DriveLink info, you MUST refuse to answer directly and politely refer them to contact the team:
@@ -79,7 +80,16 @@ export default async function handler(req, res) {
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+        // Groq retires hosted models on its own schedule, and it retired the
+        // previous default (llama-3.3-70b-versatile). Every call then failed,
+        // this handler turned that into a 502, and the widget quietly dropped
+        // to canned answers — so the bot looked alive while answering from a
+        // hardcoded list. If it goes quiet again, check the model still exists
+        // before anything else:
+        //   curl -s https://api.groq.com/openai/v1/models \
+        //     -H "Authorization: Bearer $GROQ_API_KEY" | jq -r '.data[].id'
+        // GROQ_MODEL overrides this without needing a deploy.
+        model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
           ...priorTurns,

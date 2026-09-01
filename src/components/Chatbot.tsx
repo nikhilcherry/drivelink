@@ -30,8 +30,31 @@ function formatMessage(text: string) {
   // Replace inline code syntax `text` with code tags
   formatted = formatted.replace(/`(.*?)`/g, '<code class="bg-black/5 text-[#0f4c81] px-1 py-0.5 rounded text-xs font-mono">$1</code>');
 
+  // Links: [label](/path). Applied after the escaping above and restricted to
+  // same-origin paths, so a canned string can point at a page without turning
+  // this into an HTML injection hole.
+  formatted = formatted.replace(
+    /\[([^\]]+)\]\((\/[A-Za-z0-9\-._~/]*)\)/g,
+    '<a href="$2" class="text-[#0f4c81] font-semibold underline underline-offset-2">$1</a>',
+  );
+
   return <span dangerouslySetInnerHTML={{ __html: formatted }} />;
 }
+
+/**
+ * Where a visitor gets sent when the assistant can't help them — the page that
+ * matters most to someone who came here about joining.
+ */
+const HIRING_LINK = '[apply here](/hiring)';
+
+/**
+ * Shown once, the first time a live request fails and the widget drops to its
+ * built-in answers. The old behaviour was to fall back silently, so a broken
+ * backend looked exactly like a working one giving thin answers.
+ */
+const AI_DOWN_NOTICE =
+  "**Heads up — the AI assistant isn't working right now.** I can still answer the basics from a built-in list. " +
+  `If you came about joining DriveLink, skip the chat and ${HIRING_LINK} — the form takes a couple of minutes.`;
 
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -77,6 +100,25 @@ export function Chatbot() {
 
   const getLocalResponse = (message: string): string => {
     const query = message.toLowerCase().trim();
+
+    // First on purpose: "how do I join the team" also matches the team branch
+    // below, and someone asking that wants the form, not a list of founders.
+    if (
+      query.includes("hiring") ||
+      query.includes("hire") ||
+      query.includes("job") ||
+      query.includes("intern") ||
+      query.includes("career") ||
+      query.includes("vacancy") ||
+      query.includes("opening") ||
+      query.includes("apply") ||
+      query.includes("join") ||
+      query.includes("recruit") ||
+      query.includes("work with") ||
+      query.includes("work at")
+    ) {
+      return `**Yes — we're taking applications.** App Development, Web Development, Machine Learning, Robotics · ROS, IoT & Embedded, and R&D. You can ${HIRING_LINK} — it takes a couple of minutes.`;
+    }
 
     if (
       query.includes("what is drivelink") ||
@@ -137,7 +179,7 @@ export function Chatbot() {
       return "DriveLink secured **All India Rank 5** at the IIT Delhi Pitch Arena National Finals, received a **Patent Grant Option** at a national hackathon, and collaborated with NMIT on a working hardware implementation.";
     }
 
-    return "For this technical/complex query, please contact our team directly at tech.drivelink@gmail.com for a perfect response.";
+    return `For this technical/complex query, please contact our team directly at tech.drivelink@gmail.com for a perfect response. If you're here about joining DriveLink, you can ${HIRING_LINK}.`;
   };
 
   // Calls our own /api/chat serverless function, which holds the LLM API key
@@ -189,9 +231,15 @@ export function Chatbot() {
       }
     } catch (error) {
       console.error("Chatbot query failed, using local matcher:", error);
+      // Only announce it on the transition, not on every later message.
+      const firstFailure = aiAvailable;
       setAiAvailable(false);
       const reply = getLocalResponse(text);
-      setMessages(prev => [...prev, { role: 'model', content: reply }]);
+      setMessages(prev => [
+        ...prev,
+        ...(firstFailure ? [{ role: 'model' as const, content: AI_DOWN_NOTICE }] : []),
+        { role: 'model' as const, content: reply },
+      ]);
     } finally {
       setIsLoading(false);
     }
