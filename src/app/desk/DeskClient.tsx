@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DESK_ENDPOINT } from '../../lib/supabase';
 import './desk.css';
 
@@ -95,6 +95,7 @@ export function DeskClient() {
   const [query, setQuery] = useState('');
   const [error, setError] = useState('');
   const [showPw, setShowPw] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   const enter = useCallback((t: string, list: Application[]) => {
     writeToken(t);
@@ -162,6 +163,13 @@ export function DeskClient() {
     setSelectedId((cur) => (cur === id ? null : cur));
   }, []);
 
+  // On a phone the list and the detail occupy the same column, so moving
+  // between them is a navigation, not a reveal: start it at the top rather
+  // than at whatever offset the list happened to be scrolled to.
+  useEffect(() => {
+    rootRef.current?.scrollTo({ top: 0 });
+  }, [selectedId]);
+
   const counts = useMemo(() => {
     const c: Record<string, number> = { all: apps.length };
     for (const s of STATUSES) c[s] = 0;
@@ -215,7 +223,7 @@ export function DeskClient() {
   }
 
   return (
-    <div className="dlk">
+    <div className="dlk" ref={rootRef}>
       <header className="dlk-head">
         <h1 className="dlk-head-title">DriveLink <span>hiring desk</span></h1>
         <span className="dlk-head-spacer" />
@@ -258,7 +266,7 @@ export function DeskClient() {
         ))}
       </div>
 
-      <div className="dlk-body">
+      <div className="dlk-body" data-view={selected ? 'detail' : 'list'}>
         <div className="dlk-list">
           {visible.length === 0 && (
             <p className="dlk-empty">
@@ -286,17 +294,20 @@ export function DeskClient() {
           ))}
         </div>
 
-        {selected ? (
-          <Detail
-            key={selected.id}
-            app={selected}
-            api={api}
-            onPatch={patchLocal}
-            onDelete={dropLocal}
-          />
-        ) : (
-          <p className="dlk-empty">Pick someone on the left to see everything they sent.</p>
-        )}
+        <div className="dlk-detail-pane">
+          {selected ? (
+            <Detail
+              key={selected.id}
+              app={selected}
+              api={api}
+              onPatch={patchLocal}
+              onDelete={dropLocal}
+              onBack={() => setSelectedId(null)}
+            />
+          ) : (
+            <p className="dlk-empty">Pick someone from the list to see everything they sent.</p>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -408,11 +419,13 @@ function Detail({
   api,
   onPatch,
   onDelete,
+  onBack,
 }: {
   app: Application;
   api: (action: string, payload?: Record<string, unknown>) => Promise<Record<string, unknown>>;
   onPatch: (a: Application) => void;
   onDelete: (id: string) => void;
+  onBack: () => void;
 }) {
   const [remarks, setRemarks] = useState(app.remarks ?? '');
   const [busy, setBusy] = useState(false);
@@ -452,6 +465,7 @@ function Detail({
 
   return (
     <div className="dlk-detail">
+      <button className="dlk-back" onClick={onBack}>← All applications</button>
       <h2 className="dlk-detail-name">{app.full_name}</h2>
       <p className="dlk-detail-when">
         Applied {fmtDate(app.created_at)}
@@ -540,7 +554,7 @@ function Detail({
           {confirmDelete ? (
             <>
               <button
-                className="dlk-btn dlk-btn-danger dlk-btn-sm"
+                className="dlk-btn dlk-btn-danger dlk-btn-sm dlk-btn-wide"
                 disabled={busy}
                 onClick={async () => {
                   setBusy(true);
