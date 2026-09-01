@@ -65,6 +65,25 @@ export function validateNote(value: string): string | undefined {
 }
 
 /**
+ * "Why DriveLink?" — the one required free-text answer.
+ *
+ * Required, so unlike validateNote an empty value is an error. The 20-char
+ * floor only rules out a one-word shrug; anything a person actually thought
+ * about clears it, and the same mash checks catch filler.
+ */
+export function validateWhyJoin(value: string): string | undefined {
+  const v = value.trim();
+  if (!v) return 'Tell us why DriveLink — a couple of sentences is plenty.';
+  if (v.length > 2000) return 'Please keep this under 2000 characters.';
+  if (v.length < 20) return 'A little more, please — a couple of sentences is plenty.';
+  const lower = v.toLowerCase();
+  if (hasKeyboardRun(lower) || isRepetitive(lower)) {
+    return 'This looks like filler — tell us something real.';
+  }
+  return undefined;
+}
+
+/**
  * Loose on format — country codes, spacing, and separators all vary — but a
  * phone number has to have enough digits to actually be one.
  */

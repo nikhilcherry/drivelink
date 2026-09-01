@@ -25,7 +25,12 @@ export const RESUME_BUCKET = 'resumes';
 export const MAX_RESUME_BYTES = 5 * 1024 * 1024;
 export const ALLOWED_RESUME_EXTENSIONS = ['pdf', 'doc', 'docx'] as const;
 
-export type FocusArea = 'ml' | 'iot' | 'rnd';
+/**
+ * Stored verbatim in `applications.focus_areas`, so these string ids are a
+ * data contract, not labels — renaming one orphans every row that used it.
+ * Change the display text in ApplicationForm's FOCUS_AREAS instead.
+ */
+export type FocusArea = 'appdev' | 'webdev' | 'ml' | 'ros' | 'iot' | 'rnd';
 
 export interface ApplicationRow {
   full_name: string;
@@ -37,6 +42,7 @@ export interface ApplicationRow {
   resume_path: string | null;
   domain: 'tech';
   focus_areas: FocusArea[];
+  why_join: string;
   note: string | null;
 }
 

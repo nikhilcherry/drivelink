@@ -12,11 +12,14 @@ import {
   type ApplicationRow,
   type FocusArea,
 } from '../../lib/supabase';
-import { LINK_FIELDS, parseLink, validateName, validateNote, validatePhone } from '../../lib/applicantValidation';
+import { LINK_FIELDS, parseLink, validateName, validateNote, validatePhone, validateWhyJoin } from '../../lib/applicantValidation';
 
 const FOCUS_AREAS: { id: FocusArea; label: string; sub: string }[] = [
-  { id: 'ml', label: 'ML', sub: 'Prediction, intent models, training' },
-  { id: 'iot', label: 'IoT', sub: 'Embedded, radio, hardware-in-the-loop' },
+  { id: 'appdev', label: 'App Development', sub: 'Driver-facing mobile app, on-vehicle clients' },
+  { id: 'webdev', label: 'Web Development', sub: 'Dashboards, fleet console, drivelink.tech' },
+  { id: 'ml', label: 'Machine Learning', sub: 'Prediction, intent models, training' },
+  { id: 'ros', label: 'Robotics · ROS', sub: 'ROS 2 nodes, autonomy stack, vehicle bring-up' },
+  { id: 'iot', label: 'IoT & Embedded', sub: 'Firmware, radio, hardware-in-the-loop' },
   { id: 'rnd', label: 'R&D', sub: 'Protocol design, simulation, papers' },
 ];
 
@@ -85,6 +88,7 @@ export function ApplicationForm() {
     const fullName = get('full_name');
     const email = get('email');
     const phone = get('phone');
+    const whyJoin = get('why_join');
     const note = get('note');
 
     const github = parseLink(get('github_url'), LINK_FIELDS.github);
@@ -104,6 +108,7 @@ export function ApplicationForm() {
           ['portfolio_url', portfolio.error],
           ['note', validateNote(note)],
           ['focus', focus.length ? undefined : 'Pick at least one focus area.'],
+          ['why_join', validateWhyJoin(whyJoin)],
         ] as const
       ).filter(([, message]) => message)
     );
@@ -144,6 +149,7 @@ export function ApplicationForm() {
         resume_path: resumePath,
         domain: 'tech',
         focus_areas: focus,
+        why_join: whyJoin,
         note: note || null,
       };
       await insertApplication(row);
@@ -326,7 +332,7 @@ export function ApplicationForm() {
         <div className="dlw-field">
           <span className="dlw-label" id="focus-label">Focus areas <span className="opt">select all that apply</span></span>
           <div
-            className="dlw-choice-grid"
+            className="dlw-choice-grid pair"
             role="group"
             aria-labelledby="focus-label"
             aria-describedby={err('focus') ? 'focus-error' : undefined}
@@ -350,12 +356,30 @@ export function ApplicationForm() {
           </div>
           {err('focus') && <span className="dlw-field-error" id="focus-error">{err('focus')}</span>}
         </div>
+      </fieldset>
+
+      {/* ── Why DriveLink ─────────────────────────────────── */}
+      <fieldset className="dlw-fieldset">
+        <legend className="dlw-eyebrow"><span className="num">5</span> Why DriveLink</legend>
+
+        <div className="dlw-field">
+          <label className="dlw-label" htmlFor="why_join">Why do you want to join DriveLink?</label>
+          <textarea
+            className="dlw-textarea" id="why_join" name="why_join" maxLength={2000} rows={5}
+            placeholder="What pulled you toward V2V, this problem, or this team — in your own words."
+            aria-invalid={err('why_join') ? true : undefined}
+            aria-describedby={err('why_join') ? 'why_join-error' : 'why_join-hint'}
+          />
+          {err('why_join')
+            ? <span className="dlw-field-error" id="why_join-error">{err('why_join')}</span>
+            : <span className="dlw-field-hint" id="why_join-hint">The one question we actually read first. Honest beats polished.</span>}
+        </div>
 
         <div className="dlw-field" style={{ marginTop: 26 }}>
           <label className="dlw-label" htmlFor="note">Anything else? <span className="opt">optional</span></label>
           <textarea
             className="dlw-textarea" id="note" name="note" maxLength={2000}
-            placeholder="A project you're proud of, why V2V, what you want to build here."
+            placeholder="A project you're proud of, what you want to build here."
             aria-invalid={err('note') ? true : undefined}
             aria-describedby={err('note') ? 'note-error' : undefined}
           />

@@ -975,6 +975,17 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
    ============================================================ */
 .dlw-nav-drawer-tab.is-cta { background: var(--drive-blue); color: #fff; font-weight: 600; margin-top: 8px; }
 
+/* Company standing — registration, funding, incubation. Deliberately styled as
+   a quiet fact strip, not a badge row: it answers a question, it isn't a boast. */
+.dlw-hiring-standing { margin-top: 40px; padding: 26px 28px; border-radius: 18px; background: rgba(15,76,129,0.04); border: 1px solid rgba(15,76,129,0.12); }
+.dlw-hiring-standing-lead { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--drive-blue); margin: 0 0 20px; }
+.dlw-hiring-standing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.dlw-hiring-standing-item { display: flex; gap: 12px; align-items: flex-start; }
+.dlw-hiring-standing-item svg { flex: none; margin-top: 2px; }
+.dlw-hiring-standing-item h3 { font-size: 0.98rem; font-weight: 650; letter-spacing: -0.015em; margin: 0 0 6px; color: var(--fg1); }
+.dlw-hiring-standing-item p { font-size: 13.5px; line-height: 1.6; color: var(--fg2); margin: 0; }
+@media (max-width: 860px) { .dlw-hiring-standing-grid { grid-template-columns: 1fr; gap: 18px; } }
+
 .dlw-hiring-perks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 44px; }
 .dlw-hiring-perk { padding: 24px 22px; border-radius: 16px; background: rgba(255,255,255,0.6); border: var(--line-strong); }
 .dlw-hiring-perk h3 { font-size: 1.02rem; font-weight: 650; letter-spacing: -0.015em; margin: 0 0 8px; }
@@ -1023,7 +1034,13 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
    hidden with opacity, NOT display:none, so it stays focusable and announced. */
 .dlw-choice-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 .dlw-choice-grid.single { grid-template-columns: minmax(0, 380px); }
-@media (max-width: 640px) { .dlw-choice-grid { grid-template-columns: 1fr 1fr; } }
+/* Two-up for the focus areas: their labels ("App Development", "IoT & Embedded")
+   and one-line descriptions need more room than a third of 700px gives them. */
+.dlw-choice-grid.pair { grid-template-columns: 1fr 1fr; }
+@media (max-width: 640px) {
+  .dlw-choice-grid { grid-template-columns: 1fr 1fr; }
+  .dlw-choice-grid.pair { grid-template-columns: 1fr; }
+}
 
 .dlw-choice { position: relative; display: block; cursor: pointer; }
 .dlw-choice input {

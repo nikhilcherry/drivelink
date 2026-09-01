@@ -1,5 +1,13 @@
 'use client';
 import { ApplicationForm } from '../../components/hiring/ApplicationForm';
+import { Award, Building2, ShieldCheck } from 'lucide-react';
+
+/** Standing facts about the company, shown before anyone fills the form. */
+const standing = [
+  { Icon: ShieldCheck, title: 'A registered company', body: 'DriveLink is incorporated — not a student side project or an unregistered team.' },
+  { Icon: Award, title: 'Funded', body: 'We have secured our first round of funding, alongside a patent grant option and AIR 5 at the IIT Delhi Pitch Arena National Finals.' },
+  { Icon: Building2, title: 'Incubated at NMIT', body: 'We build out of the incubation centre at Nitte Meenakshi Institute of Technology, with hardware support from their technical team.' },
+];
 
 const perks = [
   {
@@ -33,6 +41,23 @@ export function HiringClient() {
               DriveLink is a small team building a cross-OEM V2V intent protocol from the spec up. If that
               sounds like the problem you want to spend your time on, tell us about yourself.
             </p>
+          </div>
+
+          <div className="dlw-hiring-standing">
+            <p className="dlw-hiring-standing-lead">
+              Before you apply, the part people usually ask about first:
+            </p>
+            <div className="dlw-hiring-standing-grid">
+              {standing.map(({ Icon, title, body }) => (
+                <div className="dlw-hiring-standing-item" key={title}>
+                  <Icon size={18} color="#0f4c81" aria-hidden="true" />
+                  <div>
+                    <h3>{title}</h3>
+                    <p>{body}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="dlw-hiring-perks">

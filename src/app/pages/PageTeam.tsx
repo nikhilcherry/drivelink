@@ -32,7 +32,7 @@ const founders: {
     socials: { github: 'https://github.com/nikhilcherry' },
   },
   {
-    initial: 'K', name: 'Krishna', role: 'CPO · Mechanical Engineering', tag: 'Co-founder',
+    initial: 'K', photo: '/team/krishna.jpg', name: 'Krishna', role: 'CPO · Mechanical Engineering', tag: 'Co-founder',
     bio: 'Responsible for hardware feasibility, integration, and real-vehicle interfacing. Bridges the embedded module with mechanical reality.',
     focus: ['Hardware', 'Vehicle integration', 'Mechanical systems'],
     socials: {},
