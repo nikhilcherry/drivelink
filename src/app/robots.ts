@@ -5,7 +5,8 @@ export const dynamic = "force-static";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: { userAgent: "*", allow: "/" },
+    // /desk is the internal hiring tool — no reason for it in an index.
+    rules: { userAgent: "*", allow: "/", disallow: ["/desk"] },
     sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }

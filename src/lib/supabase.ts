@@ -21,6 +21,16 @@ const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || DEFAULT_S
 /** False until both env vars are set, so the form can say so instead of failing silently. */
 export const supabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 
+/**
+ * Server side of /desk — see supabase/functions/hiring-desk/index.ts.
+ *
+ * The desk goes through an edge function rather than PostgREST because the anon
+ * key above is public: migration 0005 revoked its read access to
+ * `applications`, so applicant data is only reachable behind the password the
+ * function checks with the service-role key.
+ */
+export const DESK_ENDPOINT = `${SUPABASE_URL}/functions/v1/hiring-desk`;
+
 export const RESUME_BUCKET = 'resumes';
 export const MAX_RESUME_BYTES = 5 * 1024 * 1024;
 export const ALLOWED_RESUME_EXTENSIONS = ['pdf', 'doc', 'docx'] as const;
