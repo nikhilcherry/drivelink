@@ -10,10 +10,23 @@ export const CORE_HOST = 'core.drivelink.tech';
 /** URL path for a page key. */
 export const hrefFor = (p: Page): string => (p === 'home' ? '/' : `/${p}`);
 
-/** Page key for a URL pathname. */
+const TAB_SEGMENTS = ['product', 'team', 'investors', 'hiring', 'docs'];
+
+/** Page key for a URL pathname, falling back to home. */
 export const pageFromPath = (path: string): Page => {
   const seg = (path || '/').replace(/^\/+/, '').split('/')[0];
-  return (['product', 'team', 'investors', 'hiring', 'docs'].includes(seg) ? seg : 'home') as Page;
+  return (TAB_SEGMENTS.includes(seg) ? seg : 'home') as Page;
+};
+
+/**
+ * Whether a pathname is one of the nav's own destinations. pageFromPath falls
+ * back to 'home', which would otherwise light up the Home tab — and announce
+ * aria-current="page" — on /privacy, /terms, and every 404.
+ */
+export const isNavPath = (path: string): boolean => {
+  const p = path || '/';
+  if (p === '/' || p === '') return true;
+  return TAB_SEGMENTS.includes(p.replace(/^\/+/, '').split('/')[0]);
 };
 
 /**

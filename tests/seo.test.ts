@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { pageMetadata, breadcrumbJsonLd, SITE_URL, OG_IMAGE } from '../src/lib/seo';
-import { hrefFor, pageFromPath } from '../src/lib/nav';
+import { hrefFor, isNavPath, pageFromPath } from '../src/lib/nav';
 
 /**
  * The failure these guard against is silent: Next.js does not deep-merge
@@ -71,5 +71,18 @@ describe('route helpers', () => {
 
   it('reads the first segment of a nested path', () => {
     expect(pageFromPath('/team/someone')).toBe('team');
+  });
+
+  it('isNavPath separates the nav\'s own destinations from everything else', () => {
+    for (const p of ['/', '/product', '/team', '/investors', '/hiring', '/docs', '/team/someone']) {
+      expect(isNavPath(p)).toBe(true);
+    }
+    // The reason this exists: pageFromPath answers "home" for all of these,
+    // which would light up the Home tab and announce aria-current="page" on a
+    // page the visitor is not on.
+    for (const p of ['/privacy', '/terms', '/nope-404', '/desk']) {
+      expect(pageFromPath(p)).toBe('home');
+      expect(isNavPath(p)).toBe(false);
+    }
   });
 });

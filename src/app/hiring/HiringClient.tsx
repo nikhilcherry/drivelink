@@ -44,9 +44,9 @@ export function HiringClient() {
           </div>
 
           <div className="dlw-hiring-standing">
-            <p className="dlw-hiring-standing-lead">
+            <h2 className="dlw-hiring-standing-lead">
               Before you apply, the part people usually ask about first:
-            </p>
+            </h2>
             <div className="dlw-hiring-standing-grid">
               {standing.map(({ Icon, title, body }) => (
                 <div className="dlw-hiring-standing-item" key={title}>
@@ -60,6 +60,7 @@ export function HiringClient() {
             </div>
           </div>
 
+          <h2 className="dlw-sr-only">What you get</h2>
           <div className="dlw-hiring-perks">
             {perks.map((p) => (
               <div className="dlw-hiring-perk" key={p.title}>

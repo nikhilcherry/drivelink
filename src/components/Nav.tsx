@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { LogoMark } from './ui/Logo';
-import { hrefFor, pageFromPath, useSiteBase, type Page } from '../lib/nav';
+import { hrefFor, isNavPath, pageFromPath, useSiteBase, type Page } from '../lib/nav';
 
 const tabs: { id: Page; label: string }[] = [
   { id: 'home', label: 'Home' },
@@ -15,7 +15,10 @@ const tabs: { id: Page; label: string }[] = [
 
 export function Nav() {
   const pathname = usePathname();
-  const current = pageFromPath(pathname || '/');
+  const path = pathname || '/';
+  // null on a page the nav doesn't point at (/privacy, /terms, a 404), so no
+  // tab is highlighted or announced as current.
+  const current = isNavPath(path) ? pageFromPath(path) : null;
   const siteBase = useSiteBase();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);

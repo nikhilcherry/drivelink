@@ -229,13 +229,13 @@ export function PageDocs({ setPage, repoStats }: Props) {
 
           <div className="dlw-doc-split">
             <Reveal direction="right" className="dlw-doc-prose">
-              <h4><Network size={16} /> Vehicle-to-Vehicle (V2V)</h4>
+              <h3><Network size={16} /> Vehicle-to-Vehicle (V2V)</h3>
               <p>
                 Each car emits an <b>intent packet</b> — its pose, motion, a short probabilistic prediction cone, and a
                 proposed action — to vehicles within mesh range. When one car wants a gap, the relevant neighbour can
                 <em> yield</em> a slightly smaller gap, turning a standoff into a smooth cooperative merge.
               </p>
-              <h4><RadioTower size={16} /> Vehicle-to-Infrastructure (V2I)</h4>
+              <h3><RadioTower size={16} /> Vehicle-to-Infrastructure (V2I)</h3>
               <p>
                 Roadside / intersection mesh nodes ingest the same intents to coordinate right-of-way, surface
                 conflict-zone heatmaps, and feed city-scale analytics back to fleets and OEMs.

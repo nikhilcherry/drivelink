@@ -56,6 +56,9 @@ export function PageProduct({ setPage }: PageProductProps) {
             </p>
           </div>
 
+          {/* The three layers sit directly under the page h1 with no section
+              heading of their own, which skipped a level for screen readers. */}
+          <h2 className="dlw-sr-only">The three layers</h2>
           <div className="dlw-arch">
             {archRows.map((row, i) => (
               <div key={i} className="dlw-arch-row">

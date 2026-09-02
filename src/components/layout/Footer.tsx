@@ -26,7 +26,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4>Product</h4>
+            <h2>Product</h2>
             <div className="dlw-footer-links">
               <Link href={siteBase + '/product'}>Overview</Link>
               <Link href={siteBase + '/#how-it-works'}>How it works</Link>
@@ -37,7 +37,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4>Company</h4>
+            <h2>Company</h2>
             <div className="dlw-footer-links">
               <Link href={siteBase + '/team'}>Team</Link>
               <Link href={siteBase + '/#story'}>Origin story</Link>
@@ -48,11 +48,11 @@ export function Footer() {
           </div>
 
           <div>
-            <h4>Status</h4>
+            <h2>Status</h2>
             <div className="dlw-footer-links">
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 14, color: 'rgba(255,255,255,0.8)' }}>
                 <span style={{ width: 8, height: 8, borderRadius: 999, background: '#22c55e', boxShadow: '0 0 8px #22c55e', flexShrink: 0 }} />
-                Mesh node live
+                Simulation stack live
               </span>
               <span className="dlw-mono" style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12 }}>Protocol v0.1</span>
               <span className="dlw-mono" style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12 }}>Patent grant option · award, not a granted patent</span>

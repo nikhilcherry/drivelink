@@ -76,6 +76,9 @@ export function PageTeam({ setPage }: PageTeamProps) {
             <p className="dlw-section-sub">Three co-founders and the technical core — systems, software, hardware, and the ML brain — owned end to end.</p>
           </div>
 
+          {/* Founder cards sit directly under the page h1; without a section
+              heading of their own they skipped a level for screen readers. */}
+          <h2 className="dlw-sr-only">Founders and core team</h2>
           <div className="dlw-team-detail-grid is-four">
             {founders.map((m, i) => (
               <div key={i} className="dlw-team-detail">
@@ -145,7 +148,7 @@ export function PageTeam({ setPage }: PageTeamProps) {
                   {a.name.split(' ').map(s => s[0]).join('').slice(0, 2)}
                 </div>
                 <div>
-                  <h4>{a.name}</h4>
+                  <h3>{a.name}</h3>
                   <p className="dlw-advisor-role">{a.role}</p>
                   <p className="dlw-advisor-note">{a.note}</p>
                 </div>
