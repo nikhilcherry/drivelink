@@ -51,6 +51,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
+      <head>
+        {/* The reveal classes ship hidden in the HTML and are shown by an
+            IntersectionObserver. Without JS there is no observer, so the
+            content would stay at opacity 0 — this makes it simply visible. */}
+        <noscript>
+          <style>{'.dlw-reveal,.dlw-anim{opacity:1!important;transform:none!important}'}</style>
+        </noscript>
+      </head>
       <body>
         <div className="dlw-page" style={{ minHeight: "100vh" }}>
           <ScrollProgress />

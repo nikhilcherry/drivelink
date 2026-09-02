@@ -616,6 +616,15 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-anim { opacity: 0; transform: translateY(22px); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); }
 .dlw-anim.dlw-in { opacity: 1; transform: none; }
 
+/* Per-element reveal used by <Reveal>/<RevealItem>; direction comes in as
+   custom properties so one rule covers all four. */
+.dlw-reveal {
+  opacity: 0;
+  transform: translate3d(var(--reveal-x, 0px), var(--reveal-y, 22px), 0);
+  transition: opacity .62s var(--ease-out), transform .62s var(--ease-out);
+}
+.dlw-reveal.is-in { opacity: 1; transform: none; }
+
 /* Subtle living gradient on gradient text */
 .dlw-text-gradient, .dlw-text-gradient-down { background-size: 200% 100%; animation: dlw-grad-pan 9s ease-in-out infinite; }
 @keyframes dlw-grad-pan { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
@@ -662,7 +671,7 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-rost-card, .dlw-roadmap-card, .dlw-market-card, .dlw-repo-card, .dlw-doc-card { transform-style: preserve-3d; }
 
 @media (prefers-reduced-motion: reduce) {
-  .dlw-anim { opacity: 1; transform: none; transition: none; }
+  .dlw-anim, .dlw-reveal { opacity: 1; transform: none; transition: none; }
   .dlw-text-gradient, .dlw-text-gradient-down { animation: none; }
   .dlw-btn::after { display: none; }
 }
