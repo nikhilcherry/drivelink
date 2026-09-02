@@ -13,6 +13,9 @@
  * Needs a Chromium: honours CHROMIUM_PATH, otherwise falls back to whatever
  * `npx playwright install chromium` put in place.
  */
+// Both are devDependencies for this script alone. sharp is declared
+// explicitly rather than leaned on as next's transitive dep — this file
+// imports it directly, so it is this file's dependency.
 import { chromium } from 'playwright-core';
 import sharp from 'sharp';
 import { serveDist } from './serve-dist.mjs';
