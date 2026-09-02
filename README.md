@@ -185,6 +185,7 @@ npm run typecheck    # tsc --noEmit
 npm test             # vitest, once
 npm run test:watch   # vitest, watching
 npm run build        # static export into dist/
+npm run audit:ui     # browser audit of dist/ (see below)
 ```
 
 CI runs lint, typecheck, tests, and build on every push and pull request to
@@ -204,3 +205,32 @@ CI runs lint, typecheck, tests, and build on every push and pull request to
 `Math.random` is stubbed with a small LCG wherever the simulation is under
 test, so "run 2000 frames and assert nothing broke" is reproducible rather than
 a flake generator.
+
+### UI audit
+
+```bash
+npm run build && npm run audit:ui
+```
+
+Loads every route in headless Chromium at 390, 768 and 1280px and fails on
+three classes of defect that nothing else in this repo can see, because each
+one only exists once CSS has been applied to real text at a real width:
+
+- **Text contrast below WCAG AA.** The background is taken as the most common
+  pixel colour inside each element's box rather than by walking computed
+  `backgroundColor` up the tree — that walk gets gradients, background images
+  and the dark bands wrong, and reports white-on-white for everything in the
+  footer.
+- **Heading structure.** Exactly one `<h1>` per page, no skipped levels.
+- **Layout overflow.** Page-level horizontal scroll, text clipped by its own
+  box, and content past the right edge with nothing to scroll it into view.
+  Deliberate cases — screen-reader-only text, the masked hero marquee, fixed
+  overlays, decorative overhang — are excluded.
+
+It needs a Chromium binary: set `CHROMIUM_PATH`, or run
+`npx playwright install chromium` once. It is not wired into CI, which has no
+browser; run it after any change to `globals.css` or to page structure.
+
+Every finding it reports was a real defect the first time it ran — including
+the mesh toggles overlapping the Lanes label on a phone, and the docs feature
+tables having their last column cut off with no way to reach it.
