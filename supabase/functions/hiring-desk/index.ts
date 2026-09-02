@@ -101,6 +101,17 @@ function timingSafeEqual(a: string, b: string): boolean {
 
 const randomToken = () => hex(crypto.getRandomValues(new Uint8Array(32)).buffer);
 
+/**
+ * `applications.id` is a uuid, and every handler below interpolates it into a
+ * PostgREST query string. Without this gate an id of
+ * "0&or=(id.not.is.null)" turns `applications?id=eq.0` into a filter that
+ * matches every row — so "delete one application" becomes "delete all of
+ * them" for anyone holding a desk session. Anchored, so nothing rides along
+ * after a valid uuid either.
+ */
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const isUuid = (value: unknown): value is string => typeof value === "string" && UUID.test(value);
+
 // -------------------------------------------------------------------- types
 
 interface DeskAuth {
@@ -280,8 +291,8 @@ Deno.serve(async (req) => {
     }
 
     if (action === "update") {
-      const id = String(body.id ?? "");
-      if (!id) return json({ error: "Missing id." }, 400, origin);
+      const id = body.id;
+      if (!isUuid(id)) return json({ error: "Missing or malformed id." }, 400, origin);
       const patch: Record<string, unknown> = {};
       if (body.status !== undefined) {
         const status = String(body.status);
@@ -306,8 +317,8 @@ Deno.serve(async (req) => {
     }
 
     if (action === "delete") {
-      const id = String(body.id ?? "");
-      if (!id) return json({ error: "Missing id." }, 400, origin);
+      const id = body.id;
+      if (!isUuid(id)) return json({ error: "Missing or malformed id." }, 400, origin);
       const res = await db(`applications?id=eq.${id}`, {
         method: "DELETE",
         headers: { Prefer: "return=minimal" },
@@ -318,7 +329,8 @@ Deno.serve(async (req) => {
 
     // ---- one-hour signed link to a resume in the private bucket ----
     if (action === "resume_url") {
-      const id = String(body.id ?? "");
+      const id = body.id;
+      if (!isUuid(id)) return json({ error: "Missing or malformed id." }, 400, origin);
       const rows = await dbJson<{ resume_path: string | null }[]>(
         `applications?id=eq.${id}&select=resume_path`,
       );
@@ -335,7 +347,13 @@ Deno.serve(async (req) => {
       });
       if (!res.ok) return json({ error: `Could not sign the resume link (${res.status}).` }, 400, origin);
       const { signedURL } = await res.json();
-      return json({ url: `${SUPABASE_URL}/storage/v1${signedURL}` }, 200, origin);
+      // download= sets Content-Disposition: attachment. Resumes arrive from
+      // strangers with a Content-Type of their choosing, and an inline link to
+      // stored HTML or SVG is a page the team has been invited to trust.
+      const filename = path.split("/").pop() || "resume";
+      const url = `${SUPABASE_URL}/storage/v1${signedURL}` +
+        `${signedURL.includes("?") ? "&" : "?"}download=${encodeURIComponent(filename)}`;
+      return json({ url }, 200, origin);
     }
 
     if (action === "change_password") {

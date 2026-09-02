@@ -36,6 +36,19 @@ export const MAX_RESUME_BYTES = 5 * 1024 * 1024;
 export const ALLOWED_RESUME_EXTENSIONS = ['pdf', 'doc', 'docx'] as const;
 
 /**
+ * Content-Type is stored with the object and echoed back on download, so it is
+ * derived from the extension we validated rather than taken from `file.type`,
+ * which the browser fills in from a name the applicant chose. The desk also
+ * forces Content-Disposition: attachment on the signed link (see
+ * supabase/functions/hiring-desk/index.ts) — this is the belt to those braces.
+ */
+const RESUME_CONTENT_TYPES: Record<(typeof ALLOWED_RESUME_EXTENSIONS)[number], string> = {
+  pdf: 'application/pdf',
+  doc: 'application/msword',
+  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+};
+
+/**
  * Stored verbatim in `applications.focus_areas`, so these string ids are a
  * data contract, not labels — renaming one orphans every row that used it.
  * Change the display text in ApplicationForm's FOCUS_AREAS instead.
@@ -90,7 +103,9 @@ export async function uploadResume(file: File): Promise<string> {
     method: 'POST',
     headers: {
       ...authHeaders(),
-      'Content-Type': file.type || 'application/octet-stream',
+      'Content-Type':
+        RESUME_CONTENT_TYPES[resumeExtension(file.name) as (typeof ALLOWED_RESUME_EXTENSIONS)[number]] ||
+        'application/octet-stream',
       'x-upsert': 'false',
     },
     body: file,

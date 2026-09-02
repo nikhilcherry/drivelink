@@ -67,7 +67,7 @@ DriveLink is structured in three layers:
 
 ## About this repository
 
-This repo is the **official DriveLink marketing website** — a statically-exported Next.js app deployed at [drivelink.tech](https://www.drivelink.tech). It presents the product, the origin story, the team, and the roadmap, and features a **live in-browser V2V traffic simulation** in the hero (car-following, negotiated lane changes, and real-time V2V link rendering).
+This repo is the **official DriveLink marketing website** — a statically-exported Next.js app deployed at [drivelink.tech](https://www.drivelink.tech). It presents the product, the origin story, the team, and the roadmap, and features an **interactive in-browser V2V traffic simulation** in the hero (car-following, negotiated lane changes, and V2V link rendering). Everything it shows is modelled against the drv-mesh v0.1 spec — it is a concept simulation, not telemetry from a deployment.
 
 ### Tech stack
 
@@ -206,6 +206,21 @@ CI runs lint, typecheck, tests, and build on every push and pull request to
 `Math.random` is stubbed with a small LCG wherever the simulation is under
 test, so "run 2000 frames and assert nothing broke" is reproducible rather than
 a flake generator.
+
+### The hiring desk edge function
+
+`supabase/functions/hiring-desk/index.ts` is the server side of `/desk`. It is
+**not** deployed by pushing to `main` — Vercel only ships the static site. After
+changing it:
+
+```bash
+supabase functions deploy hiring-desk --no-verify-jwt
+```
+
+`--no-verify-jwt` is required: callers are anonymous browsers holding a desk
+token, not Supabase-authenticated users. `SUPABASE_URL` and
+`SUPABASE_SERVICE_ROLE_KEY` are injected automatically; there is no secret to
+copy.
 
 ### UI audit
 
