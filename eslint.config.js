@@ -73,4 +73,18 @@ export default defineConfig([
       globals: { ...globals.browser, ...globals.node },
     },
   },
+
+  {
+    // Tests exercise the handler through hand-rolled req/res doubles, which
+    // means casting to shapes the real types don't describe. The strict rules
+    // that make sense in app code only add noise here.
+    files: ['tests/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/consistent-type-definitions': 'off',
+      // No-op stubs (silencing console.error while asserting a 502) are the
+      // point, not an oversight.
+      '@typescript-eslint/no-empty-function': 'off',
+    },
+  },
 ])

@@ -174,3 +174,33 @@ DriveLink aims to become the **universal V2V communication standard** for vehicl
 ## License
 
 To be finalised based on deployment and commercialization strategy. © DriveLink. All rights reserved.
+
+## Development
+
+```bash
+npm ci
+npm run dev          # local dev server
+npm run lint         # eslint over src/, api/, tests/
+npm run typecheck    # tsc --noEmit
+npm test             # vitest, once
+npm run test:watch   # vitest, watching
+npm run build        # static export into dist/
+```
+
+CI runs lint, typecheck, tests, and build on every push and pull request to
+`main`.
+
+### Tests
+
+`tests/` covers the logic that has no other safety net:
+
+| File | What it protects |
+| --- | --- |
+| `applicantValidation.test.ts` | The hiring form's input rules. Weighted toward *false rejection* — a real candidate told their own name isn't a name is far worse than a junk row we can delete. |
+| `v2vSim.test.ts` | The hero/product traffic model. Runs thousands of seeded frames and asserts no car leaves the road, reverses, or drives through another — plus the on-ramp claim the simulation exists to make. |
+| `chatApi.test.ts` | `api/chat.js` — method and input validation, history sanitising, the rate limiter, and that upstream failures become a 502 without leaking the key. |
+| `seo.test.ts` | That every route ships a complete `openGraph`/`twitter` object. Next.js does not deep-merge these between layout and page, and the failure is silent. |
+
+`Math.random` is stubbed with a small LCG wherever the simulation is under
+test, so "run 2000 frames and assert nothing broke" is reproducible rather than
+a flake generator.
