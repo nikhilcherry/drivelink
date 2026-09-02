@@ -3,13 +3,17 @@ import { SITE_URL } from "../lib/seo";
 
 export const dynamic = "force-static";
 
+// Legal boilerplate is worth indexing but should never outrank the pages that
+// explain the product.
+const LOW_PRIORITY_ROUTES = new Set(["/privacy", "/terms"]);
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = ["", "/product", "/team", "/investors", "/hiring", "/v2v-communication"];
+  const routes = ["", "/product", "/team", "/investors", "/hiring", "/v2v-communication", "/privacy", "/terms"];
   const pages: MetadataRoute.Sitemap = routes.map((route) => ({
     url: `${SITE_URL}${route}`,
     lastModified: new Date(),
     changeFrequency: "weekly",
-    priority: route === "" ? 1 : 0.8,
+    priority: route === "" ? 1 : LOW_PRIORITY_ROUTES.has(route) ? 0.3 : 0.8,
   }));
   // /docs is served from core.drivelink.tech (see vercel.json rewrite) — it has
   // no sitemap of its own, so it's listed here to keep it from being invisible

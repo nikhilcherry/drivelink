@@ -55,13 +55,17 @@ export function Footer() {
                 Mesh node live
               </span>
               <span className="dlw-mono" style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12 }}>Protocol v0.1</span>
-              <span className="dlw-mono" style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12 }}>Patent grant option · awarded</span>
+              <span className="dlw-mono" style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12 }}>Patent grant option · award, not a granted patent</span>
             </div>
           </div>
         </div>
 
         <div className="dlw-footer-bottom">
-          <span>© {new Date().getFullYear()} DriveLink. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} DriveLink Technologies. All rights reserved.</span>
+          <span className="dlw-footer-legal">
+            <Link href={siteBase + '/privacy'}>Privacy</Link>
+            <Link href={siteBase + '/terms'}>Terms</Link>
+          </span>
           <span className="dlw-mono">drivelink.tech</span>
         </div>
       </div>

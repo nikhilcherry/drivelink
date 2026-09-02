@@ -56,7 +56,7 @@ const items: StoryItem[] = [
     // TODO(founder): review/revise this entry
     date: '20 Apr 2026', title: 'Hackathon · Patent Grant Option', Icon: Award,
     featured: true,
-    body: 'Secured 4th position at a national hackathon — and were awarded a Patent Grant Option recognizing the innovation and originality of the solution.',
+    body: 'Secured 4th position at a national hackathon — and were awarded a Patent Grant Option recognizing the innovation and originality of the solution. To be precise: that is an award backing a future filing, not a granted patent.',
     achievement: { rank: '4', lbl: 'Position · National', title: 'Patent Grant Option Awarded', sub: 'Hackathon · April 2026', meta: 'ORIGINALITY · PATENT' },
   },
 ];

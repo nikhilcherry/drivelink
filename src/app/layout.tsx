@@ -27,7 +27,6 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "DriveLink · V2V Communication Backbone for Automotive AI",
   description: "DriveLink adds the missing V2V communication layer to modern vehicles — a low-latency, intent-first protocol connecting OEMs, fleets, and smart cities.",
-  keywords: ["V2V", "vehicle communication", "automotive AI", "DriveLink", "intent-first protocol"],
   alternates: { canonical: "/" },
   openGraph: {
     title: "DriveLink · V2V Communication Backbone for Automotive AI",

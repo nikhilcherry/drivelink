@@ -324,7 +324,8 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-stat .value { font-size: clamp(2.5rem, 4.5vw, 4rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1; color: #fff; display: flex; align-items: baseline; gap: 6px; }
 .dlw-stat .value .unit { font-size: 0.35em; font-weight: 500; color: rgba(255,255,255,0.5); }
 .dlw-stat .caption { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 10px; line-height: 1.5; }
-@media (max-width: 900px) { .dlw-stats-grid { grid-template-columns: repeat(2, 1fr); } .dlw-stat:nth-child(3) { border-left: none; } .dlw-stat:nth-child(3), .dlw-stat:nth-child(4) { border-top: 1px solid rgba(255,255,255,0.08); } }
+.dlw-stats-note { max-width: 720px; margin: 28px 0 0; padding-left: 28px; font-size: 12px; line-height: 1.6; color: rgba(255,255,255,0.5); }
+@media (max-width: 900px) { .dlw-stats-note { padding-left: 0; } .dlw-stats-grid { grid-template-columns: repeat(2, 1fr); } .dlw-stat:nth-child(3) { border-left: none; } .dlw-stat:nth-child(3), .dlw-stat:nth-child(4) { border-top: 1px solid rgba(255,255,255,0.08); } }
 
 /* ============================================================
    STORY
@@ -501,6 +502,9 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-footer-links a, .dlw-footer-links button { font-size: 14px; color: rgba(255,255,255,0.8); transition: color .2s; background: none; border: none; padding: 0; text-align: left; cursor: pointer; font-family: inherit; }
 .dlw-footer-links a:hover, .dlw-footer-links button:hover { color: #fff; }
 .dlw-footer-bottom { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 12px; color: rgba(255,255,255,0.4); }
+.dlw-footer-legal { display: inline-flex; align-items: center; gap: 18px; }
+.dlw-footer-legal a { color: rgba(255,255,255,0.6); text-decoration: none; transition: color .2s; }
+.dlw-footer-legal a:hover { color: #fff; }
 .dlw-footer-address { display: flex; flex-direction: column; gap: 3px; margin-top: 16px; font-style: normal; font-size: 12.5px; line-height: 1.5; color: rgba(255,255,255,0.5); max-width: 280px; }
 .dlw-footer-address .dlw-footer-addr-label { color: rgba(255,255,255,0.75); font-weight: 600; }
 .dlw-footer-address a { color: rgba(255,255,255,0.8); transition: color .2s; }

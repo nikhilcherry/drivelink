@@ -76,11 +76,12 @@ export function PageProduct({ setPage }: PageProductProps) {
       <section className="dlw-section dlw-section-paper">
         <div className="dlw-container">
           <div className="dlw-section-head" style={{ maxWidth: 880 }}>
-            <div className="dlw-eyebrow"><span className="num">SIM</span> Live simulation</div>
+            <div className="dlw-eyebrow"><span className="num">SIM</span> Concept simulation</div>
             <h2 className="dlw-section-title">See the protocol drive traffic.</h2>
             <p className="dlw-section-sub">
-              A real V2V traffic model running in your browser — car-following, negotiated lane changes,
-              and an on-ramp merge gate. Toggle the mesh and watch cooperation appear.
+              A V2V traffic model running in your browser — car-following, negotiated lane changes,
+              and an on-ramp merge gate. Toggle the mesh and watch cooperation appear. Everything here is
+              modelled behaviour against the v0.1 spec, not measured road data.
             </p>
           </div>
           <SimPlayground />

@@ -3,7 +3,7 @@ import { useScrollTo } from '../../hooks/useScrollTo';
 
 const traction = [
   { lbl: 'AIR', val: '5', sub: 'Pitch Arena · IIT Delhi' },
-  { lbl: 'Patent', val: 'Grant Option', sub: 'Awarded Apr 2026' },
+  { lbl: 'Patent', val: 'Grant Option', sub: 'Hackathon award, Apr 2026 · no patent granted yet' },
   { lbl: 'Protocol', val: 'v0.1', sub: 'Spec frozen' },
   { lbl: 'Stack', val: 'Live', sub: 'Autonomous v1.0 deployed' },
 ];

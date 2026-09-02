@@ -1,5 +1,5 @@
 const stats = [
-  { label: 'End-to-end latency', value: '<50', unit: 'ms', caption: 'From bus read to neighbor receipt.' },
+  { label: 'End-to-end latency', value: '<50', unit: 'ms', caption: 'Bus read to neighbor receipt.' },
   { label: 'Prediction window', value: '1.5', unit: 's', caption: 'Probabilistic trajectory cone.' },
   { label: 'Payload size', value: '256', unit: 'B', caption: 'Per intent broadcast, gossip-friendly.' },
   { label: 'Cross-OEM ready', value: 'v0.1', unit: '', caption: 'Vendor-neutral protocol spec.' },
@@ -21,6 +21,10 @@ export function Stats() {
             </div>
           ))}
         </div>
+        <p className="dlw-stats-note">
+          Protocol design targets from the drv-mesh v0.1 spec. Measured hardware-in-the-loop results will be
+          published separately once the on-vehicle module is in road testing.
+        </p>
       </div>
     </section>
   );

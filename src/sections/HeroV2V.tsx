@@ -17,7 +17,7 @@ export function HeroV2V({ onCTA }: HeroProps) {
         <div className="dlw-hero-top">
           <h1 className="dlw-hero-title">
             <span className="dlw-hero-brand">DriveLink</span>
-            <span className="dlw-sr-only"> — V2V Communication Protocol for Automotive AI</span>
+            <span className="dlw-sr-only"> — V2V Communication Backbone for Automotive AI</span>
           </h1>
 
           <p className="dlw-hero-headline">
@@ -41,7 +41,10 @@ export function HeroV2V({ onCTA }: HeroProps) {
         </div>
 
         <V2VSimulation />
-        <p className="dlw-hero-caption">Browser simulation of the planned Bangalore mesh deployment.</p>
+        <p className="dlw-hero-caption">
+          Interactive concept simulation. Every figure above is modelled in your browser from the planned
+          Bangalore mesh corridor — a design target, not measured field telemetry.
+        </p>
 
         <HeroMarquee />
       </div>
@@ -55,7 +58,7 @@ const MARQUEE_PHRASES = [
   'Intent-first',
   'drv-mesh',
   'AIR 5 · IIT Delhi',
-  'Patent grant option · awarded',
+  'Patent grant option · hackathon award',
 ];
 
 function HeroMarquee() {
@@ -167,10 +170,10 @@ function V2VSimulation() {
     <div className="dlw-hero-stage" ref={stageRef} aria-hidden="true">
       <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
       <div className="corner-label tl">
-        <span className="dot" /> <span className="num">LIVE SIMULATION</span> · Bangalore pilot corridor
+        <span className="dot" /> <span className="num">CONCEPT SIMULATION</span> · planned Bangalore corridor
       </div>
       <div className="corner-label tr">
-        <span className="num" ref={latRef}>34ms</span> · avg V2V latency
+        <span className="num" ref={latRef}>34ms</span> · simulated latency · target &lt;50ms
       </div>
       <div className="corner-label bl"><span ref={countRef}>9 vehicles</span></div>
       <div className="corner-label br">Protocol v0.1 · drv-mesh</div>

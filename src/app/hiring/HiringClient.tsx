@@ -5,7 +5,7 @@ import { Award, Building2, ShieldCheck } from 'lucide-react';
 /** Standing facts about the company, shown before anyone fills the form. */
 const standing = [
   { Icon: ShieldCheck, title: 'A registered company', body: 'DriveLink is incorporated — not a student side project or an unregistered team.' },
-  { Icon: Award, title: 'Funded', body: 'We have secured our first round of funding, alongside a patent grant option and AIR 5 at the IIT Delhi Pitch Arena National Finals.' },
+  { Icon: Award, title: 'Funded', body: 'We have secured our first round of funding, alongside a patent grant option (an award backing a future filing) and AIR 5 at the IIT Delhi Pitch Arena National Finals.' },
   { Icon: Building2, title: 'Incubated at NMIT', body: 'We build out of the incubation centre at Nitte Meenakshi Institute of Technology, with hardware support from their technical team.' },
 ];
 

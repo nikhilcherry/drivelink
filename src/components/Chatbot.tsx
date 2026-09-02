@@ -176,7 +176,7 @@ export function Chatbot() {
       query.includes("patent") ||
       query.includes("achievement")
     ) {
-      return "DriveLink secured **All India Rank 5** at the IIT Delhi Pitch Arena National Finals, received a **Patent Grant Option** at a national hackathon, and collaborated with NMIT on a working hardware implementation.";
+      return "DriveLink secured **All India Rank 5** at the IIT Delhi Pitch Arena National Finals, received a **Patent Grant Option** at a national hackathon (an award backing a future filing — not a granted patent), and collaborated with NMIT on a working hardware implementation.";
     }
 
     return `For this technical/complex query, please contact our team directly at tech.drivelink@gmail.com for a perfect response. If you're here about joining DriveLink, you can ${HIRING_LINK}.`;
