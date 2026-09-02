@@ -1,6 +1,7 @@
 /**
- * Browser audit of the built site: WCAG AA text contrast, heading order, and
- * layout overflow, across every route at three widths.
+ * Browser audit of the built site: WCAG AA text contrast, heading order,
+ * layout overflow, and the ARIA wiring that only exists at runtime — across
+ * every route at three widths.
  *
  * These are the three classes of defect `next build`, eslint and the unit
  * tests cannot see, because each one only exists once CSS has been applied to
@@ -158,6 +159,72 @@ const STRUCTURE = `((viewportWidth) => {
   };
 })(${'${WIDTH}'})`;
 
+/**
+ * ARIA wiring that only exists once the page is rendered: a describedby
+ * pointing at an id that no longer exists announces nothing, and a control
+ * with no accessible name is announced as just "button".
+ */
+const SEMANTICS = `(() => {
+  const label = (el) => el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + (el.getAttribute('name') ? '[name=' + el.getAttribute('name') + ']' : '');
+  const problems = [];
+
+  // Every id referenced by aria-describedby / aria-labelledby / for must exist.
+  for (const el of document.querySelectorAll('[aria-describedby],[aria-labelledby],label[for]')) {
+    const refs = [
+      ...(el.getAttribute('aria-describedby') || '').split(/\\s+/),
+      ...(el.getAttribute('aria-labelledby') || '').split(/\\s+/),
+      ...(el.tagName === 'LABEL' && el.getAttribute('for') ? [el.getAttribute('for')] : []),
+    ].filter(Boolean);
+    for (const id of refs) {
+      if (!document.getElementById(id)) problems.push(\`\${label(el)} references missing id "\${id}"\`);
+    }
+  }
+
+  // Duplicate ids silently break every one of those references.
+  const seen = new Map();
+  for (const el of document.querySelectorAll('[id]')) seen.set(el.id, (seen.get(el.id) || 0) + 1);
+  for (const [id, n] of seen) if (n > 1) problems.push(\`id "\${id}" used \${n} times\`);
+
+  const named = (el) => {
+    if (el.getAttribute('aria-label')?.trim()) return true;
+    const by = el.getAttribute('aria-labelledby');
+    if (by && by.split(/\\s+/).some((id) => document.getElementById(id)?.textContent?.trim())) return true;
+    if (el.id && [...document.querySelectorAll('label[for]')].some((l) => l.getAttribute('for') === el.id && l.textContent.trim())) return true;
+    if (el.closest('label')?.textContent?.trim()) return true;
+    if (el.getAttribute('title')?.trim()) return true;
+    return false;
+  };
+
+  const visible = (el) => {
+    const cs = getComputedStyle(el);
+    if (cs.display === 'none' || cs.visibility === 'hidden') return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 0 || r.height > 0;
+  };
+
+  // Controls with no accessible name.
+  for (const el of document.querySelectorAll('button, a[href], input:not([type=hidden]), select, textarea')) {
+    if (!visible(el) || el.closest('[aria-hidden="true"]')) continue;
+    if (el.tagName === 'BUTTON' || el.tagName === 'A') {
+      if (el.textContent.trim() || named(el)) continue;
+      if (el.querySelector('img[alt]:not([alt=""])')) continue;
+      problems.push(label(el) + ' has no accessible name');
+    } else if (!named(el)) {
+      problems.push(label(el) + ' form control has no label');
+    }
+  }
+
+  // Images must declare alt, even if empty for decorative ones.
+  for (const el of document.querySelectorAll('img')) {
+    if (!el.hasAttribute('alt')) problems.push((el.getAttribute('src') || 'img') + ' has no alt attribute');
+  }
+
+  const lang = document.documentElement.getAttribute('lang');
+  if (!lang) problems.push('<html> has no lang attribute');
+
+  return [...new Set(problems)];
+})()`;
+
 /* ------------------------------------------------------------------ */
 
 const failures = [];
@@ -195,6 +262,7 @@ try {
         }
       }
       if (pageOverflow > 0) fail(where, `page scrolls horizontally by ${pageOverflow}px`);
+      for (const p of await page.evaluate(SEMANTICS)) fail(where, p);
       for (const c of clipped) fail(where, `text clipped: ${c}`);
       for (const c of cut) fail(where, `cut off past the right edge: ${c}`);
 
@@ -223,4 +291,7 @@ if (failures.length) {
   for (const f of failures) console.error('  ' + f);
   process.exit(1);
 }
-console.log(`clean — ${ROUTES.length} routes x ${WIDTHS.length} widths: one h1 each, no skipped heading levels, no clipped or unreachable content, all text at WCAG AA.`);
+console.log(
+  `clean — ${ROUTES.length} routes x ${WIDTHS.length} widths: one h1 each, no skipped heading levels, ` +
+  'no clipped or unreachable content, every control named and every aria reference resolved, all text at WCAG AA.',
+);

@@ -226,11 +226,21 @@ one only exists once CSS has been applied to real text at a real width:
   box, and content past the right edge with nothing to scroll it into view.
   Deliberate cases — screen-reader-only text, the masked hero marquee, fixed
   overlays, decorative overhang — are excluded.
+- **ARIA wiring**, which only exists once the page is rendered: every
+  `aria-describedby` / `aria-labelledby` / `label[for]` resolves to a real
+  element, no duplicate ids (a duplicate silently breaks every reference to
+  it), every visible control has an accessible name, every `<img>` declares
+  `alt`, and `<html>` has `lang`.
+
+It sees each page in its **default state only** — an error message that renders
+after a failed submit, or the chat panel's dialog wiring, is outside what it can
+reach. Check those by hand when you touch them.
 
 It needs a Chromium binary: set `CHROMIUM_PATH`, or run
 `npx playwright install chromium` once. It is not wired into CI, which has no
 browser; run it after any change to `globals.css` or to page structure.
 
 Every finding it reports was a real defect the first time it ran — including
-the mesh toggles overlapping the Lanes label on a phone, and the docs feature
-tables having their last column cut off with no way to reach it.
+the mesh toggles overlapping the Lanes label on a phone, the docs feature tables
+having their last column cut off with no way to reach it, and the simulation's
+three sliders having no labels at all.

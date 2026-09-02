@@ -152,18 +152,18 @@ export function SimPlayground() {
         </div>
 
         <div className="dlw-sim-ctl">
-          <span className="lbl">Lanes <b>{lanes}</b></span>
-          <input type="range" min={2} max={4} step={1} value={lanes} onChange={(e) => setLanes(+e.target.value)} />
+          <label className="lbl" htmlFor="sim-lanes">Lanes <b>{lanes}</b></label>
+          <input id="sim-lanes" type="range" min={2} max={4} step={1} value={lanes} onChange={(e) => setLanes(+e.target.value)} />
         </div>
 
         <div className="dlw-sim-ctl">
-          <span className="lbl">Density <b>{density}/lane</b></span>
-          <input type="range" min={1} max={6} step={1} value={density} onChange={(e) => setDensity(+e.target.value)} />
+          <label className="lbl" htmlFor="sim-density">Density <b>{density}/lane</b></label>
+          <input id="sim-density" type="range" min={1} max={6} step={1} value={density} onChange={(e) => setDensity(+e.target.value)} />
         </div>
 
         <div className="dlw-sim-ctl">
-          <span className="lbl">Speed <b>{speed.toFixed(1)}×</b></span>
-          <input type="range" min={0.4} max={2} step={0.1} value={speed} onChange={(e) => setSpeed(+e.target.value)} />
+          <label className="lbl" htmlFor="sim-speed">Speed <b>{speed.toFixed(1)}×</b></label>
+          <input id="sim-speed" type="range" min={0.4} max={2} step={0.1} value={speed} onChange={(e) => setSpeed(+e.target.value)} />
         </div>
 
         <button className="dlw-sim-reseed" onClick={reseed}>Reseed traffic</button>
