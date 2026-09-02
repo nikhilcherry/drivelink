@@ -81,3 +81,89 @@ README links were already on `www.drivelink.tech` by audit time (fixed in an ear
 - Content is honest and specific (no placeholder "Lorem ipsum," no fabricated zero-stats) — a recent commit explicitly did a pass to remove exactly that kind of thing.
 - The in-browser V2V simulation (`/product`) runs smoothly client-side with no dependency on a backend.
 - Accessibility basics are in place: all images/icons have `alt` text, and a prior commit specifically addressed contrast and dead `href="#"` anchors.
+
+---
+
+# Second pass — credibility & positioning audit, 2026-09-02
+
+A second external audit (credibility, positioning, discoverability) was worked
+through on 2026-09-02. Its findings are recorded here with the same convention:
+✅ shipped, 🔒 needs a decision or an account only the founders have.
+
+**A caveat on the audit itself:** several of its findings were already fixed
+before it was written. `/team` already carried real names and photos;
+`sitemap.xml`, `robots.txt` and per-route metadata already existed; `/docs` is a
+real page served from `core.drivelink.tech` by a host rewrite, not a dead link;
+`prefers-reduced-motion` was already handled. Those needed nothing.
+
+## Shipped
+
+**Honesty about what is built.** The hero read `LIVE SIMULATION · 34ms avg V2V
+latency` over a browser animation of a deployment that has not happened. It now
+reads `CONCEPT SIMULATION · planned Bangalore corridor`, the readout says
+`simulated latency · target <50ms`, and the caption says every figure is
+modelled rather than measured. `/product`'s "live simulation" and "a real V2V
+traffic model" went the same way, the stats band now names the drv-mesh v0.1
+spec as the source of its numbers, and the footer's green "Mesh node live"
+became "Simulation stack live", which the docs roadmap actually supports.
+
+**The patent claim.** "Patent grant option · awarded" reads as a granted patent
+to anyone skimming, which is what diligence catches first. Every surface — hero
+marquee, footer, investors, origin story, hiring, the chatbot, and the chatbot's
+own system prompt — now says what it is: an award backing a future filing.
+
+**Legal.** `/privacy` and `/terms` exist, are linked from the footer, and are in
+the sitemap. The privacy policy describes the three places this site actually
+takes personal data and the three processors that see it; there is no cookie
+banner because the site sets no cookies.
+
+**Accessibility.** A skip link, a global focus ring, `aria-current` on the nav,
+and a mobile drawer that closes on Escape and returns focus. Heading structure
+fixed sitewide — every page had at least one skipped level. Every text element
+on every route now meets WCAG AA, measured against rendered pixels: `--fg3` and
+`--fg4` were both below AA on the surfaces they are used on. The chat panel is a
+labelled dialog with a live message log; the hiring form marks its required
+fields and announces failures.
+
+**Performance.** framer-motion was in the first load of every page, including
+`/privacy` and the 404, for one fade and a translate. `ScrollProgress` and
+`Reveal` are hand-rolled now and the chat widget loads on browser idle, so it is
+in no page's initial script set. Team photos were up to 957px for a 96px
+display; images cost 393 KB less. Total referenced JS is down roughly a quarter
+per page.
+
+**Security.** `vercel.json` sends HSTS, `nosniff`, `Referrer-Policy`,
+`X-Frame-Options`, `Permissions-Policy`, COOP and a CSP. The chat formatter
+accepted `//evil.example` as a "same-origin path" — a link to another origin
+styled as an internal one — now rejected. The desk edge function interpolated
+`body.id` straight into PostgREST filters, so `0&or=(id.not.is.null)` turned
+"delete one application" into "delete all of them"; ids are validated as uuids.
+Signed resume links now force a download rather than rendering stranger-uploaded
+content inline.
+
+**Tests and tooling.** 109 unit tests over the validation rules, the traffic
+model, the chat proxy, the chat formatter and the metadata helpers, plus
+`npm run audit:ui` — a browser pass over every route at three widths for
+contrast, heading order, overflow, ARIA wiring and internal links. CI runs
+lint, typecheck, tests and build.
+
+## 🔒 Still open — these need you
+
+1. **The name.** "Drivelink" is Toyota Connected's production telematics
+   platform (5.5M+ vehicles), plus several other active DriveLink companies.
+   The site will not rank for its own name. Either commit to branding as
+   "DriveLink V2V" everywhere, or rename before there is traction to lose.
+   `/v2v-communication` already carries an FAQ entry disclaiming the
+   affiliation, which helps but does not solve it.
+2. **LinkedIn URLs** for Hruday, Krishna and Shreyas. `PageTeam.tsx` has a
+   `socials` object per member ready for them; unset ones render no icon.
+3. **A domain email** (`hello@drivelink.tech`) to replace the Gmail. DNS work.
+4. **Lead capture.** Every CTA is still a `mailto:`. A demo/investor-deck form
+   needs a Supabase table, a migration and an RLS policy, which only you can
+   apply — shipping the form without them would just fail on submit.
+5. **The `Dec 2025` NMIT entry** in the origin story. The earlier audit called
+   it a typo for Dec 2024, but it currently sorts correctly between Nov 2024 and
+   Feb 2026, so changing it would be inventing a fact. It carries a
+   `TODO(founder)` marker.
+6. **Positioning**: narrowing the homepage to one primary audience, and a
+   company LinkedIn page. Both are calls only you can make.
