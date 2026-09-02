@@ -5,40 +5,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { LogoMark } from './ui/Logo';
+import { formatMessageHtml } from '../lib/chatFormat';
 
 interface Message {
   role: 'user' | 'model';
   content: string;
 }
 
-// Simple formatter to parse **bold** and `code` inline elements safely
 function formatMessage(text: string) {
   if (!text) return '';
-  
-  // Replace HTML tag brackets to prevent raw injection
-  let formatted = text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-
-  // Replace line breaks
-  formatted = formatted.replace(/\n/g, '<br />');
-
-  // Replace bold syntax **text** with strong tags
-  formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-  // Replace inline code syntax `text` with code tags
-  formatted = formatted.replace(/`(.*?)`/g, '<code class="bg-black/5 text-[#0f4c81] px-1 py-0.5 rounded text-xs font-mono">$1</code>');
-
-  // Links: [label](/path). Applied after the escaping above and restricted to
-  // same-origin paths, so a canned string can point at a page without turning
-  // this into an HTML injection hole.
-  formatted = formatted.replace(
-    /\[([^\]]+)\]\((\/[A-Za-z0-9\-._~/]*)\)/g,
-    '<a href="$2" class="text-[#0f4c81] font-semibold underline underline-offset-2">$1</a>',
-  );
-
-  return <span dangerouslySetInnerHTML={{ __html: formatted }} />;
+  return <span dangerouslySetInnerHTML={{ __html: formatMessageHtml(text) }} />;
 }
 
 /**

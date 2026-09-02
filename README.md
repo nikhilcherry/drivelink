@@ -201,6 +201,7 @@ CI runs lint, typecheck, tests, and build on every push and pull request to
 | `v2vSim.test.ts` | The hero/product traffic model. Runs thousands of seeded frames and asserts no car leaves the road, reverses, or drives through another — plus the on-ramp claim the simulation exists to make. |
 | `chatApi.test.ts` | `api/chat.js` — method and input validation, history sanitising, the rate limiter, and that upstream failures become a 502 without leaking the key. |
 | `seo.test.ts` | That every route ships a complete `openGraph`/`twitter` object. Next.js does not deep-merge these between layout and page, and the failure is silent. |
+| `chatFormat.test.ts` | The assistant's message formatter. Its output goes through `dangerouslySetInnerHTML` and its input is a language model's reply, so the tests are mostly adversarial — script tags, attribute break-outs, `javascript:` and protocol-relative link targets. |
 
 `Math.random` is stubbed with a small LCG wherever the simulation is under
 test, so "run 2000 frames and assert nothing broke" is reproducible rather than
@@ -226,6 +227,8 @@ one only exists once CSS has been applied to real text at a real width:
   box, and content past the right edge with nothing to scroll it into view.
   Deliberate cases — screen-reader-only text, the masked hero marquee, fixed
   overlays, decorative overhang — are excluded.
+- **Internal links.** Every same-origin `href` on the site is fetched against
+  the served build; a typo'd path renders fine and 404s only when clicked.
 - **ARIA wiring**, which only exists once the page is rendered: every
   `aria-describedby` / `aria-labelledby` / `label[for]` resolves to a real
   element, no duplicate ids (a duplicate silently breaks every reference to

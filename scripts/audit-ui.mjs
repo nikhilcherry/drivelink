@@ -229,6 +229,8 @@ const SEMANTICS = `(() => {
 
 const failures = [];
 const fail = (where, message) => failures.push(`${where}  ${message}`);
+/** Every same-origin href seen anywhere, mapped to a page that links to it. */
+const internalLinks = new Map();
 
 const server = await serveDist(PORT);
 const browser = await chromium.launch({
@@ -266,6 +268,12 @@ try {
       for (const c of clipped) fail(where, `text clipped: ${c}`);
       for (const c of cut) fail(where, `cut off past the right edge: ${c}`);
 
+      for (const href of await page.evaluate(
+        `[...document.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')).filter((h) => h && h.startsWith('/') && !h.startsWith('//'))`,
+      )) {
+        internalLinks.set(href.split('#')[0] || '/', route);
+      }
+
       const shot = await page.screenshot();
       const meta = await sharp(shot).metadata();
       for (const el of await page.evaluate(COLLECT_TEXT)) {
@@ -281,6 +289,12 @@ try {
     }
     await context.close();
   }
+  // Internal links, checked once against the served build rather than per
+  // page: a typo'd href renders fine and 404s only when someone clicks it.
+  for (const [href, from] of internalLinks) {
+    const res = await fetch(`http://localhost:${PORT}${href}`, { redirect: 'manual' });
+    if (res.status >= 400) fail(`link from ${from}`, `${href} -> HTTP ${res.status}`);
+  }
 } finally {
   await browser.close();
   server.close();
@@ -293,5 +307,6 @@ if (failures.length) {
 }
 console.log(
   `clean — ${ROUTES.length} routes x ${WIDTHS.length} widths: one h1 each, no skipped heading levels, ` +
-  'no clipped or unreachable content, every control named and every aria reference resolved, all text at WCAG AA.',
+  'no clipped or unreachable content, every control named and every aria reference resolved, ' +
+  `all text at WCAG AA, and all ${internalLinks.size} internal links resolving.`,
 );
