@@ -14,7 +14,7 @@ export function Footer() {
               <LogoMark size={28} style={{ borderRadius: 8 }} />
               <span style={{ fontWeight: 700, color: '#fff', letterSpacing: '-0.02em' }}>DriveLink</span>
             </div>
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, margin: 0, maxWidth: 280 }}>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.62)', lineHeight: 1.6, margin: 0, maxWidth: 280 }}>
               The decentralized communication backbone for automotive AI. Intent-first, low-latency, cross-OEM.
             </p>
 
@@ -54,8 +54,8 @@ export function Footer() {
                 <span style={{ width: 8, height: 8, borderRadius: 999, background: '#22c55e', boxShadow: '0 0 8px #22c55e', flexShrink: 0 }} />
                 Simulation stack live
               </span>
-              <span className="dlw-mono" style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12 }}>Protocol v0.1</span>
-              <span className="dlw-mono" style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12 }}>Patent grant option · award, not a granted patent</span>
+              <span className="dlw-mono" style={{ color: 'rgba(255,255,255,0.68)', fontSize: 12 }}>Protocol v0.1</span>
+              <span className="dlw-mono" style={{ color: 'rgba(255,255,255,0.68)', fontSize: 12 }}>Patent grant option · award, not a granted patent</span>
             </div>
           </div>
         </div>

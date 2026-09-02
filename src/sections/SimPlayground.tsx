@@ -136,7 +136,7 @@ export function SimPlayground() {
       </div>
 
       <div className="dlw-sim-controls">
-        <div className="dlw-sim-ctl">
+        <div className="dlw-sim-ctl is-toggles">
           <span className="lbl">Mesh</span>
           <div className="dlw-sim-toggles">
             <button className={`dlw-sim-toggle ${v2v ? 'active' : ''}`} onClick={() => setV2v((x) => !x)}>
