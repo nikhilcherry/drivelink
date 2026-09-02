@@ -10,10 +10,29 @@
 /* Base reset */
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body { margin: 0; padding: 0; overflow-x: hidden; }
 a { color: inherit; text-decoration: none; }
 button { font-family: inherit; cursor: pointer; }
 img, svg { display: block; max-width: 100%; }
+
+/* One keyboard focus ring for the whole site. Individual components override
+   it where a ring on the element itself looks wrong (inputs, choice cards),
+   but nothing focusable should be invisible by default. */
+:focus-visible { outline: 2px solid var(--drive-blue-400); outline-offset: 3px; border-radius: 4px; }
+.dlw-stats :focus-visible, .dlw-footer :focus-visible, .dlw-cta-dark :focus-visible { outline-color: #93c5fd; }
+
+/* Keyboard-only jump past the nav. Visible the moment it takes focus. */
+.dlw-skip-link {
+  position: fixed; top: 12px; left: 12px; z-index: 200;
+  transform: translateY(-160%);
+  padding: 12px 18px; border-radius: 10px;
+  background: var(--drive-blue); color: #fff;
+  font-size: 14px; font-weight: 600;
+  box-shadow: 0 12px 28px -10px rgba(15,76,129,0.55);
+  transition: transform .18s var(--ease-out);
+}
+.dlw-skip-link:focus { transform: translateY(0); }
 
 /* ============================================================
    DESIGN TOKENS
@@ -502,6 +521,19 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-footer-links a, .dlw-footer-links button { font-size: 14px; color: rgba(255,255,255,0.8); transition: color .2s; background: none; border: none; padding: 0; text-align: left; cursor: pointer; font-family: inherit; }
 .dlw-footer-links a:hover, .dlw-footer-links button:hover { color: #fff; }
 .dlw-footer-bottom { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 12px; color: rgba(255,255,255,0.4); }
+/* ---------- 404 ---------- */
+.dlw-404-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 8px; }
+.dlw-404-card {
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 20px 22px; border-radius: 16px;
+  background: rgba(255,255,255,0.7); border: var(--line);
+  transition: transform .25s var(--ease-out), border-color .25s, box-shadow .25s;
+}
+.dlw-404-card:hover { transform: translateY(-3px); border-color: rgba(15,76,129,0.22); box-shadow: 0 20px 40px -24px rgba(15,76,129,0.3); }
+.dlw-404-card .k { font-weight: 700; color: var(--fg1); letter-spacing: -0.01em; }
+.dlw-404-card .v { font-size: 13px; line-height: 1.55; color: var(--fg3); }
+@media (prefers-reduced-motion: reduce) { .dlw-404-card:hover { transform: none; } }
+
 .dlw-footer-legal { display: inline-flex; align-items: center; gap: 18px; }
 .dlw-footer-legal a { color: rgba(255,255,255,0.6); text-decoration: none; transition: color .2s; }
 .dlw-footer-legal a:hover { color: #fff; }

@@ -190,7 +190,7 @@ export function PageDocs({ setPage, repoStats }: Props) {
 
           <div className="dlw-doc-split">
             <Reveal direction="right" className="dlw-doc-shot">
-              <img src="/sim/highway.png" alt="DriveLink highway simulation" loading="lazy" />
+              <img src="/sim/highway.webp" alt="DriveLink highway simulation" width={1280} height={646} loading="lazy" decoding="async" />
               <span className="cap">Highway scene — live lane-change & V2V negotiation in the Godot client.</span>
             </Reveal>
             <Reveal direction="left" className="dlw-doc-prose">
@@ -297,7 +297,7 @@ export function PageDocs({ setPage, repoStats }: Props) {
               </RevealGroup>
             </Reveal>
             <Reveal direction="left" className="dlw-doc-shot">
-              <img src="/sim/turning.png" alt="Intersection conflict zones" loading="lazy" />
+              <img src="/sim/turning.webp" alt="Intersection conflict zones" width={1280} height={646} loading="lazy" decoding="async" />
               <span className="cap">Multi-junction grid — per-junction right-of-way & reservation prevent overlaps.</span>
             </Reveal>
           </div>

@@ -56,8 +56,13 @@ export default function RootLayout({
           <ScrollProgress />
           <RevealOnScroll />
           <PointerFX />
+          <a className="dlw-skip-link" href="#main-content">Skip to content</a>
           <Nav />
-          {children}
+          {/* Skip-link target. tabIndex -1 so focus actually lands here rather
+              than staying on the link and reading the nav again. */}
+          <div id="main-content" tabIndex={-1}>
+            {children}
+          </div>
           <Footer />
           <Chatbot />
         </div>

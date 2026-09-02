@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
@@ -19,12 +19,24 @@ export function Nav() {
   const siteBase = useSiteBase();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const f = () => setScrolled(window.scrollY > 12);
-    f();
-    window.addEventListener('scroll', f);
-    return () => window.removeEventListener('scroll', f);
+    // Passive + rAF-coalesced: this fires on every scroll frame, and a
+    // non-passive listener here blocks the compositor on touch devices.
+    let queued = false;
+    const apply = () => {
+      queued = false;
+      setScrolled(window.scrollY > 12);
+    };
+    const onScroll = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(apply);
+    };
+    apply();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   // close the drawer whenever the route changes
@@ -32,9 +44,29 @@ export function Nav() {
     setMobileOpen(false); // eslint-disable-line react-hooks/set-state-in-effect -- resetting derived UI state on prop change
   }, [pathname]);
 
+  // An open drawer covers the page, so the page behind it must not scroll and
+  // Escape must close it — otherwise a keyboard user is trapped behind an
+  // overlay with no way out but Tab.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setMobileOpen(false);
+        toggleRef.current?.focus();
+      }
+    };
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [mobileOpen]);
+
   return (
     <>
-      <nav className={'dlw-nav ' + (scrolled ? 'is-scrolled' : '')}>
+      <nav className={'dlw-nav ' + (scrolled ? 'is-scrolled' : '')} aria-label="Primary">
         <div className="dlw-container dlw-nav-inner">
           <Link className="dlw-brand" href={siteBase + hrefFor('home')}>
             <LogoMark size={36} className="dlw-brand-mark" />
@@ -47,6 +79,7 @@ export function Nav() {
                 key={t.id}
                 href={siteBase + hrefFor(t.id)}
                 className={'dlw-nav-tab ' + (current === t.id ? 'is-active' : '')}
+                aria-current={current === t.id ? 'page' : undefined}
               >
                 {t.label}
               </Link>
@@ -59,19 +92,27 @@ export function Nav() {
             </Link>
           </div>
 
-          <button className="dlw-nav-mobile" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Menu">
+          <button
+            ref={toggleRef}
+            className="dlw-nav-mobile"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileOpen}
+            aria-controls="dlw-nav-drawer"
+          >
             {mobileOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </nav>
 
       {mobileOpen && (
-        <div className="dlw-nav-drawer">
+        <div className="dlw-nav-drawer" id="dlw-nav-drawer">
           {tabs.map((t) => (
             <Link
               key={t.id}
               href={siteBase + hrefFor(t.id)}
               className={'dlw-nav-drawer-tab ' + (current === t.id ? 'is-active' : '')}
+              aria-current={current === t.id ? 'page' : undefined}
               onClick={() => setMobileOpen(false)}
             >
               {t.label}
@@ -82,6 +123,7 @@ export function Nav() {
           <Link
             href={siteBase + hrefFor('hiring')}
             className={'dlw-nav-drawer-tab is-cta ' + (current === 'hiring' ? 'is-active' : '')}
+            aria-current={current === 'hiring' ? 'page' : undefined}
             onClick={() => setMobileOpen(false)}
           >
             Join us

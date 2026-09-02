@@ -172,7 +172,7 @@ function RepoCard({ repo, index, cached }: { repo: RepoMeta; index: number; cach
         <div className="dlw-repo-contribs">
           <Users size={13} />
           {repo.contributors.map((c) => (
-            <img key={c} src={`https://github.com/${c}.png?size=48`} alt={c} title={c} loading="lazy" />
+            <img key={c} src={`https://github.com/${c}.png?size=48`} alt={c} title={c} width={48} height={48} loading="lazy" decoding="async" />
           ))}
           <span className="dlw-repo-branch">{repo.branch}</span>
         </div>

@@ -56,7 +56,9 @@ function Portrait({ photo, initial, name, size, fontSize }: { photo?: string; in
   const [failed, setFailed] = useState(false);
   return (
     <div className="dlw-team-portrait" style={{ width: size, height: size, fontSize }}>
-      {photo && !failed ? <img src={photo} alt={name} onError={() => setFailed(true)} /> : initial}
+      {photo && !failed
+        ? <img src={photo} alt={name} width={size} height={size} decoding="async" onError={() => setFailed(true)} />
+        : initial}
     </div>
   );
 }
