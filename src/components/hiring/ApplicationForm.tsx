@@ -193,7 +193,7 @@ export function ApplicationForm() {
           <div className="dlw-field">
             <label className="dlw-label" htmlFor="full_name">Full name</label>
             <input
-              className="dlw-input" id="full_name" name="full_name" type="text"
+              className="dlw-input" id="full_name" name="full_name" type="text" required
               autoComplete="name" placeholder="Ada Lovelace"
               aria-invalid={err('full_name') ? true : undefined}
               aria-describedby={err('full_name') ? 'full_name-error' : undefined}
@@ -204,7 +204,7 @@ export function ApplicationForm() {
           <div className="dlw-field">
             <label className="dlw-label" htmlFor="email">Email</label>
             <input
-              className="dlw-input" id="email" name="email" type="email"
+              className="dlw-input" id="email" name="email" type="email" required
               autoComplete="email" placeholder="you@example.com"
               aria-invalid={err('email') ? true : undefined}
               aria-describedby={err('email') ? 'email-error' : undefined}
@@ -215,7 +215,7 @@ export function ApplicationForm() {
           <div className="dlw-field full">
             <label className="dlw-label" htmlFor="phone">Phone</label>
             <input
-              className="dlw-input" id="phone" name="phone" type="tel"
+              className="dlw-input" id="phone" name="phone" type="tel" required
               autoComplete="tel" placeholder="+91 98765 43210"
               aria-invalid={err('phone') ? true : undefined}
               aria-describedby={err('phone') ? 'phone-error' : undefined}
@@ -346,6 +346,7 @@ export function ApplicationForm() {
                   checked={focus.includes(f.id)}
                   onChange={() => toggleFocus(f.id)}
                   aria-invalid={err('focus') ? true : undefined}
+                  aria-describedby={err('focus') ? 'focus-error' : undefined}
                 />
                 <span className="dlw-choice-body">
                   <span className="dlw-choice-title">{f.label}</span>
@@ -365,7 +366,7 @@ export function ApplicationForm() {
         <div className="dlw-field">
           <label className="dlw-label" htmlFor="why_join">Why do you want to join DriveLink?</label>
           <textarea
-            className="dlw-textarea" id="why_join" name="why_join" maxLength={2000} rows={5}
+            className="dlw-textarea" id="why_join" name="why_join" maxLength={2000} rows={5} required
             placeholder="What pulled you toward V2V, this problem, or this team — in your own words."
             aria-invalid={err('why_join') ? true : undefined}
             aria-describedby={err('why_join') ? 'why_join-error' : 'why_join-hint'}
@@ -399,15 +400,18 @@ export function ApplicationForm() {
             Heads up — submissions aren&apos;t wired up in this environment yet.
           </p>
         )}
-        {submitError && <p className="dlw-form-status err" role="status" aria-live="polite">{submitError}</p>}
+        {submitError && <p className="dlw-form-status err" role="alert">{submitError}</p>}
         <p className="dlw-form-consent">
           We store what you send here only to evaluate your application. Your resume is kept private —
           it is never published or shared outside the team.
         </p>
         <div>
-          <button className="dlw-btn dlw-btn-primary" type="submit" disabled={busy}>
+          <button className="dlw-btn dlw-btn-primary" type="submit" disabled={busy} aria-busy={busy}>
             {status === 'uploading' ? 'Uploading resume…' : status === 'submitting' ? 'Submitting…' : 'Submit application'}
           </button>
+          <span className="dlw-sr-only" role="status">
+            {status === 'uploading' ? 'Uploading your resume.' : status === 'submitting' ? 'Submitting your application.' : ''}
+          </span>
         </div>
       </div>
     </form>

@@ -71,6 +71,29 @@ export default function ChatbotWidget() {
   // we try it first and drop to the local rule engine only after it fails.
   const [aiAvailable, setAiAvailable] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const launcherRef = useRef<HTMLButtonElement>(null);
+
+  /**
+   * Opening a panel without moving focus into it leaves a keyboard user
+   * tabbing through the whole page to reach a chat they just opened, and
+   * Escape is the expected way out of any dialog.
+   */
+  useEffect(() => {
+    if (!isOpen) return;
+    const focusTimer = window.setTimeout(() => inputRef.current?.focus(), 60);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setIsOpen(false);
+      launcherRef.current?.focus();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.clearTimeout(focusTimer);
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [isOpen]);
 
   // Define scrollToBottom before calling it in useEffect
   const scrollToBottom = () => {
@@ -285,6 +308,7 @@ export default function ChatbotWidget() {
         </AnimatePresence>
 
         <motion.button
+          ref={launcherRef}
           onClick={() => setIsOpen(!isOpen)}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -334,6 +358,9 @@ export default function ChatbotWidget() {
             exit={{ opacity: 0, y: 30, scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 350, damping: 25 }}
             className="fixed bottom-24 right-6 w-96 max-w-[calc(100vw-2rem)] h-[540px] z-50 rounded-2xl flex flex-col overflow-hidden border border-zinc-200/80 shadow-2xl bg-white text-zinc-800"
+            role="dialog"
+            aria-labelledby="dlw-chat-title"
+            ref={panelRef}
           >
             {/* Blueprint Grid Background inside Chatbox */}
             <div 
@@ -360,9 +387,9 @@ export default function ChatbotWidget() {
               <div className="flex items-center gap-3">
                 <LogoMark size={36} className="rounded-lg shadow-md" />
                 <div>
-                  <h4 className="text-sm font-semibold tracking-tight text-zinc-800">DriveLink Assistant</h4>
+                  <h2 id="dlw-chat-title" className="text-sm font-semibold tracking-tight text-zinc-800">DriveLink Assistant</h2>
                   <div className="flex items-center gap-1.5 mt-0.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]" />
+                    <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]" />
                     <span className="text-[10px] text-zinc-500 font-mono">ONLINE</span>
                   </div>
                 </div>
@@ -372,9 +399,12 @@ export default function ChatbotWidget() {
                   {aiAvailable ? 'AI' : 'LOCAL_RULES'}
                 </span>
                 <button
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => {
+                    setIsOpen(false);
+                    launcherRef.current?.focus();
+                  }}
                   className="p-1 rounded-lg hover:bg-zinc-100 text-zinc-400 hover:text-zinc-600 transition-colors cursor-pointer"
-                  aria-label="Close"
+                  aria-label="Close chat"
                 >
                   <X size={18} />
                 </button>
@@ -382,7 +412,12 @@ export default function ChatbotWidget() {
             </div>
 
             {/* Messages Area */}
-            <div className="relative z-10 flex-1 overflow-y-auto px-5 py-4 space-y-4 scrollbar-thin scrollbar-thumb-zinc-200 scrollbar-track-transparent">
+            <div
+              className="relative z-10 flex-1 overflow-y-auto px-5 py-4 space-y-4 scrollbar-thin scrollbar-thumb-zinc-200 scrollbar-track-transparent"
+              role="log"
+              aria-live="polite"
+              aria-label="Conversation"
+            >
               {messages.map((message, i) => (
                 <div
                   key={i}
@@ -450,14 +485,17 @@ export default function ChatbotWidget() {
               >
                 <input
                   type="text"
+                  ref={inputRef}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder="Ask a question..."
+                  aria-label="Ask the DriveLink assistant a question"
                   className="flex-1 bg-white border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-[#0f4c81]/40 focus:ring-1 focus:ring-[#0f4c81]/20 transition-all font-sans"
                   disabled={isLoading}
                 />
                 <button
                   type="submit"
+                  aria-label="Send message"
                   disabled={isLoading || !inputValue.trim()}
                   className={cn(
                     "w-9 h-9 rounded-xl flex items-center justify-center transition-all focus:outline-none",
