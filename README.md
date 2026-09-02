@@ -131,8 +131,8 @@ npm run build        # static export into dist/
 npm run audit:ui     # browser audit of dist/ (see below)
 ```
 
-CI runs lint, typecheck, tests, and build on every push and pull request to
-`main`.
+CI runs lint, typecheck, tests and build on every push and pull request to
+`main`, and `npm run audit:ui` in a second job that installs Chromium.
 
 > **Contributor note:** dev and the export build share the same output directory (`distDir: 'dist'`). **Stop the dev server before running `npm run build`** — running both at once corrupts `dist/` and the dev server starts throwing `require is not defined`. If that happens: stop dev → `rm -rf dist` → restart `npm run dev`.
 
@@ -200,8 +200,10 @@ after a failed submit, or the chat panel's dialog wiring, is outside what it can
 reach. Check those by hand when you touch them.
 
 It needs a Chromium binary: set `CHROMIUM_PATH`, or run
-`npx playwright install chromium` once. It is not wired into CI, which has no
-browser; run it after any change to `globals.css` or to page structure.
+`npx playwright install chromium` once. CI runs it too, in a job separate from
+the build so a browser-install hiccup doesn't take the build signal down with
+it — but run it locally after any change to `globals.css` or to page structure
+rather than finding out from a red check.
 
 Every finding it reports was a real defect the first time it ran — including
 the mesh toggles overlapping the Lanes label on a phone, the docs feature tables
