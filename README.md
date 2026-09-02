@@ -59,7 +59,7 @@ DriveLink is structured in three layers:
 ## Traction
 
 - 🏆 **All India Rank 5** — Pitch Arena National Finals, **IIT Delhi**
-- 📜 **Patent Grant Option** awarded at a national hackathon (4th place) for originality
+- 📜 **Patent Grant Option** awarded at a national hackathon (4th place) for originality — an award backing a future filing, not a granted patent
 - 🔧 **NMIT hardware collaboration** — moved the first autonomous system from theory to a working implementation
 - 🤝 Validated through **PedalStart** mentorship and early industry conversations
 
@@ -85,20 +85,29 @@ This repo is the **official DriveLink marketing website** — a statically-expor
 
 ```
 drivelink/
+├── api/chat.js                 # Vercel serverless function behind the assistant
 ├── public/                     # static assets
+├── scripts/                    # audit-ui.mjs + the static server it runs against
+├── supabase/
+│   ├── migrations/             # applications table, RLS, desk auth
+│   └── functions/hiring-desk/  # server side of /desk (deployed separately)
+├── tests/                      # vitest — see Tests below
 ├── src/
 │   ├── app/
-│   │   ├── layout.tsx          # root layout — nav, footer, scroll/pointer FX
+│   │   ├── layout.tsx          # root layout — nav, footer, skip link, scroll FX
 │   │   ├── page.tsx            # landing page (composes the sections)
+│   │   ├── not-found.tsx       # branded 404
 │   │   ├── globals.css         # design system: blueprint theme, dlw-* classes
-│   │   ├── product|docs|team|investors/   # per-page routes
+│   │   ├── robots.ts · sitemap.ts
+│   │   ├── product|docs|team|investors|hiring|v2v-communication|privacy|terms|desk/
 │   │   └── pages/              # page bodies (PageProduct, PageDocs, …)
-│   ├── sections/               # landing sections (HeroV2V, RoadmapSection, TeamSection, …)
+│   ├── sections/               # landing sections (HeroV2V, RoadmapSection, Stats, …)
 │   ├── components/
 │   │   ├── Nav.tsx · layout/Footer.tsx
-│   │   ├── anim/               # ScrollProgress, RevealOnScroll, PointerFX
-│   │   └── ui/                 # Button, GlassCard
-│   ├── lib/                    # v2vSim.ts (live simulation), nav, utils
+│   │   ├── Chatbot.tsx         # deferred loader for ChatbotWidget.tsx
+│   │   ├── hiring/             # ApplicationForm
+│   │   └── anim/               # Reveal, RevealOnScroll, ScrollProgress, CountUp, PointerFX
+│   ├── lib/                    # v2vSim, seo, nav, supabase, applicantValidation, chatFormat
 │   └── hooks/
 ├── next.config.js              # static export → dist/
 ├── tailwind.config.js
@@ -109,73 +118,7 @@ drivelink/
 
 ## Getting started
 
-**Prerequisites:** Node.js 18+ and npm.
-
-```bash
-# 1. install dependencies
-npm install
-
-# 2. run the dev server  →  http://localhost:3000
-npm run dev
-
-# 3. production build (static export to ./dist)
-npm run build
-
-# 4. lint
-npm run lint
-```
-
-> **Contributor note:** dev and the export build share the same output directory (`distDir: 'dist'`). **Stop the dev server before running `npm run build`** — running both at once corrupts `dist/` and the dev server starts throwing `require is not defined`. If that happens: stop dev → `rm -rf dist` → restart `npm run dev`.
-
-## Deployment
-
-The site is a static export hosted on **Vercel**. `vercel.json` enables `cleanUrls`, so routes like `/product` and `/docs` resolve without a trailing `.html`. Pushing to `main` triggers an automatic redeploy.
-
-The floating chatbot (`src/components/Chatbot.tsx`) calls `/api/chat`, a standalone Vercel serverless function (`api/chat.js`, kept outside `src/app` since Next's own API routes aren't buildable under `output: 'export'`). It holds the Groq API key server-side — set `GROQ_API_KEY` (no `NEXT_PUBLIC_` prefix) in the Vercel project's Environment Variables. See `.env.example`. Without it configured, the function returns 503 and the widget falls back to a local, rule-based responder. `next dev` does not serve `/api/*`; use `vercel dev` to exercise the live path locally.
-
----
-
-## Team
-
-| Role | Name |
-|---|---|
-| CEO · Chief Systems Architect | **Hruday** — vision, protocol architecture, partnerships, standardization roadmap |
-| CTO · Computer Science | **Nikhil** — prediction engine, simulation environment, V2V messaging intelligence |
-| CPO · Mechanical Engineering | **Krishna** — hardware feasibility, integration, real-vehicle interfacing |
-| Chief Development Officer | **Shreyas** — RandomForest decision models and real-time inference |
-| Mentor | **Harish** |
-
-**Advisors & mentors:** Harsirjan Kour (PedalStart), Sayanee Bhowmik (ex-VC), Debasis Chakraborty (CEO, Dariaan Consulting), and industry input from Simple Energy.
-
-## Roadmap
-
-| Status | Milestone |
-|---|---|
-| ✅ Shipped | Ideation & concept validation |
-| ✅ Shipped | Strategic mentorship (PedalStart, NMIT) |
-| ✅ Shipped | Autonomous Stack v1.0 |
-| ✅ Shipped | AIR 5 · IIT Delhi |
-| 🔵 In progress | Alpha Pilot Program — OEM integration & hardware-in-the-loop (Q3 2026) |
-| ⬜ Planned | Decentralized Data Node v1 (Q4 2026) |
-| ⬜ Planned | DRV Token Protocol Audit (Q1 2027) |
-| ⬜ Planned | Cross-OEM Standardization (Nov 2027) |
-
-## Vision
-
-DriveLink aims to become the **universal V2V communication standard** for vehicles worldwide — the cooperative intelligence layer for safer, smoother, more efficient mobility.
-
----
-
-## Contact
-
-- **Email:** [tech.drivelink@gmail.com](mailto:tech.drivelink@gmail.com)
-- **Web:** [drivelink.tech](https://www.drivelink.tech)
-
-## License
-
-To be finalised based on deployment and commercialization strategy. © DriveLink. All rights reserved.
-
-## Development
+**Prerequisites:** Node.js 20 and npm.
 
 ```bash
 npm ci
@@ -190,6 +133,8 @@ npm run audit:ui     # browser audit of dist/ (see below)
 
 CI runs lint, typecheck, tests, and build on every push and pull request to
 `main`.
+
+> **Contributor note:** dev and the export build share the same output directory (`distDir: 'dist'`). **Stop the dev server before running `npm run build`** — running both at once corrupts `dist/` and the dev server starts throwing `require is not defined`. If that happens: stop dev → `rm -rf dist` → restart `npm run dev`.
 
 ### Tests
 
@@ -262,3 +207,51 @@ Every finding it reports was a real defect the first time it ran — including
 the mesh toggles overlapping the Lanes label on a phone, the docs feature tables
 having their last column cut off with no way to reach it, and the simulation's
 three sliders having no labels at all.
+
+## Deployment
+
+The site is a static export hosted on **Vercel**. `vercel.json` enables `cleanUrls`, so routes like `/product` and `/docs` resolve without a trailing `.html`, and sets the response headers — HSTS, `nosniff`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`, COOP, and the CSP directives a static export can enforce without nonces (Next inlines its own hydration scripts, so `script-src` is not among them). Pushing to `main` triggers an automatic redeploy.
+
+The floating chatbot (`src/components/ChatbotWidget.tsx`, loaded on browser idle by `src/components/Chatbot.tsx` so framer-motion stays off the critical path) calls `/api/chat`, a standalone Vercel serverless function (`api/chat.js`, kept outside `src/app` since Next's own API routes aren't buildable under `output: 'export'`). It holds the Groq API key server-side — set `GROQ_API_KEY` (no `NEXT_PUBLIC_` prefix) in the Vercel project's Environment Variables. See `.env.example`. Without it configured, the function returns 503 and the widget falls back to a local, rule-based responder. `next dev` does not serve `/api/*`; use `vercel dev` to exercise the live path locally.
+
+---
+
+## Team
+
+| Role | Name |
+|---|---|
+| CEO · Chief Systems Architect | **Hruday** — vision, protocol architecture, partnerships, standardization roadmap |
+| CTO · Computer Science | **Nikhil** — prediction engine, simulation environment, V2V messaging intelligence |
+| CPO · Mechanical Engineering | **Krishna** — hardware feasibility, integration, real-vehicle interfacing |
+| Chief Development Officer | **Shreyas** — RandomForest decision models and real-time inference |
+| Mentor | **Harish** |
+
+**Advisors & mentors:** Harsirjan Kour (PedalStart), Sayanee Bhowmik (ex-VC), Debasis Chakraborty (CEO, Dariaan Consulting), and industry input from Simple Energy.
+
+## Roadmap
+
+| Status | Milestone |
+|---|---|
+| ✅ Shipped | Ideation & concept validation |
+| ✅ Shipped | Strategic mentorship (PedalStart, NMIT) |
+| ✅ Shipped | Autonomous Stack v1.0 |
+| ✅ Shipped | AIR 5 · IIT Delhi |
+| 🔵 In progress | Alpha Pilot Program — OEM integration & hardware-in-the-loop (Q3 2026) |
+| ⬜ Planned | Decentralized Data Node v1 (Q4 2026) |
+| ⬜ Planned | DRV Token Protocol Audit (Q1 2027) |
+| ⬜ Planned | Cross-OEM Standardization (Nov 2027) |
+
+## Vision
+
+DriveLink aims to become the **universal V2V communication standard** for vehicles worldwide — the cooperative intelligence layer for safer, smoother, more efficient mobility.
+
+---
+
+## Contact
+
+- **Email:** [tech.drivelink@gmail.com](mailto:tech.drivelink@gmail.com)
+- **Web:** [drivelink.tech](https://www.drivelink.tech)
+
+## License
+
+To be finalised based on deployment and commercialization strategy. © DriveLink. All rights reserved.
