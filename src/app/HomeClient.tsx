@@ -2,7 +2,8 @@
 import { useRouter } from 'next/navigation';
 import { HeroConnect } from '../sections/HeroConnect';
 import { HowConnectWorks } from '../sections/HowConnectWorks';
-import { Stats } from '../sections/Stats';
+import { ConnectStats } from '../sections/ConnectStats';
+// import { Stats } from '../sections/Stats'; // retained for product/V2V page
 import { StorySection } from '../sections/StorySection';
 import { RoadmapSection } from '../sections/RoadmapSection';
 import { InvestorCTA } from '../sections/InvestorCTA';
@@ -23,8 +24,8 @@ export function HomeClient() {
       {/* ── 03 How it works — 3-step Connect flow ── */}
       <HowConnectWorks />
 
-      {/* ── 04 Product stats ── */}
-      <Stats />
+      {/* ── 04 Product stats — DriveLink Connect metrics ── */}
+      <ConnectStats />
 
       {/* ── 05 Company origin story & credentials ── */}
       <StorySection />
