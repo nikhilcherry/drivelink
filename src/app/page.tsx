@@ -2,9 +2,9 @@ import { HomeClient } from "./HomeClient";
 import { SITE_URL, OG_IMAGE, pageMetadata } from "../lib/seo";
 
 export const metadata = pageMetadata({
-  title: "DriveLink Connect · Smart Vehicle QR Tag for Anonymous Parking Alerts | Contact Car Owner",
+  title: "DriveLink · V2V Communication Backbone for Automotive AI",
   description:
-    "Contact car owners instantly with DriveLink Connect smart vehicle QR tag. Receive anonymous parking alerts and emergency notifications via private two-way chat without exposing phone numbers.",
+    "DriveLink adds the missing V2V communication layer to modern vehicles — a low-latency, intent-first protocol connecting OEMs, fleets, and smart cities.",
   path: "/",
   // Force an absolute canonical — pageMetadata resolves '/' → SITE_URL already,
   // but we pass absoluteUrl explicitly so it can never be relativised.
@@ -12,7 +12,7 @@ export const metadata = pageMetadata({
 });
 
 /**
- * Single JSON-LD @graph combining Organization, SoftwareApplication, and FAQPage
+ * Single JSON-LD @graph combining Organization, SoftwareApplication, and WebSite
  * schemas so crawlers and rich search engines receive structured entities in one payload.
  */
 const graphJsonLd = {
@@ -22,7 +22,7 @@ const graphJsonLd = {
       "@type": "Organization",
       "@id": `${SITE_URL}/#organization`,
       name: "DriveLink Technologies",
-      alternateName: "DriveLink Connect",
+      alternateName: "DriveLink",
       url: SITE_URL,
       logo: {
         "@type": "ImageObject",
@@ -31,7 +31,7 @@ const graphJsonLd = {
         height: 512,
       },
       description:
-        "DriveLink Technologies builds privacy-first vehicle communication tools. DriveLink Connect is a smart vehicle QR tag service that lets anyone contact a car owner instantly through an anonymous, end-to-end encrypted chat without sharing phone numbers.",
+        "DriveLink is a Vehicle-to-Vehicle (V2V) communication protocol that lets cars broadcast intent and predicted trajectory in under 50ms, enabling proactive cooperative driving across OEMs, fleets, and smart cities.",
       founder: [
         { "@type": "Person", name: "Hruday" },
         { "@type": "Person", name: "Nikhil" },
@@ -51,50 +51,23 @@ const graphJsonLd = {
     {
       "@type": "SoftwareApplication",
       "@id": `${SITE_URL}/#app`,
-      name: "DriveLink Connect",
+      name: "DriveLink V2V Protocol",
       url: SITE_URL,
-      applicationCategory: "UtilityApplication",
-      operatingSystem: "Web, iOS, Android",
+      applicationCategory: "AutomotiveApplication",
+      operatingSystem: "Embedded, Linux, Cross-platform",
       description:
-        "A smart vehicle QR tag for private windshield contact. Scan the tag to open an instant browser chat, send anonymous parking alerts, or resolve vehicle issues without exposing either party's phone number.",
-      offers: {
-        "@type": "Offer",
-        price: "0",
-        priceCurrency: "USD",
-        availability: "https://schema.org/InStock",
-      },
+        "A low-latency, intent-first Vehicle-to-Vehicle (V2V) communication protocol broadcasting predicted trajectory and intent between vehicles in under 50ms.",
       image: `${SITE_URL}${OG_IMAGE}`,
       publisher: { "@id": `${SITE_URL}/#organization` },
     },
     {
-      "@type": "FAQPage",
-      "@id": `${SITE_URL}/#faq`,
-      mainEntity: [
-        {
-          "@type": "Question",
-          name: "How do I contact a car owner without their phone number?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "DriveLink Connect allows anyone to scan the windshield QR tag using their phone camera to open an instant, anonymous web chat without revealing phone numbers on either side.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "Does the person scanning need an app?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "No app is required to scan. It opens natively in any mobile browser on iOS and Android.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "Is the windshield tag weatherproof?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Yes, DriveLink tags use automotive-grade vinyl resistant to rain, intense UV sunlight, and windshield heat.",
-          },
-        },
-      ],
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      name: "DriveLink",
+      url: SITE_URL,
+      description:
+        "The communication backbone for automotive AI — a V2V intent-sharing protocol.",
+      publisher: { "@id": `${SITE_URL}/#organization` },
     },
   ],
 };

@@ -21,7 +21,7 @@ const softwareJsonLd = {
 
 export default function ProductRoute() {
   return (
-    <>
+    <div style={{ paddingTop: 120 }} className="pt-28">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareJsonLd) }}
@@ -31,6 +31,6 @@ export default function ProductRoute() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd("Product", "/product")) }}
       />
       <ProductClient />
-    </>
+    </div>
   );
 }

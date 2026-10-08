@@ -6,19 +6,11 @@ import { Menu, X } from 'lucide-react';
 import { LogoMark } from './ui/Logo';
 import { hrefFor, isNavPath, pageFromPath, useSiteBase, type Page } from '../lib/nav';
 
-interface NavTab {
-  id: string;
-  label: string;
-  href: string;
-  pageKey?: Page;
-  isAnchor?: boolean;
-}
-
-const tabs: NavTab[] = [
-  { id: 'home', label: 'Home', href: '/', pageKey: 'home' },
-  { id: 'product', label: 'Product', href: '/product', pageKey: 'product' },
-  { id: 'team', label: 'Team', href: '/team', pageKey: 'team' },
-  { id: 'investors', label: 'Investors', href: '/investors', pageKey: 'investors' },
+const tabs: { id: Page; label: string }[] = [
+  { id: 'home', label: 'Home' },
+  { id: 'product', label: 'Product' },
+  { id: 'team', label: 'Team' },
+  { id: 'investors', label: 'Investors' },
 ];
 
 export function Nav() {
@@ -27,7 +19,6 @@ export function Nav() {
   // null on a page the nav doesn't point at (/privacy, /terms, a 404), so no
   // tab is highlighted or announced as current.
   const current = isNavPath(path) ? pageFromPath(path) : null;
-  const isHomepage = path === '/' || path === '';
   const siteBase = useSiteBase();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -76,31 +67,6 @@ export function Nav() {
     };
   }, [mobileOpen]);
 
-  const handleTabClick = (e: React.MouseEvent<HTMLAnchorElement>, tab: NavTab) => {
-    if (tab.isAnchor && isHomepage) {
-      const targetId = tab.href.replace(/^.*#/, '');
-      const el = document.getElementById(targetId);
-      if (el) {
-        e.preventDefault();
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        window.history.pushState(null, '', `#${targetId}`);
-      }
-    }
-  };
-
-  const handleDrawerTabClick = (e: React.MouseEvent<HTMLAnchorElement>, tab: NavTab) => {
-    setMobileOpen(false);
-    if (tab.isAnchor && isHomepage) {
-      const targetId = tab.href.replace(/^.*#/, '');
-      const el = document.getElementById(targetId);
-      if (el) {
-        e.preventDefault();
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        window.history.pushState(null, '', `#${targetId}`);
-      }
-    }
-  };
-
   return (
     <>
       <nav className={'dlw-nav ' + (scrolled ? 'is-scrolled' : '')} aria-label="Primary">
@@ -111,28 +77,20 @@ export function Nav() {
           </Link>
 
           <div className="dlw-nav-center">
-            {tabs.map((t) => {
-              const active = t.pageKey ? current === t.pageKey : false;
-              return (
-                <Link
-                  key={t.id}
-                  href={siteBase + t.href}
-                  className={'dlw-nav-tab ' + (active ? 'is-active' : '')}
-                  aria-current={active ? 'page' : undefined}
-                  onClick={(e) => handleTabClick(e, t)}
-                >
-                  {t.label}
-                </Link>
-              );
-            })}
+            {tabs.map((t) => (
+              <Link
+                key={t.id}
+                href={siteBase + hrefFor(t.id)}
+                className={'dlw-nav-tab ' + (current === t.id ? 'is-active' : '')}
+                aria-current={current === t.id ? 'page' : undefined}
+              >
+                {t.label}
+              </Link>
+            ))}
           </div>
 
           <div className="dlw-nav-right">
-            <Link
-              className="dlw-nav-pill"
-              href={siteBase + hrefFor('hiring')}
-              aria-label="Join our team or submit application"
-            >
+            <Link className="dlw-nav-pill" href={siteBase + hrefFor('hiring')}>
               Join us
             </Link>
           </div>
@@ -152,20 +110,17 @@ export function Nav() {
 
       {mobileOpen && (
         <div className="dlw-nav-drawer" id="dlw-nav-drawer">
-          {tabs.map((t) => {
-            const active = t.pageKey ? current === t.pageKey : false;
-            return (
-              <Link
-                key={t.id}
-                href={siteBase + t.href}
-                className={'dlw-nav-drawer-tab ' + (active ? 'is-active' : '')}
-                aria-current={active ? 'page' : undefined}
-                onClick={(e) => handleDrawerTabClick(e, t)}
-              >
-                {t.label}
-              </Link>
-            );
-          })}
+          {tabs.map((t) => (
+            <Link
+              key={t.id}
+              href={siteBase + hrefFor(t.id)}
+              className={'dlw-nav-drawer-tab ' + (current === t.id ? 'is-active' : '')}
+              aria-current={current === t.id ? 'page' : undefined}
+              onClick={() => setMobileOpen(false)}
+            >
+              {t.label}
+            </Link>
+          ))}
           {/* The CTA pill lives in .dlw-nav-right, which is display:none below
               768px — without this entry it is unreachable on mobile entirely. */}
           <Link
