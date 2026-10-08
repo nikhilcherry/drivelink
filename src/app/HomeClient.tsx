@@ -1,8 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { HeroV2V } from '../sections/HeroV2V';
-import { Manifesto } from '../sections/Manifesto';
-import { HowItWorks } from '../sections/HowItWorks';
+import { HeroConnect } from '../sections/HeroConnect';
+import { HowConnectWorks } from '../sections/HowConnectWorks';
 import { Stats } from '../sections/Stats';
 import { StorySection } from '../sections/StorySection';
 import { RoadmapSection } from '../sections/RoadmapSection';
@@ -15,13 +14,51 @@ export function HomeClient() {
 
   return (
     <main>
-      <HeroV2V onCTA={go} />
-      <Manifesto />
-      <HowItWorks />
+      {/* ── 01 Hero — DriveLink Connect product landing ── */}
+      <HeroConnect onCTA={go} />
+
+      {/* ── 02 Value manifesto — Connect positioning ── */}
+      <ConnectManifesto />
+
+      {/* ── 03 How it works — 3-step Connect flow ── */}
+      <HowConnectWorks />
+
+      {/* ── 04 Product stats ── */}
       <Stats />
+
+      {/* ── 05 Company origin story & credentials ── */}
       <StorySection />
+
+      {/* ── 06 Roadmap ── */}
       <RoadmapSection />
+
+      {/* ── 07 Investor / partner CTA ── */}
       <InvestorCTA onPartner={() => go('investors')} />
     </main>
+  );
+}
+
+/**
+ * Inline manifesto-style value statement for DriveLink Connect.
+ * Replaces the V2V-specific <Manifesto /> which is retained in
+ * src/sections/Manifesto.tsx for potential reuse on the product page.
+ */
+function ConnectManifesto() {
+  return (
+    <section className="dlw-manifesto" aria-label="Why DriveLink Connect exists">
+      <div className="dlw-manifesto-inner">
+        <div className="dlw-eyebrow dlw-manifesto-eyebrow">
+          <span className="num">01</span> Why DriveLink Connect exists
+        </div>
+        <p className="dlw-manifesto-text">
+          <span className="quiet">Every parked car is a problem waiting to happen.</span>{' '}
+          Strangers need to reach owners{' '}
+          <span className="highlight">without a phone number</span>.{' '}
+          <span className="quiet">
+            DriveLink Connect is a private windshield QR tag — scan, chat, resolve. No numbers shared. Ever.
+          </span>
+        </p>
+      </div>
+    </section>
   );
 }

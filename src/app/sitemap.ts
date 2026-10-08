@@ -8,7 +8,8 @@ export const dynamic = "force-static";
 const LOW_PRIORITY_ROUTES = new Set(["/privacy", "/terms"]);
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = ["", "/product", "/team", "/investors", "/hiring", "/v2v-communication", "/privacy", "/terms"];
+  // "" = DriveLink Connect product landing page (priority 1.0).
+  const routes = ["", "/product", "/team", "/investors", "/hiring", "/privacy", "/terms"];
   const pages: MetadataRoute.Sitemap = routes.map((route) => ({
     url: `${SITE_URL}${route}`,
     lastModified: new Date(),
