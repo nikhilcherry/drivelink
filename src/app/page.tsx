@@ -2,9 +2,9 @@ import { HomeClient } from "./HomeClient";
 import { SITE_URL, OG_IMAGE, pageMetadata } from "../lib/seo";
 
 export const metadata = pageMetadata({
-  title: "DriveLink Connect · Private Windshield QR Tag for Vehicle Owners",
+  title: "DriveLink Connect · Smart Vehicle QR Tag for Anonymous Parking Alerts | Contact Car Owner",
   description:
-    "Reach any vehicle owner instantly without exposing phone numbers. A secure windshield QR tag that turns parking alerts and emergencies into private two-way chat.",
+    "Contact car owners instantly with DriveLink Connect smart vehicle QR tag. Receive anonymous parking alerts and emergency notifications via private two-way chat without exposing phone numbers.",
   path: "/",
   // Force an absolute canonical — pageMetadata resolves '/' → SITE_URL already,
   // but we pass absoluteUrl explicitly so it can never be relativised.
@@ -12,8 +12,8 @@ export const metadata = pageMetadata({
 });
 
 /**
- * Single JSON-LD @graph combining the Organization and SoftwareApplication
- * schemas so crawlers receive both in one HTTP/document round-trip.
+ * Single JSON-LD @graph combining Organization, SoftwareApplication, and FAQPage
+ * schemas so crawlers and rich search engines receive structured entities in one payload.
  */
 const graphJsonLd = {
   "@context": "https://schema.org",
@@ -31,7 +31,7 @@ const graphJsonLd = {
         height: 512,
       },
       description:
-        "DriveLink Technologies builds privacy-first vehicle communication tools. DriveLink Connect is a secure windshield QR tag service that lets anyone reach a vehicle owner instantly through an anonymous, end-to-end encrypted chat — without ever revealing phone numbers.",
+        "DriveLink Technologies builds privacy-first vehicle communication tools. DriveLink Connect is a smart vehicle QR tag service that lets anyone contact a car owner instantly through an anonymous, end-to-end encrypted chat without sharing phone numbers.",
       founder: [
         { "@type": "Person", name: "Hruday" },
         { "@type": "Person", name: "Nikhil" },
@@ -56,7 +56,7 @@ const graphJsonLd = {
       applicationCategory: "UtilityApplication",
       operatingSystem: "Web, iOS, Android",
       description:
-        "A private windshield QR tag that lets passersby reach your vehicle instantly. Scan the tag → open an anonymous two-way chat → notify the owner about parking issues or emergencies — all without exposing either party's phone number.",
+        "A smart vehicle QR tag for private windshield contact. Scan the tag to open an instant browser chat, send anonymous parking alerts, or resolve vehicle issues without exposing either party's phone number.",
       offers: {
         "@type": "Offer",
         price: "0",
@@ -65,6 +65,36 @@ const graphJsonLd = {
       },
       image: `${SITE_URL}${OG_IMAGE}`,
       publisher: { "@id": `${SITE_URL}/#organization` },
+    },
+    {
+      "@type": "FAQPage",
+      "@id": `${SITE_URL}/#faq`,
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "How do I contact a car owner without their phone number?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "DriveLink Connect allows anyone to scan the windshield QR tag using their phone camera to open an instant, anonymous web chat without revealing phone numbers on either side.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Does the person scanning need an app?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "No app is required to scan. It opens natively in any mobile browser on iOS and Android.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Is the windshield tag weatherproof?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes, DriveLink tags use automotive-grade vinyl resistant to rain, intense UV sunlight, and windshield heat.",
+          },
+        },
+      ],
     },
   ],
 };
