@@ -33,7 +33,7 @@ export function pageMetadata({
       url,
       siteName: SITE_NAME,
       type: 'website',
-      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: 'DriveLink — Sub-50ms V2V intent protocol' }],
+      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: 'DriveLink Connect — Smart Vehicle QR Tag' }],
     },
     twitter: {
       card: 'summary_large_image',
