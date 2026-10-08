@@ -15,7 +15,7 @@ export function Footer() {
               <span style={{ fontWeight: 700, color: '#fff', letterSpacing: '-0.02em' }}>DriveLink</span>
             </div>
             <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.62)', lineHeight: 1.6, margin: 0, maxWidth: 280 }}>
-              The decentralized communication backbone for automotive AI. Intent-first, low-latency, cross-OEM.
+              Private, secure QR-code communication for vehicle owners.
             </p>
 
             <address className="dlw-footer-address">
@@ -28,11 +28,10 @@ export function Footer() {
           <div>
             <h2>Product</h2>
             <div className="dlw-footer-links">
-              <Link href={siteBase + '/product'}>Overview</Link>
-              <Link href={siteBase + '/#how-it-works'}>How it works</Link>
-              <Link href="https://core.drivelink.tech/docs">Documentation</Link>
-              <Link href={siteBase + '/v2v-communication'}>What is V2V?</Link>
-              <Link href={siteBase + '/#roadmap'}>Roadmap</Link>
+              <Link href={siteBase + '/'}>Overview</Link>
+              <Link href={siteBase + '/#how-connect-works'}>How it works</Link>
+              <Link href={siteBase + '/#cta'}>Pricing</Link>
+              <a href="mailto:tech.drivelink@gmail.com?subject=DriveLink%20Connect%20Tag%20Order">Order Tags</a>
             </div>
           </div>
 
@@ -52,10 +51,10 @@ export function Footer() {
             <div className="dlw-footer-links">
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 14, color: 'rgba(255,255,255,0.8)' }}>
                 <span style={{ width: 8, height: 8, borderRadius: 999, background: '#22c55e', boxShadow: '0 0 8px #22c55e', flexShrink: 0 }} />
-                Simulation stack live
+                DriveLink Connect Live
               </span>
-              <span className="dlw-mono" style={{ color: 'rgba(255,255,255,0.68)', fontSize: 12 }}>Protocol v0.1</span>
-              <span className="dlw-mono" style={{ color: 'rgba(255,255,255,0.68)', fontSize: 12 }}>Patent grant option · award, not a granted patent</span>
+              <span className="dlw-mono" style={{ color: 'rgba(255,255,255,0.68)', fontSize: 12 }}>Zero-Knowledge Phone Privacy</span>
+              <span className="dlw-mono" style={{ color: 'rgba(255,255,255,0.68)', fontSize: 12 }}>Patent grant option · AIR 5 IIT Delhi</span>
             </div>
           </div>
         </div>
