@@ -16,7 +16,7 @@ interface NavTab {
 
 const tabs: NavTab[] = [
   { id: 'home', label: 'Home', href: '/', pageKey: 'home' },
-  { id: 'product', label: 'Product', href: '/#how-connect-works', isAnchor: true },
+  { id: 'product', label: 'Product', href: '/product', pageKey: 'product' },
   { id: 'team', label: 'Team', href: '/team', pageKey: 'team' },
   { id: 'investors', label: 'Investors', href: '/investors', pageKey: 'investors' },
 ];
@@ -78,11 +78,12 @@ export function Nav() {
 
   const handleTabClick = (e: React.MouseEvent<HTMLAnchorElement>, tab: NavTab) => {
     if (tab.isAnchor && isHomepage) {
-      const el = document.getElementById('how-connect-works');
+      const targetId = tab.href.replace(/^.*#/, '');
+      const el = document.getElementById(targetId);
       if (el) {
         e.preventDefault();
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        window.history.pushState(null, '', '#how-connect-works');
+        window.history.pushState(null, '', `#${targetId}`);
       }
     }
   };
@@ -90,11 +91,12 @@ export function Nav() {
   const handleDrawerTabClick = (e: React.MouseEvent<HTMLAnchorElement>, tab: NavTab) => {
     setMobileOpen(false);
     if (tab.isAnchor && isHomepage) {
-      const el = document.getElementById('how-connect-works');
+      const targetId = tab.href.replace(/^.*#/, '');
+      const el = document.getElementById(targetId);
       if (el) {
         e.preventDefault();
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        window.history.pushState(null, '', '#how-connect-works');
+        window.history.pushState(null, '', `#${targetId}`);
       }
     }
   };

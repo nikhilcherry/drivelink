@@ -1,6 +1,8 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { HeroConnect } from '../sections/HeroConnect';
+import { CarSimulation } from '../sections/CarSimulation';
+export { TrafficSimulator } from '../sections/TrafficSimulator';
 import { HowConnectWorks } from '../sections/HowConnectWorks';
 import { ConnectStats } from '../sections/ConnectStats';
 import { StorySection } from '../sections/StorySection';
@@ -15,6 +17,9 @@ export function HomeClient() {
     <main>
       {/* ── 01 Hero — DriveLink Connect product landing ── */}
       <HeroConnect onCTA={go} />
+
+      {/* ── Original Interactive Car Simulation ── */}
+      <CarSimulation />
 
       {/* ── 02 Value manifesto — Connect positioning ── */}
       <ConnectManifesto />
