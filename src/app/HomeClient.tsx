@@ -3,9 +3,7 @@ import { useRouter } from 'next/navigation';
 import { HeroConnect } from '../sections/HeroConnect';
 import { HowConnectWorks } from '../sections/HowConnectWorks';
 import { ConnectStats } from '../sections/ConnectStats';
-// import { Stats } from '../sections/Stats'; // retained for product/V2V page
 import { StorySection } from '../sections/StorySection';
-import { RoadmapSection } from '../sections/RoadmapSection';
 import { InvestorCTA } from '../sections/InvestorCTA';
 import { hrefFor, type Page } from '../lib/nav';
 
@@ -30,10 +28,7 @@ export function HomeClient() {
       {/* ── 05 Company origin story & credentials ── */}
       <StorySection />
 
-      {/* ── 06 Roadmap ── */}
-      <RoadmapSection />
-
-      {/* ── 07 Investor / partner CTA ── */}
+      {/* ── 06 Investor / partner CTA ── */}
       <InvestorCTA onPartner={() => go('investors')} />
     </main>
   );
