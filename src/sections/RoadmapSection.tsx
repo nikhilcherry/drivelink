@@ -16,7 +16,7 @@ interface Milestone {
 // 'completed' | 'upcoming' and quarter labels in the "Q# YYYY" / "Mon YYYY" format.
 const milestones: Milestone[] = [
   { date: 'Completed', title: 'Ideation & Concept Validation', status: 'completed', Icon: Lightbulb, details: ['Foundational research', 'OEM problem mapping'] },
-  { date: 'Completed', title: 'Strategic Mentorship', status: 'completed', Icon: Users, details: ['PedalStart validation', 'NMIT support'] },
+  { date: 'Completed', title: 'Strategic Mentorship', status: 'completed', Icon: Users, details: ['PedalStart validation'] },
   { date: 'Completed', title: 'Autonomous Stack v1.0', status: 'completed', Icon: Cpu, details: ['Core prediction software', 'System architecture fixed'] },
   { date: 'Completed', title: 'AIR 5 · IIT Delhi', status: 'completed', Icon: Trophy, details: ['National validation', 'Patent grant option'] },
   { date: 'Q3 2026', title: 'Alpha Pilot Program', status: 'upcoming', Icon: Rocket, details: ['OEM partner integration', 'Hardware-in-the-loop tests'] },

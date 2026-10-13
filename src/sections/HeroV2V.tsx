@@ -87,7 +87,7 @@ function HeroMarquee() {
 const LOGICAL_W = 1000;
 const LOGICAL_H = 437.5;
 
-function V2VSimulation() {
+export function V2VSimulation() {
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hud0 = useRef<HTMLDivElement>(null);
@@ -189,3 +189,6 @@ function V2VSimulation() {
     </div>
   );
 }
+
+export const CarSimulation = V2VSimulation;
+export const TrafficSimulator = V2VSimulation;

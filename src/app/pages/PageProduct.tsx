@@ -44,7 +44,7 @@ const faqs = [
 export function PageProduct({ setPage }: PageProductProps) {
   return (
     <main>
-      <section className="dlw-section" style={{ paddingTop: 160 }}>
+      <section className="dlw-section" style={{ paddingTop: 40 }}>
         <div className="dlw-container">
           <div className="dlw-section-head" style={{ maxWidth: 880 }}>
             <div className="dlw-eyebrow"><span className="num">P</span> Product</div>
@@ -76,9 +76,9 @@ export function PageProduct({ setPage }: PageProductProps) {
         </div>
       </section>
 
-      <section className="dlw-section dlw-section-paper">
+      <section id="simulation" className="dlw-section dlw-section-paper" style={{ scrollMarginTop: 120 }}>
         <div className="dlw-container">
-          <div className="dlw-section-head" style={{ maxWidth: 880 }}>
+          <div className="dlw-section-head" style={{ maxWidth: 880, scrollMarginTop: 120 }}>
             <div className="dlw-eyebrow"><span className="num">SIM</span> Concept simulation</div>
             <h2 className="dlw-section-title">See the protocol drive traffic.</h2>
             <p className="dlw-section-sub">

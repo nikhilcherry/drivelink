@@ -1,4 +1,4 @@
-import { Lightbulb, Users, Presentation, Trophy, MapPin, Award, Cpu } from 'lucide-react';
+import { Lightbulb, Users, Presentation, Trophy, MapPin, Award } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 interface Achievement {
@@ -34,11 +34,6 @@ const items: StoryItem[] = [
     // TODO(founder): review/revise this entry
     date: '26 Nov 2024', title: 'First investor deck', Icon: Presentation,
     body: 'High-impact pitch deck built; first investor meeting with Debasis Chakraborty (CEO, Dariaan Consulting). Insights from the CEO of Simple Energy on real-world EV fleet movement patterns.',
-  },
-  {
-    // TODO(founder): review/revise this entry — verify date (moved here to keep timeline chronological)
-    date: 'Dec 2025', title: 'NMIT hardware collaboration', Icon: Cpu,
-    body: 'Partnered with a technical team from NMIT for hardware support. Their expertise moved the first autonomous system from theoretical models to a functional, working implementation.',
   },
   {
     // TODO(founder): review/revise this entry
