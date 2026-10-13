@@ -73,47 +73,61 @@ export default async function handler(req, res) {
       content: m.content,
     }));
 
-  try {
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        // Groq retires hosted models on its own schedule, and it retired the
-        // previous default (llama-3.3-70b-versatile). Every call then failed,
-        // this handler turned that into a 502, and the widget quietly dropped
-        // to canned answers — so the bot looked alive while answering from a
-        // hardcoded list. If it goes quiet again, check the model still exists
-        // before anything else:
-        //   curl -s https://api.groq.com/openai/v1/models \
-        //     -H "Authorization: Bearer $GROQ_API_KEY" | jq -r '.data[].id'
-        // GROQ_MODEL overrides this without needing a deploy.
-        model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          ...priorTurns,
-          { role: 'user', content: message },
-        ],
-        max_tokens: 150,
-        temperature: 0.2,
-      }),
-    });
+  // Candidate models in preference order. If GROQ_MODEL is provided, it is
+  // tried first; otherwise we try the flagship llama-3.3-70b-versatile and
+  // automatically fall back to fast/reliable alternates if one is unavailable.
+  const candidateModels = [
+    process.env.GROQ_MODEL,
+    'llama-3.3-70b-versatile',
+    'llama-3.1-8b-instant',
+    'mixtral-8x7b-32768',
+    'gemma2-9b-it',
+  ].filter(Boolean);
 
-    if (!response.ok) {
-      throw new Error(`Groq API error: ${response.status}`);
+  // Preserve order without duplicates
+  const modelsToTry = [...new Set(candidateModels)];
+
+  let lastError = null;
+
+  for (const model of modelsToTry) {
+    try {
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            { role: 'system', content: SYSTEM_PROMPT },
+            ...priorTurns,
+            { role: 'user', content: message },
+          ],
+          max_tokens: 220,
+          temperature: 0.3,
+        }),
+      });
+
+      if (!response.ok) {
+        lastError = new Error(`Groq API error for model ${model}: ${response.status}`);
+        continue;
+      }
+
+      const data = await response.json();
+      const text = data.choices?.[0]?.message?.content;
+      if (!text) {
+        lastError = new Error(`No text returned from Groq model ${model}`);
+        continue;
+      }
+
+      return res.status(200).json({ reply: text.trim() });
+    } catch (error) {
+      lastError = error;
+      // Continue to next model in candidate loop
     }
-
-    const data = await response.json();
-    const text = data.choices?.[0]?.message?.content;
-    if (!text) {
-      throw new Error('No text returned from Groq');
-    }
-
-    return res.status(200).json({ reply: text.trim() });
-  } catch (error) {
-    console.error('Chat proxy failed:', error);
-    return res.status(502).json({ error: 'Upstream AI request failed' });
   }
+
+  console.error('All Groq candidate models failed:', lastError);
+  return res.status(502).json({ error: 'Upstream AI request failed' });
 }

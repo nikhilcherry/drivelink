@@ -189,6 +189,29 @@ describe('upstream failure', () => {
     await handler(makeReq({ message: 'hi' }, '203.0.113.14'), res);
     expect(res.statusCode).toBe(502);
   });
+
+  it('falls back to the next candidate model if the first one fails', async () => {
+    let callCount = 0;
+    const requestedModels: string[] = [];
+    globalThis.fetch = vi.fn(async (_url, opts: { body: string }) => {
+      callCount++;
+      const body = JSON.parse(opts.body);
+      requestedModels.push(body.model);
+      if (callCount === 1) {
+        return { ok: false, status: 404, json: async () => ({}) };
+      }
+      return { ok: true, status: 200, json: async () => ({ choices: [{ message: { content: 'fallback success' } }] }) };
+    }) as unknown as typeof fetch;
+
+    const handler = await loadHandler();
+    const res = makeRes();
+    await handler(makeReq({ message: 'test fallback' }, '203.0.113.15'), res);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({ reply: 'fallback success' });
+    expect(requestedModels.length).toBe(2);
+    expect(requestedModels[0]).toBe('llama-3.3-70b-versatile');
+    expect(requestedModels[1]).toBe('llama-3.1-8b-instant');
+  });
 });
 
 describe('rate limiting', () => {
