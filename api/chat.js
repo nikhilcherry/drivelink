@@ -2,23 +2,37 @@
 // is a static export (next.config.js: output: 'export'), so this lives outside
 // src/app/api, which Next.js static export cannot build.
 
-const SYSTEM_PROMPT = `You are the official DriveLink assistant chatbot on the website. DriveLink is a decentralized, low-latency (under 50ms) V2V (Vehicle-to-Vehicle) communication standard for Automotive AI, enabling vehicles to share intent and trajectory predictions.
+const SYSTEM_PROMPT = `You are Lyra, DriveLink's intelligent AI assistant.
+DriveLink is developing a decentralized, ultra-low latency (under 50ms) Vehicle-to-Vehicle (V2V) communication standard for Automotive AI, enabling vehicles to share intent and trajectory predictions in real time.
 
-Your responses are strictly restricted to basic questions about DriveLink:
-1. Product/features (what is DriveLink, how it works, capabilities: vehicle understanding, prediction engine, low-latency V2V protocol).
-2. Team members (Hruday - CEO, Nikhil - CTO, Krishna - CPO, Shreyas - CDO, Harish - Mentor).
-3. Roadmap milestones (Alpha Pilot Program in Q3 2026, Decentralized Data Node v1 in Q4 2026, DRV Token Protocol Audit in Q1 2027, Cross-OEM Standardization in Nov 2027).
-4. Traction (AIR 5 IIT Delhi, Patent Grant Option, NMIT hardware collaboration, PedalStart).
-   The Patent Grant Option is a hackathon award backing a future filing, NOT a granted patent. Never describe DriveLink as holding a granted or filed patent.
-5. Contact information (email: tech.drivelink@gmail.com).
-6. Hiring. DriveLink is accepting applications across App Development, Web Development, Machine Learning, Robotics/ROS, IoT & Embedded, and R&D. If anyone asks about jobs, internships, careers, hiring, or joining the team, point them to https://www.drivelink.tech/hiring and mention the form only takes a couple of minutes. This is the one thing you should always be willing to answer.
+YOUR IDENTITY & PERSONALITY:
+- Your name is Lyra. Always identify and introduce yourself as Lyra when asked.
+- You are warm, clever, articulate, professional, and genuinely conversational.
+- Speak naturally and engage dynamically — never sound like a rigid script or robotic FAQ.
 
-CRITICAL RULE:
-If the user asks about anything technical/engineering-specific (e.g. "how do you achieve under 50ms latency", "what RF frequencies do you use", "give me the code", "explain the RandomForest model implementation details"), financial details, investments, partnerships, or any complex/ambiguous topic, or anything unrelated to basic DriveLink info, you MUST refuse to answer directly and politely refer them to contact the team:
-"For this technical/complex query, please contact our team directly at tech.drivelink@gmail.com for a perfect response."
+HOW TO ANSWER:
+1. About DriveLink:
+   - What DriveLink is: A low-latency (under 50ms) V2V speaking layer and decentralized coordination protocol for automotive AI and smart mobility.
+   - Core technology: Trajectory prediction, cooperative collision prevention, and the 4 ecosystem layers: drv-mesh (peer-to-peer V2V intent broadcast), drv-infra (V2I municipal smart signals & roadside nodes), Mobile HUD visualizer, and Cloud Fleet Command.
+   - Team: Hruday (CEO & Chief Systems Architect), Nikhil (CTO), Krishna (CPO), Shreyas (CDO), mentored by Harish, with strategic guidance from Suhas Rajkumar (Founder & CEO of Simple Energy).
+   - Traction & Milestones: All India Rank 5 at IIT Delhi Pitch Arena, hardware collaboration with NMIT, and incubation from PedalStart.
+   - Patent Grant Option: A national hackathon award backing a future patent filing — NOT a granted patent. Always be transparent about this. Never describe DriveLink as holding a granted or filed patent.
+   - Roadmap: Alpha Pilot Program in Q3 2026, Decentralized Data Node v1 in Q4 2026, DRV Token Protocol Audit in Q1 2027, Cross-OEM Standardization in Nov 2027.
+   - Careers & Hiring: DriveLink is actively taking applications for App Dev, Web Dev, Machine Learning, Robotics · ROS, IoT & Embedded, and R&D. Point users to https://www.drivelink.tech/hiring (mentioning the application only takes a few minutes).
+   - Contact: For investment, pilots, or partnerships, contact tech.drivelink@gmail.com.
 
-Keep your answers short (1-3 sentences maximum), friendly, professional, and clear.
-Do not make up any information.`;
+2. Unrelated / Off-Topic / Casual / Gibberish inputs:
+   - If the user types gibberish, random letters (e.g. "vhktchgccc"), or typos: playfully and politely acknowledge it (e.g., "That looks like a fun typo or random keystrokes! 😄 How can I assist you with DriveLink today?").
+   - If the user makes small talk or jokes: respond with warmth and wit, and then smoothly connect back to DriveLink.
+   - If the user asks general or off-topic questions: answer briefly and cordially, then invite them to explore DriveLink's V2V tech or careers.
+
+3. Deep Technical & Proprietary IP:
+   - For confidential proprietary firmware, specific RF frequencies, or algorithm weights: explain that these are protected under NDA / in-flight patent evaluation, and warmly invite them to contact tech.drivelink@gmail.com.
+
+STYLE GUIDELINES:
+- Keep answers concise (1-3 sentences maximum).
+- Friendly, professional, and helpful.
+- Do not make up facts or unverified specs.`;
 
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_HISTORY = 6;
@@ -73,47 +87,63 @@ export default async function handler(req, res) {
       content: m.content,
     }));
 
-  try {
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        // Groq retires hosted models on its own schedule, and it retired the
-        // previous default (llama-3.3-70b-versatile). Every call then failed,
-        // this handler turned that into a 502, and the widget quietly dropped
-        // to canned answers — so the bot looked alive while answering from a
-        // hardcoded list. If it goes quiet again, check the model still exists
-        // before anything else:
-        //   curl -s https://api.groq.com/openai/v1/models \
-        //     -H "Authorization: Bearer $GROQ_API_KEY" | jq -r '.data[].id'
-        // GROQ_MODEL overrides this without needing a deploy.
-        model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          ...priorTurns,
-          { role: 'user', content: message },
-        ],
-        max_tokens: 150,
-        temperature: 0.2,
-      }),
-    });
+  // Candidate models in preference order. Includes enterprise OpenAI/Groq OSS models
+  // followed by standard Groq LLaMA models.
+  const candidateModels = [
+    process.env.GROQ_MODEL,
+    'openai/gpt-oss-120b',
+    'openai/gpt-oss-20b',
+    'llama-3.3-70b-versatile',
+    'llama-3.1-8b-instant',
+    'qwen/qwen3.8-27b',
+    'mixtral-8x7b-32768',
+    'gemma2-9b-it',
+  ].filter(Boolean);
 
-    if (!response.ok) {
-      throw new Error(`Groq API error: ${response.status}`);
+  // Preserve order without duplicates
+  const modelsToTry = [...new Set(candidateModels)];
+
+  let lastError = null;
+
+  for (const model of modelsToTry) {
+    try {
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            { role: 'system', content: SYSTEM_PROMPT },
+            ...priorTurns,
+            { role: 'user', content: message },
+          ],
+          max_tokens: 220,
+          temperature: 0.3,
+        }),
+      });
+
+      if (!response.ok) {
+        lastError = new Error(`Groq API error for model ${model}: ${response.status}`);
+        continue;
+      }
+
+      const data = await response.json();
+      const text = data.choices?.[0]?.message?.content;
+      if (!text) {
+        lastError = new Error(`No text returned from Groq model ${model}`);
+        continue;
+      }
+
+      return res.status(200).json({ reply: text.trim() });
+    } catch (error) {
+      lastError = error;
+      // Continue to next model in candidate loop
     }
-
-    const data = await response.json();
-    const text = data.choices?.[0]?.message?.content;
-    if (!text) {
-      throw new Error('No text returned from Groq');
-    }
-
-    return res.status(200).json({ reply: text.trim() });
-  } catch (error) {
-    console.error('Chat proxy failed:', error);
-    return res.status(502).json({ error: 'Upstream AI request failed' });
   }
+
+  console.error('All Groq candidate models failed:', lastError);
+  return res.status(502).json({ error: 'Upstream AI request failed' });
 }

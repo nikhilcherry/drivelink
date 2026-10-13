@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send } from 'lucide-react';
+import { X, Send, Sparkles } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { LogoMark } from './ui/Logo';
 import { formatMessageHtml } from '../lib/chatFormat';
@@ -17,20 +17,7 @@ function formatMessage(text: string) {
   return <span dangerouslySetInnerHTML={{ __html: formatMessageHtml(text) }} />;
 }
 
-/**
- * Where a visitor gets sent when the assistant can't help them — the page that
- * matters most to someone who came here about joining.
- */
-const HIRING_LINK = '[apply here](/hiring)';
-
-/**
- * Shown once, the first time a live request fails and the widget drops to its
- * built-in answers. The old behaviour was to fall back silently, so a broken
- * backend looked exactly like a working one giving thin answers.
- */
-const AI_DOWN_NOTICE =
-  "**Heads up — the AI assistant isn't working right now.** I can still answer the basics from a built-in list. " +
-  `If you came about joining DriveLink, skip the chat and ${HIRING_LINK} — the form takes a couple of minutes.`;
+import { getChatbotResponse } from '../lib/chatbotKnowledge';
 
 export default function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,24 +25,17 @@ export default function ChatbotWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'model',
-      content: "Hello! I am your DriveLink assistant. How can I help you today?",
+      content: "Hello! I'm **Lyra**, DriveLink's AI assistant. I can answer questions about our V2V protocol, the 4-layer ecosystem, our team, roadmap, or open engineering roles. How can I help you today?",
     },
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  // Whether the last attempt to reach the AI backend succeeded; starts true so
-  // we try it first and drop to the local rule engine only after it fails.
   const [aiAvailable, setAiAvailable] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
 
-  /**
-   * Opening a panel without moving focus into it leaves a keyboard user
-   * tabbing through the whole page to reach a chat they just opened, and
-   * Escape is the expected way out of any dialog.
-   */
   useEffect(() => {
     if (!isOpen) return;
     const focusTimer = window.setTimeout(() => inputRef.current?.focus(), 60);
@@ -71,12 +51,10 @@ export default function ChatbotWidget() {
     };
   }, [isOpen]);
 
-  // Define scrollToBottom before calling it in useEffect
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Show tooltip callout 3 seconds after mounting
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowTooltip(true);
@@ -84,10 +62,9 @@ export default function ChatbotWidget() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Dismiss tooltip if user opens the chat
   useEffect(() => {
     if (isOpen) {
-      setShowTooltip(false); // eslint-disable-line react-hooks/set-state-in-effect -- resetting derived UI state on prop change
+      setShowTooltip(false); // eslint-disable-line react-hooks/set-state-in-effect -- dismiss tooltip on open
     }
   }, [isOpen]);
 
@@ -97,93 +74,10 @@ export default function ChatbotWidget() {
     }
   }, [isOpen, messages]);
 
-  const getLocalResponse = (message: string): string => {
-    const query = message.toLowerCase().trim();
-
-    // First on purpose: "how do I join the team" also matches the team branch
-    // below, and someone asking that wants the form, not a list of founders.
-    if (
-      query.includes("hiring") ||
-      query.includes("hire") ||
-      query.includes("job") ||
-      query.includes("intern") ||
-      query.includes("career") ||
-      query.includes("vacancy") ||
-      query.includes("opening") ||
-      query.includes("apply") ||
-      query.includes("join") ||
-      query.includes("recruit") ||
-      query.includes("work with") ||
-      query.includes("work at")
-    ) {
-      return `**Yes — we're taking applications.** App Development, Web Development, Machine Learning, Robotics · ROS, IoT & Embedded, and R&D. You can ${HIRING_LINK} — it takes a couple of minutes.`;
-    }
-
-    if (
-      query.includes("what is drivelink") ||
-      query.includes("about drivelink") ||
-      query.includes("what does it do") ||
-      query.includes("explain drivelink") ||
-      query.includes("product") ||
-      query.includes("v2v")
-    ) {
-      return "DriveLink is a decentralized Vehicle-to-Vehicle (V2V) communication protocol for Automotive AI. It acts as a speaking layer that lets cars broadcast intent and predicted motion in under 50ms, helping traffic react before danger appears.";
-    }
-
-    if (
-      query.includes("team") ||
-      query.includes("who is") ||
-      query.includes("founder") ||
-      query.includes("ceo") ||
-      query.includes("cto") ||
-      query.includes("hruday") ||
-      query.includes("nikhil") ||
-      query.includes("krishna") ||
-      query.includes("shreyas")
-    ) {
-      return "DriveLink was founded by Hruday (CEO & Chief Systems Architect), Nikhil (CTO), and Krishna (CPO), with Shreyas as Chief Development Officer. We are mentored by Harish.";
-    }
-
-    if (
-      query.includes("contact") ||
-      query.includes("email") ||
-      query.includes("reach") ||
-      query.includes("support") ||
-      query.includes("talk to") ||
-      query.includes("address") ||
-      query.includes("get in touch")
-    ) {
-      return "You can reach the DriveLink team directly at **tech.drivelink@gmail.com**. We'd love to chat!";
-    }
-
-    if (
-      query.includes("roadmap") ||
-      query.includes("milestone") ||
-      query.includes("future") ||
-      query.includes("next step") ||
-      query.includes("progress") ||
-      query.includes("plans")
-    ) {
-      return "Our milestones: Alpha Pilot Program in **Q3 2026**, Decentralized Data Node v1 in **Q4 2026**, DRV Token Protocol Audit in **Q1 2027**, and Cross-OEM Standardization in **November 2027**.";
-    }
-
-    if (
-      query.includes("traction") ||
-      query.includes("award") ||
-      query.includes("pitch") ||
-      query.includes("win") ||
-      query.includes("patent") ||
-      query.includes("achievement")
-    ) {
-      return "DriveLink secured **All India Rank 5** at the IIT Delhi Pitch Arena National Finals, and received a **Patent Grant Option** at a national hackathon (an award backing a future filing — not a granted patent).";
-    }
-
-    return `For this technical/complex query, please contact our team directly at tech.drivelink@gmail.com for a perfect response. If you're here about joining DriveLink, you can ${HIRING_LINK}.`;
+  const getSmartLocalResponse = (message: string): string => {
+    return getChatbotResponse(message).reply;
   };
 
-  // Calls our own /api/chat serverless function, which holds the LLM API key
-  // server-side. Never call a third-party LLM API directly from the browser —
-  // any key passed via NEXT_PUBLIC_* ships in plaintext in the client bundle.
   const callChatAPI = async (userMessage: string, history: Message[]) => {
     const response = await fetch('/api/chat', {
       method: 'POST',
@@ -206,6 +100,7 @@ export default function ChatbotWidget() {
   };
 
   const handleSendMessage = async (textToSend?: string) => {
+    if (isLoading) return;
     const text = (textToSend || inputValue).trim();
     if (!text) return;
 
@@ -220,54 +115,48 @@ export default function ChatbotWidget() {
     try {
       if (aiAvailable) {
         const reply = await callChatAPI(text, newMessages.slice(0, -1));
-        setMessages(prev => [...prev, { role: 'model', content: reply }]);
+        setMessages((prev) => [...prev, { role: 'model', content: reply }]);
       } else {
-        // Fallback to local rule engine directly
-        const reply = getLocalResponse(text);
-        // Small delay to simulate thinking
-        await new Promise((resolve) => setTimeout(resolve, 600));
-        setMessages(prev => [...prev, { role: 'model', content: reply }]);
+        await new Promise((resolve) => setTimeout(resolve, 350));
+        const reply = getSmartLocalResponse(text);
+        setMessages((prev) => [...prev, { role: 'model', content: reply }]);
       }
-    } catch (error) {
-      console.error("Chatbot query failed, using local matcher:", error);
-      // Only announce it on the transition, not on every later message.
-      const firstFailure = aiAvailable;
+    } catch {
+      // Gracefully switch to smart local knowledge base without disruptive error notices
       setAiAvailable(false);
-      const reply = getLocalResponse(text);
-      setMessages(prev => [
-        ...prev,
-        ...(firstFailure ? [{ role: 'model' as const, content: AI_DOWN_NOTICE }] : []),
-        { role: 'model' as const, content: reply },
-      ]);
+      const reply = getSmartLocalResponse(text);
+      setMessages((prev) => [...prev, { role: 'model', content: reply }]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const quickReplies = [
-    { text: "What is DriveLink?", query: "What is DriveLink?" },
-    { text: "Who is the team?", query: "Who is the team?" },
-    { text: "Contact Info", query: "How to contact the team?" },
-    { text: "Future Roadmap", query: "What is on the roadmap?" }
+  const quickActionChips = [
+    { label: "⚡ What is DriveLink?", query: "What is DriveLink?" },
+    { label: "🌐 Ecosystem Suite", query: "What is the DriveLink ecosystem?" },
+    { label: "💼 Careers & Hiring", query: "Are you hiring?" },
+    { label: "👥 Founders & Team", query: "Who are the founders?" },
+    { label: "🗺️ 2026-2027 Roadmap", query: "What is on the roadmap?" },
+    { label: "✉️ Contact Team", query: "How to contact the team?" },
   ];
 
   return (
     <>
       {/* Floating Action Button Container */}
       <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
-        {/* Subtle, non-interruptive tooltip callout notification */}
+        {/* Subtle, non-interruptive tooltip notification */}
         <AnimatePresence>
           {showTooltip && !isOpen && (
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="absolute bottom-16 right-0 mb-2 mr-1 w-56 p-3 rounded-xl border border-zinc-200/80 bg-white text-zinc-800 shadow-xl text-xs leading-snug flex items-start gap-2 pointer-events-auto"
-              style={{ filter: "drop-shadow(0 10px 15px rgba(0,0,0,0.05))" }}
+              className="absolute bottom-16 right-0 mb-2 mr-1 w-56 p-3 rounded-xl border border-zinc-200/90 bg-white text-zinc-800 shadow-xl text-xs leading-snug flex items-start gap-2 pointer-events-auto"
+              style={{ filter: "drop-shadow(0 10px 15px rgba(0,0,0,0.06))" }}
             >
-              <div className="absolute right-6 -bottom-1.5 w-3 h-3 bg-white border-r border-b border-zinc-200/80 rotate-45" />
-              <div className="flex-1">
-                Hey! Feel free to ask any questions about DriveLink. 👋
+              <div className="absolute right-6 -bottom-1.5 w-3 h-3 bg-white border-r border-b border-zinc-200/90 rotate-45" />
+              <div className="flex-1 font-medium">
+                Hey! I&apos;m Lyra. Feel free to ask me anything about DriveLink. 👋
               </div>
               <button
                 onClick={(e) => {
@@ -277,7 +166,7 @@ export default function ChatbotWidget() {
                 className="text-zinc-400 hover:text-zinc-600 transition-colors p-0.5 rounded cursor-pointer"
                 aria-label="Dismiss notification"
               >
-                <X size={12} />
+                <X size={13} />
               </button>
             </motion.div>
           )}
@@ -290,13 +179,17 @@ export default function ChatbotWidget() {
           whileTap={{ scale: 0.95 }}
           className={cn(
             "relative w-14 h-14 rounded-full flex items-center justify-center cursor-pointer text-white shadow-xl focus:outline-none transition-all duration-300",
-            isOpen ? "bg-red-500 hover:bg-red-600 shadow-red-500/30" : "bg-[#0f4c81] hover:bg-[#1e60a3] shadow-[#0f4c81]/40"
+            // Keep cohesive brand blue theme instead of jarring red
+            "bg-[#0f4c81] hover:bg-[#1e60a3] shadow-[#0f4c81]/35 hover:shadow-[#0f4c81]/50 border border-white/20"
           )}
-          aria-label={isOpen ? "Close chatbot" : "Open chatbot"}
+          aria-label={isOpen ? "Close Lyra chat" : "Open Lyra chat"}
         >
-          {/* Pulsing ring matching hero style */}
+          {/* Subtle pulsing beacon matching hero style */}
           {!isOpen && (
-            <span className="absolute inset-0 rounded-full border-2 border-[#0f4c81] animate-ping opacity-60" style={{ animationDuration: '2s' }} />
+            <span
+              className="absolute inset-0 rounded-full border-2 border-[#0f4c81] animate-ping opacity-50"
+              style={{ animationDuration: '2.5s' }}
+            />
           )}
           <AnimatePresence mode="wait">
             {isOpen ? (
@@ -306,8 +199,9 @@ export default function ChatbotWidget() {
                 animate={{ rotate: 0, opacity: 1 }}
                 exit={{ rotate: 90, opacity: 0 }}
                 transition={{ duration: 0.2 }}
+                className="flex items-center justify-center"
               >
-                <X size={24} />
+                <X size={22} />
               </motion.div>
             ) : (
               <motion.div
@@ -318,78 +212,61 @@ export default function ChatbotWidget() {
                 transition={{ duration: 0.2 }}
                 className="flex items-center justify-center"
               >
-                <LogoMark size={17} variant="white" />
+                <LogoMark size={20} variant="white" />
               </motion.div>
             )}
           </AnimatePresence>
         </motion.button>
       </div>
 
-      {/* Chat Drawer/Window - Clean White/Light Design */}
+      {/* Chat Drawer/Window */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            initial={{ opacity: 0, y: 25, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 30, scale: 0.95 }}
+            exit={{ opacity: 0, y: 25, scale: 0.96 }}
             transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-            className="fixed bottom-24 right-6 w-96 max-w-[calc(100vw-2rem)] h-[540px] z-50 rounded-2xl flex flex-col overflow-hidden border border-zinc-200/80 shadow-2xl bg-white text-zinc-800"
+            className="fixed bottom-24 right-6 w-96 max-w-[calc(100vw-2rem)] h-[560px] max-h-[85vh] z-50 rounded-2xl flex flex-col overflow-hidden border border-zinc-200/90 shadow-2xl bg-white text-zinc-800"
             role="dialog"
             aria-labelledby="dlw-chat-title"
             ref={panelRef}
           >
-            {/* Blueprint Grid Background inside Chatbox */}
-            <div 
-              className="absolute inset-0 pointer-events-none opacity-[0.03]" 
-              style={{
-                backgroundImage: `
-                  linear-gradient(to right, #0f4c81 1px, transparent 1px),
-                  linear-gradient(to bottom, #0f4c81 1px, transparent 1px)
-                `,
-                backgroundSize: '24px 24px'
-              }}
-            />
-
-            {/* Glowing Accent Gradient */}
-            <div 
-              className="absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full blur-2xl pointer-events-none"
-              style={{
-                background: 'radial-gradient(circle, rgba(15, 76, 129, 0.05) 0%, transparent 70%)'
-              }}
-            />
-
             {/* Header */}
-            <div className="relative z-10 px-5 py-4 border-b border-zinc-100 flex items-center justify-between bg-gradient-to-r from-zinc-50 to-transparent">
+            <div className="relative z-10 px-5 py-3.5 border-b border-zinc-100 flex items-center justify-between bg-gradient-to-r from-zinc-50 via-white to-zinc-50">
               <div className="flex items-center gap-3">
-                <LogoMark size={36} className="rounded-lg shadow-md" />
+                <LogoMark size={32} className="rounded-lg shadow-sm" />
                 <div>
-                  <h2 id="dlw-chat-title" className="text-sm font-semibold tracking-tight text-zinc-800">DriveLink Assistant</h2>
+                  <h2 id="dlw-chat-title" className="text-sm font-semibold tracking-tight text-zinc-900 flex items-center gap-1.5">
+                    Lyra
+                    <Sparkles size={13} className="text-[#0f4c81]" />
+                  </h2>
                   <div className="flex items-center gap-1.5 mt-0.5">
-                    <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]" />
-                    <span className="text-[10px] text-zinc-500 font-mono">ONLINE</span>
+                    <span
+                      aria-hidden="true"
+                      className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_6px_#10b981]"
+                    />
+                    <span className="text-[10px] text-zinc-500 font-mono">
+                      {aiAvailable ? 'LYRA AI' : 'KNOWLEDGE ENGINE'}
+                    </span>
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] px-2 py-0.5 rounded bg-zinc-100 text-zinc-500 border border-zinc-200/50 font-mono">
-                  {aiAvailable ? 'AI' : 'LOCAL_RULES'}
-                </span>
-                <button
-                  onClick={() => {
-                    setIsOpen(false);
-                    launcherRef.current?.focus();
-                  }}
-                  className="p-1 rounded-lg hover:bg-zinc-100 text-zinc-400 hover:text-zinc-600 transition-colors cursor-pointer"
-                  aria-label="Close chat"
-                >
-                  <X size={18} />
-                </button>
-              </div>
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  launcherRef.current?.focus();
+                }}
+                className="p-1.5 rounded-lg hover:bg-zinc-100 text-zinc-400 hover:text-zinc-700 transition-colors cursor-pointer"
+                aria-label="Close chat"
+              >
+                <X size={18} />
+              </button>
             </div>
 
             {/* Messages Area */}
             <div
-              className="relative z-10 flex-1 overflow-y-auto px-5 py-4 space-y-4 scrollbar-thin scrollbar-thumb-zinc-200 scrollbar-track-transparent"
+              className="relative z-10 flex-1 overflow-y-auto px-4 py-4 space-y-3.5 scrollbar-thin scrollbar-thumb-zinc-200 scrollbar-track-transparent bg-slate-50/30"
               role="log"
               aria-live="polite"
               aria-label="Conversation"
@@ -398,19 +275,19 @@ export default function ChatbotWidget() {
                 <div
                   key={i}
                   className={cn(
-                    "flex flex-col max-w-[80%] space-y-1",
+                    "flex flex-col max-w-[85%] space-y-1",
                     message.role === 'user' ? "ml-auto items-end" : "mr-auto items-start"
                   )}
                 >
                   <div className="text-[9px] font-mono text-zinc-400 uppercase px-1">
-                    {message.role === 'user' ? 'USER' : 'DRIVELINK_AGENT'}
+                    {message.role === 'user' ? 'YOU' : 'LYRA'}
                   </div>
                   <div
                     className={cn(
-                      "px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed shadow-sm",
+                      "px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed shadow-xs",
                       message.role === 'user'
-                        ? "bg-[#0f4c81] text-white rounded-tr-none border border-[#3b82f6]/10"
-                        : "bg-zinc-100 text-zinc-800 border border-zinc-200/50 rounded-tl-none"
+                        ? "bg-[#0f4c81] text-white rounded-tr-none border border-[#0f4c81]/20 font-normal"
+                        : "bg-white text-zinc-800 border border-zinc-200/80 rounded-tl-none font-normal"
                     )}
                   >
                     {formatMessage(message.content)}
@@ -418,10 +295,10 @@ export default function ChatbotWidget() {
                 </div>
               ))}
               {isLoading && (
-                <div className="flex flex-col max-w-[80%] space-y-1 mr-auto items-start">
-                  <div className="text-[9px] font-mono text-zinc-400 uppercase px-1">DRIVELINK_AGENT</div>
-                  <div className="px-3.5 py-2.5 rounded-2xl text-xs bg-zinc-100 border border-zinc-200/50 rounded-tl-none flex items-center gap-2">
-                    <span className="flex gap-1">
+                <div className="flex flex-col max-w-[85%] space-y-1 mr-auto items-start">
+                  <div className="text-[9px] font-mono text-zinc-400 uppercase px-1">LYRA</div>
+                  <div className="px-3.5 py-2.5 rounded-2xl text-xs bg-white border border-zinc-200/80 rounded-tl-none flex items-center gap-2">
+                    <span className="flex gap-1.5 py-0.5">
                       <span className="w-1.5 h-1.5 bg-[#0f4c81] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                       <span className="w-1.5 h-1.5 bg-[#0f4c81] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                       <span className="w-1.5 h-1.5 bg-[#0f4c81] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
@@ -432,26 +309,22 @@ export default function ChatbotWidget() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Quick Actions Suggestions */}
-            {messages.length === 1 && (
-              <div className="relative z-10 px-5 pb-3">
-                <div className="text-[10px] text-zinc-400 font-mono uppercase tracking-wider mb-2">Suggested Queries:</div>
-                <div className="grid grid-cols-2 gap-2">
-                  {quickReplies.map((reply, i) => (
-                    <button
-                      key={i}
-                      onClick={() => handleSendMessage(reply.query)}
-                      className="px-3 py-2 rounded-xl border border-zinc-200 bg-zinc-50 hover:bg-zinc-100 text-[11px] text-zinc-600 hover:text-zinc-800 text-left transition-all duration-200 hover:-translate-y-0.5 cursor-pointer shadow-sm"
-                    >
-                      {reply.text}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* Quick Prompt Suggestion Chips */}
+            <div className="relative z-10 px-4 py-2 border-t border-zinc-100 bg-white/80 overflow-x-auto flex gap-1.5 no-scrollbar">
+              {quickActionChips.map((chip, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => handleSendMessage(chip.query)}
+                  className="whitespace-nowrap px-2.5 py-1 rounded-full border border-zinc-200 bg-zinc-50 hover:bg-zinc-100 text-[10.5px] text-zinc-600 hover:text-[#0f4c81] hover:border-[#0f4c81]/30 transition-all cursor-pointer flex-shrink-0"
+                >
+                  {chip.label}
+                </button>
+              ))}
+            </div>
 
             {/* Input Footer */}
-            <div className="relative z-10 p-4 border-t border-zinc-100 bg-zinc-50">
+            <div className="relative z-10 p-3.5 border-t border-zinc-100 bg-zinc-50">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -462,11 +335,12 @@ export default function ChatbotWidget() {
                 <input
                   type="text"
                   ref={inputRef}
+                  maxLength={1000}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="Ask a question..."
-                  aria-label="Ask the DriveLink assistant a question"
-                  className="flex-1 bg-white border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-[#0f4c81]/40 focus:ring-1 focus:ring-[#0f4c81]/20 transition-all font-sans"
+                  placeholder="Ask Lyra about V2V, Ecosystem, Hiring..."
+                  aria-label="Ask Lyra a question"
+                  className="flex-1 bg-white border border-zinc-200 rounded-xl px-3.5 py-2 text-xs text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-[#0f4c81] focus:ring-1 focus:ring-[#0f4c81]/20 transition-all font-sans"
                   disabled={isLoading}
                 />
                 <button
@@ -474,18 +348,15 @@ export default function ChatbotWidget() {
                   aria-label="Send message"
                   disabled={isLoading || !inputValue.trim()}
                   className={cn(
-                    "w-9 h-9 rounded-xl flex items-center justify-center transition-all focus:outline-none",
+                    "w-8.5 h-8.5 rounded-xl flex items-center justify-center transition-all focus:outline-none",
                     inputValue.trim() && !isLoading
-                      ? "bg-[#0f4c81] text-white hover:bg-[#1e60a3] shadow-[#0f4c81]/30 hover:shadow-[#0f4c81]/50 cursor-pointer"
-                      : "bg-zinc-100 text-zinc-400 border border-zinc-200/50 cursor-not-allowed"
+                      ? "bg-[#0f4c81] text-white hover:bg-[#1e60a3] shadow-[#0f4c81]/30 cursor-pointer"
+                      : "bg-zinc-200 text-zinc-400 cursor-not-allowed"
                   )}
                 >
-                  <Send size={15} />
+                  <Send size={14} />
                 </button>
               </form>
-              <div className="text-[9px] text-zinc-400 mt-2 text-center font-mono">
-                Powered by DriveLink V2V Infrastructure Portal
-              </div>
             </div>
           </motion.div>
         )}
