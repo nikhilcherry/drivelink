@@ -1,8 +1,6 @@
 'use client';
 import { useSyncExternalStore } from 'react';
-import Link from 'next/link';
-import { X, ArrowRight } from 'lucide-react';
-import { useSiteBase } from '../lib/nav';
+import { X } from 'lucide-react';
 
 const STORAGE_KEY = 'dlw_banner_dismissed_v2';
 
@@ -23,7 +21,6 @@ const getServerSnapshot = () => false;
 
 export function AnnouncementBanner() {
   const isDismissed = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-  const siteBase = useSiteBase();
 
   if (isDismissed) {
     return null;
@@ -48,25 +45,14 @@ export function AnnouncementBanner() {
       <div className="dlw-container dlw-announcement-inner">
         <div className="dlw-announcement-content">
           <div className="dlw-announcement-badge">
-            <span className="dlw-announcement-dot" aria-hidden="true">
-              <span className="dlw-announcement-dot-ping" />
-            </span>
-            <span className="dlw-announcement-badge-text">SYSTEM DEPLOYMENT</span>
+            <span className="dlw-announcement-dot" aria-hidden="true" />
+            <span className="dlw-announcement-badge-text">SYSTEM UPDATE</span>
           </div>
 
           <p className="dlw-announcement-text">
-            <span className="dlw-announcement-highlight">DriveLink 2.0 Active Rollout:</span>{' '}
-            Next-gen vehicle intent protocols &amp; real-time telemetry mesh deploying.
+            <span className="dlw-announcement-highlight">Scheduled Maintenance:</span>{' '}
+            We are currently updating the platform with system improvements and new features.
           </p>
-
-          <Link
-            href={siteBase + '/ecosystem'}
-            className="dlw-announcement-link"
-            id="announcement-cta-link"
-          >
-            <span>Explore Architecture</span>
-            <ArrowRight size={13} className="dlw-announcement-arrow" aria-hidden="true" />
-          </Link>
         </div>
 
         <button
