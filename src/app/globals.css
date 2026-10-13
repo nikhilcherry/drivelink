@@ -1180,3 +1180,653 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
   background: rgba(16,185,129,0.12); color: #0f766e; border: 1px solid rgba(16,185,129,0.3);
 }
 .dlw-form-done:focus-visible { outline: 2px solid var(--drive-blue); outline-offset: 4px; border-radius: 20px; }
+
+/* ============================================================
+   ECOSYSTEM PAGE — DRIVELINK MULTI-TIER ARCHITECTURE
+   ============================================================ */
+.dlw-eco-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 32px auto 0;
+  max-width: 960px;
+}
+.dlw-eco-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(15, 76, 129, 0.12);
+  color: var(--fg2);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(15, 76, 129, 0.04);
+}
+.dlw-eco-pill:hover {
+  border-color: rgba(15, 76, 129, 0.3);
+  transform: translateY(-1px);
+  color: var(--drive-blue);
+}
+.dlw-eco-pill.is-active {
+  background: var(--drive-blue);
+  color: #fff;
+  border-color: var(--drive-blue);
+  box-shadow: 0 6px 18px -4px rgba(15, 76, 129, 0.45);
+}
+.dlw-eco-pill-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(15, 76, 129, 0.08);
+  color: var(--drive-blue);
+}
+.dlw-eco-pill.is-active .dlw-eco-pill-badge {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+/* 4-Card Hero Architecture Banner */
+.dlw-eco-arch-banner {
+  margin-top: 48px;
+}
+.dlw-eco-arch-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+@media (max-width: 960px) {
+  .dlw-eco-arch-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 540px) {
+  .dlw-eco-arch-grid { grid-template-columns: 1fr; }
+}
+.dlw-eco-arch-card {
+  padding: 24px 20px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(15, 76, 129, 0.1);
+  box-shadow: 0 4px 14px rgba(15, 76, 129, 0.04);
+  cursor: pointer;
+  transition: transform 0.2s var(--ease-out), border-color 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+.dlw-eco-arch-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(15, 76, 129, 0.35);
+  box-shadow: 0 16px 32px -10px rgba(15, 76, 129, 0.12);
+}
+.dlw-eco-arch-card .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--drive-blue);
+  background: rgba(15, 76, 129, 0.06);
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-weight: 600;
+  align-self: flex-start;
+  margin-bottom: 12px;
+}
+.dlw-eco-arch-card h4 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin: 0 0 6px;
+  color: var(--fg1);
+}
+.dlw-eco-arch-card p {
+  font-size: 13px;
+  color: var(--fg2);
+  line-height: 1.5;
+  margin: 0 0 16px;
+  flex-grow: 1;
+}
+.dlw-eco-arch-card .arrow {
+  display: inline-flex;
+  align-items: center;
+  color: var(--drive-blue);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Feature Checklist */
+.dlw-feature-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.dlw-feature-checkitem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.dlw-feature-checkitem b {
+  display: block;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--fg1);
+  margin-bottom: 2px;
+}
+.dlw-feature-checkitem span {
+  display: block;
+  font-size: 13px;
+  color: var(--fg2);
+  line-height: 1.5;
+}
+
+/* V2V Frame Inspector */
+.dlw-frame-inspector {
+  background: #090f17;
+  border-radius: 18px;
+  border: 1px solid rgba(15, 76, 129, 0.25);
+  box-shadow: 0 20px 40px -12px rgba(15, 76, 129, 0.35);
+  overflow: hidden;
+  color: #fff;
+  contain: layout style;
+}
+.dlw-frame-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.dlw-frame-head .title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: #38bdf8;
+  font-weight: 600;
+}
+.dlw-frame-head .tabs {
+  display: flex;
+  gap: 6px;
+}
+.dlw-frame-head .tabs button {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.dlw-frame-head .tabs button:hover {
+  color: #fff;
+  border-color: rgba(56, 189, 248, 0.4);
+}
+.dlw-frame-head .tabs button.is-active {
+  background: var(--drive-blue);
+  color: #fff;
+  border-color: var(--drive-blue);
+}
+.dlw-frame-body {
+  padding: 20px;
+}
+.dlw-frame-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .dlw-frame-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .dlw-frame-grid { grid-template-columns: 1fr; }
+}
+.field-card {
+  padding: 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+}
+.field-card.highlight {
+  border-color: rgba(56, 189, 248, 0.35);
+  background: rgba(15, 76, 129, 0.12);
+}
+.field-card .name {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: #38bdf8;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.field-card .val {
+  font-family: var(--mono);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.field-card .desc {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.4;
+}
+
+/* V2I Smart Intersection Simulator Widget */
+.dlw-v2i-sim-widget {
+  background: #090f17;
+  border-radius: 20px;
+  border: 1px solid rgba(15, 76, 129, 0.25);
+  box-shadow: 0 24px 48px -12px rgba(15, 76, 129, 0.35);
+  overflow: hidden;
+  color: #fff;
+  contain: layout style;
+}
+.dlw-v2i-sim-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+.dlw-live-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 10px #22c55e;
+}
+.dlw-v2i-sim-body {
+  padding: 24px;
+}
+.dlw-v2i-signal-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 20px;
+}
+.light-indicator .bulb {
+  display: block;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+.light-indicator .bulb.green {
+  background: #22c55e;
+  box-shadow: 0 0 16px #22c55e;
+}
+.light-indicator .bulb.amber {
+  background: #f59e0b;
+  box-shadow: 0 0 16px #f59e0b;
+}
+.dlw-v2i-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 22px;
+}
+.v2i-stat {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  text-align: center;
+}
+.v2i-stat .lbl {
+  display: block;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 4px;
+  letter-spacing: 0.05em;
+}
+.v2i-stat .val {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  font-family: var(--mono);
+}
+
+/* In-Cabin Mobile Phone Cockpit Frame */
+.dlw-phone-frame {
+  max-width: 380px;
+  margin: 0 auto;
+  border: 6px solid #1e293b;
+  border-radius: 36px;
+  background: #070c12;
+  box-shadow: 0 30px 60px -16px rgba(15, 76, 129, 0.4);
+  overflow: hidden;
+  position: relative;
+  contain: layout style;
+}
+.dlw-phone-notch {
+  width: 90px;
+  height: 14px;
+  background: #1e293b;
+  border-radius: 0 0 12px 12px;
+  margin: 0 auto;
+}
+.dlw-phone-screen {
+  padding: 16px;
+  color: #fff;
+}
+.dlw-phone-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 12px;
+}
+.dlw-phone-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 3px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+.dlw-phone-tabs button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.dlw-phone-tabs button.is-active {
+  background: var(--drive-blue);
+  color: #fff;
+}
+.dlw-phone-body {
+  min-height: 280px;
+}
+
+/* Radar Display with Vector SVG */
+.dlw-radar-view {
+  position: relative;
+  text-align: center;
+}
+.radar-svg {
+  width: 220px;
+  height: 220px;
+  margin: 0 auto 12px;
+  display: block;
+  background: radial-gradient(circle, rgba(15, 76, 129, 0.25) 0%, rgba(7, 12, 18, 0.95) 80%);
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+.radar-caption {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.4;
+}
+
+/* In-cabin alerts */
+.dlw-alerts-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.dlw-alert-card {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.dlw-alert-card.high { border-left: 3px solid #ef4444; }
+.dlw-alert-card.green { border-left: 3px solid #22c55e; }
+.dlw-alert-card.info { border-left: 3px solid #38bdf8; }
+.dlw-alert-card .head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.dlw-alert-card.high .head { color: #f87171; }
+.dlw-alert-card.green .head { color: #4ade80; }
+.dlw-alert-card.info .head { color: #38bdf8; }
+.dlw-alert-card .body {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.4;
+}
+.dlw-alert-card .foot {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.45);
+  margin-top: 4px;
+}
+
+/* CAN Gauges inside phone */
+.dlw-can-gauges {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dlw-can-gauges .gauge-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.dlw-can-gauges .gauge-row .label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+}
+.dlw-can-gauges .gauge-row .val {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+.dlw-can-gauges .gauge-row .val small {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: normal;
+}
+
+/* Web Console Mockup */
+.dlw-web-console {
+  border-radius: 20px;
+  background: #090e15;
+  border: 1px solid rgba(15, 76, 129, 0.25);
+  box-shadow: 0 30px 60px -20px rgba(15, 76, 129, 0.3);
+  overflow: hidden;
+  color: #fff;
+  max-width: 1040px;
+  margin: 0 auto;
+  contain: layout style;
+}
+.dlw-web-console-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+.dlw-web-console-header .dots {
+  display: flex;
+  gap: 6px;
+}
+.dlw-web-console-header .dots .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+.dlw-web-console-header .dots .dot.r { background: #ef4444; }
+.dlw-web-console-header .dots .dot.y { background: #f59e0b; }
+.dlw-web-console-header .dots .dot.g { background: #22c55e; }
+.dlw-web-console-header .title {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.65);
+}
+.dlw-web-console-header .status {
+  font-size: 10.5px;
+  color: #22c55e;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.dlw-web-console-header .status .live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+}
+.dlw-web-console-body {
+  padding: 24px;
+}
+.dlw-console-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+@media (max-width: 768px) {
+  .dlw-console-kpis { grid-template-columns: repeat(2, 1fr); }
+}
+.dlw-console-kpis .kpi {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.dlw-console-kpis .kpi .kpi-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 6px;
+}
+.dlw-console-kpis .kpi .kpi-val {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #38bdf8;
+  letter-spacing: -0.02em;
+}
+.dlw-console-kpis .kpi .kpi-val small {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+.dlw-console-kpis .kpi .kpi-sub {
+  display: block;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 4px;
+}
+.dlw-console-stream {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 16px;
+}
+.dlw-console-stream .stream-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 12px;
+}
+.dlw-console-stream .stream-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 11px;
+}
+.dlw-console-stream .stream-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.dlw-console-stream .stream-row .time { color: rgba(255, 255, 255, 0.45); }
+.dlw-console-stream .stream-row .tag.blue { color: #38bdf8; }
+.dlw-console-stream .stream-row .tag.green { color: #4ade80; }
+.dlw-console-stream .stream-row .tag.purple { color: #c084fc; }
+.dlw-console-stream .stream-row .tag.amber { color: #fbbf24; }
+.dlw-console-stream .stream-row .msg { color: rgba(255, 255, 255, 0.85); }
+
+/* Architectural Comparison Table */
+.dlw-matrix-table-wrap {
+  max-width: 1000px;
+  margin: 0 auto;
+  border-radius: 16px;
+  overflow-x: auto;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(15, 76, 129, 0.1);
+  box-shadow: 0 16px 36px -16px rgba(15, 76, 129, 0.08);
+}
+.dlw-matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13.5px;
+}
+.dlw-matrix-table th {
+  padding: 16px 20px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--fg3);
+  border-bottom: 1px solid rgba(15, 76, 129, 0.1);
+  background: rgba(15, 76, 129, 0.03);
+}
+.dlw-matrix-table th.highlight {
+  color: var(--drive-blue);
+  background: rgba(15, 76, 129, 0.08);
+  font-weight: 700;
+}
+.dlw-matrix-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(15, 76, 129, 0.06);
+  color: var(--fg2);
+}
+.dlw-matrix-table td.highlight {
+  background: rgba(15, 76, 129, 0.03);
+  color: var(--drive-blue);
+}
+.dlw-matrix-table tr:last-child td {
+  border-bottom: none;
+}

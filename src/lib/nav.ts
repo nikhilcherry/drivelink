@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { SITE_URL } from './seo';
 
-export type Page = 'home' | 'product' | 'team' | 'investors' | 'hiring' | 'docs';
+export type Page = 'home' | 'product' | 'ecosystem' | 'team' | 'investors' | 'hiring' | 'docs';
 
 /** Docs is served here via a Vercel host-rewrite; it has no other routes. */
 export const CORE_HOST = 'core.drivelink.tech';
@@ -10,7 +10,7 @@ export const CORE_HOST = 'core.drivelink.tech';
 /** URL path for a page key. */
 export const hrefFor = (p: Page): string => (p === 'home' ? '/' : `/${p}`);
 
-const TAB_SEGMENTS = ['product', 'team', 'investors', 'hiring', 'docs'];
+const TAB_SEGMENTS = ['product', 'ecosystem', 'team', 'investors', 'hiring', 'docs'];
 
 /** Page key for a URL pathname, falling back to home. */
 export const pageFromPath = (path: string): Page => {
