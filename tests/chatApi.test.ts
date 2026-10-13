@@ -209,8 +209,8 @@ describe('upstream failure', () => {
     expect(res.statusCode).toBe(200);
     expect(res.body).toEqual({ reply: 'fallback success' });
     expect(requestedModels.length).toBe(2);
-    expect(requestedModels[0]).toBe('llama-3.3-70b-versatile');
-    expect(requestedModels[1]).toBe('llama-3.1-8b-instant');
+    expect(requestedModels[0]).toBe('openai/gpt-oss-120b');
+    expect(requestedModels[1]).toBe('openai/gpt-oss-20b');
   });
 });
 

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { getChatbotResponse } from '../src/lib/chatbotKnowledge';
 
 describe('Chatbot Knowledge Engine - Wanted Queries', () => {
-  describe('Greetings', () => {
+  describe('Greetings & Lyra Identity', () => {
     it.each([
       ['hi', 'hi'],
       ['Hi!', 'Hi with exclamation'],
@@ -12,10 +12,38 @@ describe('Chatbot Knowledge Engine - Wanted Queries', () => {
       ['Good morning', 'morning greeting'],
       ['what can you do', 'capabilities greeting'],
       ['help', 'short help request'],
-    ])('identifies greeting: %s (%s)', (query) => {
+      ['who is lyra', 'asking about lyra'],
+    ])('identifies greeting and introduces Lyra: %s (%s)', (query) => {
       const response = getChatbotResponse(query);
       expect(response.category).toBe('greeting');
-      expect(response.reply).toContain('DriveLink assistant');
+      expect(response.reply).toContain('Lyra');
+    });
+
+    it.each([
+      'thanks',
+      'thank you so much',
+      'awesome',
+      'cool',
+      'great job',
+    ])('handles casual appreciation as Lyra: "%s"', (query) => {
+      const response = getChatbotResponse(query);
+      expect(response.category).toBe('greeting');
+      expect(response.reply).toContain('Lyra');
+    });
+  });
+
+  describe('Gibberish, Keystroke Noise & Typo Detection', () => {
+    it.each([
+      ['vhktchgccc', 'user screenshot gibberish string'],
+      ['asdfghjkl', 'home row keyboard smash'],
+      ['qwertyuiop', 'top row keyboard smash'],
+      ['zzzzzzzz', 'repeated character spam'],
+      ['bcdfghjklmn', 'all-consonant noise'],
+    ])('detects gibberish and invites the user politely: "%s" (%s)', (query) => {
+      const response = getChatbotResponse(query);
+      expect(response.category).toBe('off_topic');
+      expect(response.reply).toContain('Lyra');
+      expect(response.reply).toContain('typo or random keystrokes');
     });
   });
 
@@ -248,7 +276,7 @@ describe('Chatbot Knowledge Engine - Unwanted & Adversarial Queries', () => {
     ])('gracefully diverts off-topic query: "%s" (%s)', (query) => {
       const response = getChatbotResponse(query);
       expect(response.category).toBe('off_topic');
-      expect(response.reply).toContain('specialized in answering questions about DriveLink');
+      expect(response.reply).toContain('Lyra');
     });
   });
 
@@ -261,6 +289,7 @@ describe('Chatbot Knowledge Engine - Unwanted & Adversarial Queries', () => {
     ])('diverts financial/crypto speculation: "%s"', (query) => {
       const response = getChatbotResponse(query);
       expect(response.category).toBe('off_topic');
+      expect(response.reply).toContain('Lyra');
     });
   });
 
@@ -287,7 +316,7 @@ describe('Chatbot Knowledge Engine - Unwanted & Adversarial Queries', () => {
     ])('neutralises jailbreak attempt safely: "%s"', (query) => {
       const response = getChatbotResponse(query);
       expect(response.category).toBe('off_topic');
-      expect(response.reply).toMatch(/DriveLink assistant|specialized in answering/i);
+      expect(response.reply).toContain('Lyra');
     });
   });
 });
@@ -295,19 +324,16 @@ describe('Chatbot Knowledge Engine - Unwanted & Adversarial Queries', () => {
 describe('Chatbot Knowledge Engine - Substring Collision & False Positive Guard', () => {
   it('does NOT trigger RF technical reply on words like "performance" or "surface"', () => {
     const response = getChatbotResponse('How is the performance of DriveLink?');
-    // Should route to latency or product, NOT technical CAN bus / RF NDA
     expect(response.category).toBe('latency');
   });
 
   it('does NOT trigger contact email reply on "cars talk to each other"', () => {
     const response = getChatbotResponse('how do cars talk to each other?');
-    // Should route to product / V2V communication, NOT contact founders
     expect(response.category).toBe('product');
   });
 
   it('does NOT trigger hiring reply on "what is the role of drv-mesh?"', () => {
     const response = getChatbotResponse('what is the role of drv-mesh in the ecosystem?');
-    // Should route to ecosystem, NOT hiring form
     expect(response.category).toBe('ecosystem');
   });
 
@@ -316,10 +342,10 @@ describe('Chatbot Knowledge Engine - Substring Collision & False Positive Guard'
     expect(response.category).toBe('product');
   });
 
-  it('falls back politely on obscure queries while promoting DriveLink', () => {
+  it('falls back politely on obscure queries while introducing Lyra', () => {
     const response = getChatbotResponse('can you help with xyz quantum flux?');
     expect(response.category).toBe('fallback');
-    expect(response.reply).toContain('DriveLink is the low-latency V2V communication backbone');
+    expect(response.reply).toContain('Lyra');
     expect(response.reply).toContain('/product');
     expect(response.reply).toContain('/ecosystem');
     expect(response.reply).toContain('/hiring');

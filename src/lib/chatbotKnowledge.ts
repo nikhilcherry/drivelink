@@ -53,6 +53,29 @@ function matchesAny(text: string, patterns: string[]): boolean {
   return false;
 }
 
+/**
+ * Detects keyboard smashes, random consonants, or gibberish input.
+ */
+function isGibberishOrNoise(str: string): boolean {
+  const s = str.trim().toLowerCase();
+  if (s.length === 0) return true;
+  const letters = s.replace(/[^a-z]/g, '');
+  if (letters.length >= 4) {
+    const vowels = letters.replace(/[^aeiou]/g, '').length;
+    // Length 5+ with 0 vowels (e.g. "vhktchgccc", "dfghjk", "qwrtyp")
+    if (letters.length >= 5 && vowels === 0) return true;
+    // Repeated character 4+ times (e.g. "aaaaa", "zzzzz")
+    if (/(.)\1{3,}/.test(letters)) return true;
+    // High consonant density (e.g., 9+ letters with <= 1 vowel)
+    if (letters.length >= 9 && vowels <= 1) return true;
+  }
+  // Common keyboard smashes
+  const keyboardSmashes = ['asdfgh', 'zxcvbn', 'qwertyu'];
+  if (keyboardSmashes.some((ks) => s.includes(ks))) return true;
+
+  return false;
+}
+
 export function getChatbotResponse(rawMessage: string): KnowledgeResponse {
   const raw = (rawMessage || '').trim();
   const lower = raw.toLowerCase();
@@ -85,11 +108,21 @@ export function getChatbotResponse(rawMessage: string): KnowledgeResponse {
     return {
       category: 'off_topic',
       reply:
-        "I am the DriveLink assistant, dedicated exclusively to providing verified information about DriveLink's V2V communication technology, ecosystem, team, and hiring. I cannot fulfill system override or exploit requests.",
+        "I am Lyra, DriveLink's AI assistant, dedicated exclusively to providing verified information about DriveLink's V2V communication technology, ecosystem, team, and hiring. I cannot fulfill system override or exploit requests.",
     };
   }
 
-  // 2. Off-Topic & Unrelated queries (food, recipes, weather, movies, jokes, crypto, politics, sports, general trivia)
+  // 2. Gibberish, Random Keystrokes, or Noise Detection
+  if (isGibberishOrNoise(clean)) {
+    return {
+      category: 'off_topic',
+      reply:
+        "That looks like a typo or random keystrokes! 😄 I'm **Lyra**, DriveLink's AI assistant. " +
+        `How can I help you today? You can ask about our **V2V Protocol**, ${ECOSYSTEM_LINK}, our **team**, or open **careers**!`,
+    };
+  }
+
+  // 3. Off-Topic & Unrelated queries (food, recipes, weather, movies, jokes, crypto, politics, sports, general trivia)
   const offTopicKeywords = [
     'weather',
     'temperature',
@@ -152,13 +185,22 @@ export function getChatbotResponse(rawMessage: string): KnowledgeResponse {
     return {
       category: 'off_topic',
       reply:
-        "I'm specialized in answering questions about DriveLink and our connected vehicle technology. " +
-        "I cannot assist with general trivia, entertainment, or unrelated topics. " +
+        "While I'd love to chat about that, my focus as **Lyra** is helping you explore DriveLink's connected vehicle technology and roadmap. " +
         `Feel free to ask about our **V2V Protocol**, ${ECOSYSTEM_LINK}, our **team**, or open **careers**!`,
     };
   }
 
-  // 3. Greetings
+  // 4. Casual Appreciation & Small Talk
+  const smallTalkPhrases = ['thanks', 'thank you', 'thx', 'cool', 'awesome', 'great', 'nice', 'ok', 'okay', 'got it', 'good job'];
+  if (matchesAny(clean, smallTalkPhrases) && clean.split(' ').length <= 4) {
+    return {
+      category: 'greeting',
+      reply:
+        "You're very welcome! I'm **Lyra**, always here to help. Let me know if there's anything else about DriveLink or our V2V technology you'd like to explore!",
+    };
+  }
+
+  // 5. Greetings
   const greetings = [
     'hi',
     'hello',
@@ -174,6 +216,8 @@ export function getChatbotResponse(rawMessage: string): KnowledgeResponse {
     'what can you do',
     'help me',
     'help',
+    'lyra',
+    'who is lyra',
   ];
   const isGreeting =
     greetings.includes(clean) ||
@@ -182,11 +226,11 @@ export function getChatbotResponse(rawMessage: string): KnowledgeResponse {
     return {
       category: 'greeting',
       reply:
-        "Hello! I am your DriveLink assistant. I can answer questions about our low-latency Vehicle-to-Vehicle (V2V) protocol, our connected ecosystem, the founding team, milestones, and open roles. What would you like to know?",
+        "Hello! I am **Lyra**, DriveLink's AI assistant. I can answer questions about our low-latency Vehicle-to-Vehicle (V2V) protocol, our connected ecosystem, the founding team, milestones, and open roles. What would you like to know?",
     };
   }
 
-  // 4. Contact & Inquiries (Checked early so "contact the team", "get in touch with founders", "pitch deck" route here)
+  // 6. Contact & Inquiries (Checked early so "contact the team", "get in touch with founders", "pitch deck" route here)
   const contactPhrases = [
     'contact',
     'email',
@@ -222,7 +266,7 @@ export function getChatbotResponse(rawMessage: string): KnowledgeResponse {
     };
   }
 
-  // 5. Hiring & Careers (Checked before Team so "join the team", "open roles" route to hiring)
+  // 7. Hiring & Careers (Checked before Team so "join the team", "open roles" route to hiring)
   const hiringPhrases = [
     'hiring',
     'hire',
@@ -267,7 +311,7 @@ export function getChatbotResponse(rawMessage: string): KnowledgeResponse {
     };
   }
 
-  // 6. Privacy & Data Governance (Checked before product/telemetry so "do you track location" routes here)
+  // 8. Privacy & Data Governance (Checked before product/telemetry so "do you track location" routes here)
   const privacyPhrases = [
     'privacy',
     'privacy policy',
@@ -288,7 +332,7 @@ export function getChatbotResponse(rawMessage: string): KnowledgeResponse {
     };
   }
 
-  // 7. Patent Specific Claim (Strictly clarifies Hackathon Award Option vs granted patent)
+  // 9. Patent Specific Claim (Strictly clarifies Hackathon Award Option vs granted patent)
   const patentKeywords = ['patent', 'patents', 'patent grant option', 'intellectual property'];
   if (matchesAny(clean, patentKeywords)) {
     return {
@@ -298,7 +342,7 @@ export function getChatbotResponse(rawMessage: string): KnowledgeResponse {
     };
   }
 
-  // 8. Specific Team Members & Leadership
+  // 10. Specific Team Members & Leadership
   if (hasWord(clean, 'hruday')) {
     return {
       category: 'team',
@@ -368,7 +412,7 @@ export function getChatbotResponse(rawMessage: string): KnowledgeResponse {
     };
   }
 
-  // 9. Traction, Pitch Arena & Milestones
+  // 11. Traction, Pitch Arena & Milestones
   const tractionKeywords = [
     'traction',
     'award',
@@ -395,7 +439,7 @@ export function getChatbotResponse(rawMessage: string): KnowledgeResponse {
     };
   }
 
-  // 10. Roadmap & Timeline
+  // 12. Roadmap & Timeline
   const roadmapKeywords = [
     'roadmap',
     'milestone',
@@ -424,7 +468,7 @@ export function getChatbotResponse(rawMessage: string): KnowledgeResponse {
     };
   }
 
-  // 11. Ecosystem & Infrastructure Layers
+  // 13. Ecosystem & Infrastructure Layers
   const ecosystemKeywords = [
     'ecosystem',
     'drv-mesh',
@@ -458,7 +502,7 @@ export function getChatbotResponse(rawMessage: string): KnowledgeResponse {
     };
   }
 
-  // 12. Latency & Performance Speed
+  // 14. Latency & Performance Speed
   const latencyKeywords = [
     'latency',
     'sub-50ms',
@@ -479,7 +523,7 @@ export function getChatbotResponse(rawMessage: string): KnowledgeResponse {
     };
   }
 
-  // 13. Technical Architecture & Hardware (Protected IP)
+  // 15. Technical Architecture & Hardware (Protected IP)
   const technicalKeywords = [
     'can bus',
     'canbus',
@@ -505,7 +549,7 @@ export function getChatbotResponse(rawMessage: string): KnowledgeResponse {
     };
   }
 
-  // 14. Core Product & V2V Communication
+  // 16. Core Product & V2V Communication
   const productKeywords = [
     'what is drivelink',
     'about drivelink',
@@ -542,11 +586,11 @@ export function getChatbotResponse(rawMessage: string): KnowledgeResponse {
     };
   }
 
-  // 15. Intelligent Fallback
+  // 17. Intelligent Fallback
   return {
     category: 'fallback',
     reply:
-      "DriveLink is the low-latency V2V communication backbone for Automotive AI. " +
+      "I'm **Lyra**, DriveLink's AI assistant! I'm here to help you explore our sub-50ms V2V protocol, our 4-layer ecosystem, team milestones, and open careers. " +
       `You can ${PRODUCT_LINK}, ${ECOSYSTEM_LINK}, or if you're exploring careers, ${HIRING_LINK}. ` +
       "For specific technical queries or partner inquiries, feel free to reach our team at **tech.drivelink@gmail.com**.",
   };

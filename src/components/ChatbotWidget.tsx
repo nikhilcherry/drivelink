@@ -25,7 +25,7 @@ export default function ChatbotWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'model',
-      content: "Hello! I am your DriveLink assistant. How can I help you today?",
+      content: "Hello! I'm **Lyra**, DriveLink's AI assistant. I can answer questions about our V2V protocol, the 4-layer ecosystem, our team, roadmap, or open engineering roles. How can I help you today?",
     },
   ]);
   const [inputValue, setInputValue] = useState('');
@@ -156,7 +156,7 @@ export default function ChatbotWidget() {
             >
               <div className="absolute right-6 -bottom-1.5 w-3 h-3 bg-white border-r border-b border-zinc-200/90 rotate-45" />
               <div className="flex-1 font-medium">
-                Hey! Feel free to ask any questions about DriveLink. 👋
+                Hey! I&apos;m Lyra. Feel free to ask me anything about DriveLink. 👋
               </div>
               <button
                 onClick={(e) => {
@@ -182,7 +182,7 @@ export default function ChatbotWidget() {
             // Keep cohesive brand blue theme instead of jarring red
             "bg-[#0f4c81] hover:bg-[#1e60a3] shadow-[#0f4c81]/35 hover:shadow-[#0f4c81]/50 border border-white/20"
           )}
-          aria-label={isOpen ? "Close chatbot" : "Open chatbot"}
+          aria-label={isOpen ? "Close Lyra chat" : "Open Lyra chat"}
         >
           {/* Subtle pulsing beacon matching hero style */}
           {!isOpen && (
@@ -238,7 +238,7 @@ export default function ChatbotWidget() {
                 <LogoMark size={32} className="rounded-lg shadow-sm" />
                 <div>
                   <h2 id="dlw-chat-title" className="text-sm font-semibold tracking-tight text-zinc-900 flex items-center gap-1.5">
-                    DriveLink Assistant
+                    Lyra
                     <Sparkles size={13} className="text-[#0f4c81]" />
                   </h2>
                   <div className="flex items-center gap-1.5 mt-0.5">
@@ -247,7 +247,7 @@ export default function ChatbotWidget() {
                       className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_6px_#10b981]"
                     />
                     <span className="text-[10px] text-zinc-500 font-mono">
-                      {aiAvailable ? 'AI POWERED' : 'KNOWLEDGE ENGINE'}
+                      {aiAvailable ? 'LYRA AI' : 'KNOWLEDGE ENGINE'}
                     </span>
                   </div>
                 </div>
@@ -280,7 +280,7 @@ export default function ChatbotWidget() {
                   )}
                 >
                   <div className="text-[9px] font-mono text-zinc-400 uppercase px-1">
-                    {message.role === 'user' ? 'YOU' : 'DRIVELINK'}
+                    {message.role === 'user' ? 'YOU' : 'LYRA'}
                   </div>
                   <div
                     className={cn(
@@ -296,7 +296,7 @@ export default function ChatbotWidget() {
               ))}
               {isLoading && (
                 <div className="flex flex-col max-w-[85%] space-y-1 mr-auto items-start">
-                  <div className="text-[9px] font-mono text-zinc-400 uppercase px-1">DRIVELINK</div>
+                  <div className="text-[9px] font-mono text-zinc-400 uppercase px-1">LYRA</div>
                   <div className="px-3.5 py-2.5 rounded-2xl text-xs bg-white border border-zinc-200/80 rounded-tl-none flex items-center gap-2">
                     <span className="flex gap-1.5 py-0.5">
                       <span className="w-1.5 h-1.5 bg-[#0f4c81] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
@@ -338,8 +338,8 @@ export default function ChatbotWidget() {
                   maxLength={1000}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="Ask about V2V, Ecosystem, Hiring..."
-                  aria-label="Ask the DriveLink assistant a question"
+                  placeholder="Ask Lyra about V2V, Ecosystem, Hiring..."
+                  aria-label="Ask Lyra a question"
                   className="flex-1 bg-white border border-zinc-200 rounded-xl px-3.5 py-2 text-xs text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-[#0f4c81] focus:ring-1 focus:ring-[#0f4c81]/20 transition-all font-sans"
                   disabled={isLoading}
                 />
