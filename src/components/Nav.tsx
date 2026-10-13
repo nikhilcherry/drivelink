@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { LogoMark } from './ui/Logo';
+import { AnnouncementBanner } from './AnnouncementBanner';
 import { hrefFor, isNavPath, pageFromPath, useSiteBase, type Page } from '../lib/nav';
 
 const tabs: { id: Page; label: string }[] = [
@@ -70,7 +71,9 @@ export function Nav() {
 
   return (
     <>
-      <nav className={'dlw-nav ' + (scrolled ? 'is-scrolled' : '')} aria-label="Primary">
+      <header className="dlw-top-header">
+        <AnnouncementBanner />
+        <nav className={'dlw-nav ' + (scrolled ? 'is-scrolled' : '')} aria-label="Primary">
         <div className="dlw-container dlw-nav-inner">
           <Link className="dlw-brand" href={siteBase + hrefFor('home')}>
             <LogoMark size={36} className="dlw-brand-mark" />
@@ -108,6 +111,7 @@ export function Nav() {
           </button>
         </div>
       </nav>
+      </header>
 
       {mobileOpen && (
         <div className="dlw-nav-drawer" id="dlw-nav-drawer">
