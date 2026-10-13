@@ -53,7 +53,7 @@ describe('breadcrumbJsonLd', () => {
 
 describe('route helpers', () => {
   it('round-trips every page key through its href', () => {
-    for (const page of ['home', 'product', 'team', 'investors', 'hiring', 'docs'] as const) {
+    for (const page of ['home', 'product', 'ecosystem', 'team', 'investors', 'hiring', 'docs'] as const) {
       expect(pageFromPath(hrefFor(page))).toBe(page);
     }
   });
@@ -74,7 +74,7 @@ describe('route helpers', () => {
   });
 
   it('isNavPath separates the nav\'s own destinations from everything else', () => {
-    for (const p of ['/', '/product', '/team', '/investors', '/hiring', '/docs', '/team/someone']) {
+    for (const p of ['/', '/product', '/ecosystem', '/team', '/investors', '/hiring', '/docs', '/team/someone']) {
       expect(isNavPath(p)).toBe(true);
     }
     // The reason this exists: pageFromPath answers "home" for all of these,

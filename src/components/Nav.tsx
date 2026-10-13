@@ -9,6 +9,7 @@ import { hrefFor, isNavPath, pageFromPath, useSiteBase, type Page } from '../lib
 const tabs: { id: Page; label: string }[] = [
   { id: 'home', label: 'Home' },
   { id: 'product', label: 'Product' },
+  { id: 'ecosystem', label: 'Ecosystem' },
   { id: 'team', label: 'Team' },
   { id: 'investors', label: 'Investors' },
 ];
