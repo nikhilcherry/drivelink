@@ -17,69 +17,7 @@ function formatMessage(text: string) {
   return <span dangerouslySetInnerHTML={{ __html: formatMessageHtml(text) }} />;
 }
 
-const HIRING_LINK = '[apply here](/hiring)';
-const ECOSYSTEM_LINK = '[explore our ecosystem](/ecosystem)';
-const PRODUCT_LINK = '[learn how it works](/product)';
-const TEAM_LINK = '[meet the team](/team)';
-const ROADMAP_LINK = '[view the roadmap](/investors)';
-
-interface KnowledgeTopic {
-  keywords: string[];
-  reply: () => string;
-}
-
-const KNOWLEDGE_BASE: KnowledgeTopic[] = [
-  {
-    keywords: ['hi', 'hello', 'hey', 'greetings', 'help', 'who are you', 'what can you do'],
-    reply: () =>
-      "Hello! I'm the DriveLink AI Assistant. I can answer questions about our Vehicle-to-Vehicle (V2V) communication protocol, the connected ecosystem, team, roadmap, and open job roles. How can I help you today?"
-  },
-  {
-    keywords: ['hiring', 'hire', 'job', 'intern', 'career', 'vacancy', 'opening', 'apply', 'join', 'recruit', 'work with', 'work at', 'role', 'positions'],
-    reply: () =>
-      `**Yes — DriveLink is actively taking applications!** We have open positions in **App Development, Web Development, Machine Learning, Robotics · ROS, IoT & Embedded, and R&D**. You can ${HIRING_LINK} directly — the application form takes just a few minutes.`
-  },
-  {
-    keywords: ['what is drivelink', 'about drivelink', 'what does it do', 'explain drivelink', 'overview', 'summary'],
-    reply: () =>
-      `DriveLink is a decentralized **Vehicle-to-Vehicle (V2V) communication protocol** for Automotive AI. It functions as an ultra-fast speaking layer allowing vehicles to broadcast intent, trajectory predictions, and road telemetry in **under 50ms**, enabling cars to coordinate before danger appears. You can ${PRODUCT_LINK}.`
-  },
-  {
-    keywords: ['ecosystem', 'drv-mesh', 'drv-infra', 'traffic light', 'smart city', 'infrastructure', 'mobile app', 'fleet', 'cloud', 'architecture'],
-    reply: () =>
-      `The DriveLink ecosystem unites four core layers:\n1. **drv-mesh**: Sub-50ms peer-to-peer V2V intent broadcast.\n2. **drv-infra**: V2I sync with municipal smart signals and road sensors.\n3. **In-Cabin Mobile HUD**: Driver companion visualizer.\n4. **Cloud Fleet Visualizer**: Real-time fleet tracking and safety telemetry.\n\nYou can ${ECOSYSTEM_LINK} for full architectural diagrams.`
-  },
-  {
-    keywords: ['latency', 'sub-50ms', 'how fast', 'performance', 'speed', 'delay'],
-    reply: () =>
-      `DriveLink targets **sub-50ms end-to-end latency** for real-time safety maneuvers. Our concept simulations model message exchange benchmarks across the planned Bangalore mesh corridor.`
-  },
-  {
-    keywords: ['team', 'founder', 'founders', 'ceo', 'cto', 'hruday', 'nikhil', 'krishna', 'shreyas', 'harish', 'who started', 'leadership', 'advisor'],
-    reply: () =>
-      `DriveLink was founded by **Hruday** (CEO & Chief Systems Architect), **Nikhil** (CTO), and **Krishna** (CPO), with **Shreyas** as Chief Development Officer. We are mentored by Harish, with industry guidance from Suhas Rajkumar (Founder & CEO of Simple Energy). You can ${TEAM_LINK}.`
-  },
-  {
-    keywords: ['traction', 'award', 'awards', 'pitch', 'win', 'patent', 'achievement', 'iit', 'delhi', 'pedalstart', 'nmit'],
-    reply: () =>
-      "Key milestones & traction:\n• **All India Rank 5** at the IIT Delhi Pitch Arena National Finals.\n• **Patent Grant Option** awarded at a national hackathon (an award backing a future filing — not a granted patent).\n• Hardware collaboration with NMIT and incubation backing from PedalStart."
-  },
-  {
-    keywords: ['roadmap', 'milestone', 'milestones', 'future', 'next step', 'timeline', 'when launch', 'q3 2026', 'q4 2026', '2027'],
-    reply: () =>
-      `Our key roadmap milestones:\n• **Q3 2026:** Alpha Pilot Program\n• **Q4 2026:** Decentralized Data Node v1\n• **Q1 2027:** DRV Token Protocol Audit\n• **Nov 2027:** Cross-OEM Standardization\n\nYou can ${ROADMAP_LINK} for full phase details.`
-  },
-  {
-    keywords: ['contact', 'email', 'support', 'talk to', 'reach', 'get in touch', 'phone', 'address', 'investor', 'partnership', 'partner'],
-    reply: () =>
-      "You can reach the founding team directly at **tech.drivelink@gmail.com**. For investment queries, technical partnerships, or pilot inquiries, our team typically responds within 24–48 hours."
-  },
-  {
-    keywords: ['privacy', 'data', 'security', 'terms'],
-    reply: () =>
-      "DriveLink is designed with privacy by default. Broadcast packets prioritize localized, ephemeral safety data without retaining personal location histories. Review our [Privacy Policy](/privacy) and [Terms of Service](/terms) for complete details."
-  }
-];
+import { getChatbotResponse } from '../lib/chatbotKnowledge';
 
 export default function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -137,19 +75,7 @@ export default function ChatbotWidget() {
   }, [isOpen, messages]);
 
   const getSmartLocalResponse = (message: string): string => {
-    const q = message.toLowerCase().trim();
-
-    for (const topic of KNOWLEDGE_BASE) {
-      if (topic.keywords.some((k) => q.includes(k))) {
-        return topic.reply();
-      }
-    }
-
-    return (
-      "DriveLink is developing the V2V communication layer for automotive AI. " +
-      `You can ${PRODUCT_LINK}, ${ECOSYSTEM_LINK}, or if you're interested in joining us, ${HIRING_LINK}. ` +
-      "For specific technical or partnership queries, contact our founding team at **tech.drivelink@gmail.com**."
-    );
+    return getChatbotResponse(message).reply;
   };
 
   const callChatAPI = async (userMessage: string, history: Message[]) => {
@@ -174,6 +100,7 @@ export default function ChatbotWidget() {
   };
 
   const handleSendMessage = async (textToSend?: string) => {
+    if (isLoading) return;
     const text = (textToSend || inputValue).trim();
     if (!text) return;
 
@@ -408,6 +335,7 @@ export default function ChatbotWidget() {
                 <input
                   type="text"
                   ref={inputRef}
+                  maxLength={1000}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder="Ask about V2V, Ecosystem, Hiring..."
