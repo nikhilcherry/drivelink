@@ -775,6 +775,56 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 }
 .dlw-reveal.is-in { opacity: 1; transform: none; }
 
+/* Reveal variants — driven by data-reveal-type on elements watched by RevealOnScroll.
+   Each variant customizes the entrance transform, timing, and stagger behavior. */
+.dlw-anim[data-reveal-type="section-head"] {
+  transform: translateY(16px);
+  transition: opacity .6s var(--ease-out), transform .6s var(--ease-out);
+}
+.dlw-anim[data-reveal-type="manifesto"] {
+  transform: translateY(32px);
+  transition: opacity .9s var(--ease-out), transform .9s var(--ease-out);
+}
+.dlw-anim[data-reveal-type="stats"] {
+  transform: scale(0.92) translateY(16px);
+  transition: opacity .7s var(--ease-out), transform .7s var(--ease-out);
+}
+.dlw-anim[data-reveal-type="story"] {
+  transform: translateX(-40px);
+  transition: opacity .8s var(--ease-out), transform .8s var(--ease-out);
+}
+.dlw-anim[data-reveal-type="roadmap"] {
+  transform: scale(0.96) translateY(20px);
+  transition: opacity .7s var(--ease-out), transform .7s var(--ease-out);
+}
+.dlw-anim[data-reveal-type="hiw"] {
+  transform: translateY(28px);
+  transition: opacity .6s var(--ease-out), transform .6s var(--ease-out);
+}
+.dlw-anim[data-reveal-type="card"] {
+  transform: translateY(22px);
+  transition: opacity .7s var(--ease-out), transform .7s var(--ease-out);
+}
+.dlw-anim[data-reveal-type="timeline"] {
+  transform: translateX(30px);
+  transition: opacity .7s var(--ease-out), transform .7s var(--ease-out);
+}
+.dlw-anim[data-reveal-type="cta"] {
+  transform: translateY(24px) scale(0.98);
+  transition: opacity .7s var(--ease-out), transform .7s var(--ease-out);
+}
+
+/* Stagger delays per variant (applied via JS in RevealOnScroll) */
+.dlw-anim[data-reveal-type="section-head"] { --stagger-base: 0; --stagger-step: 0; }
+.dlw-anim[data-reveal-type="manifesto"] { --stagger-base: 0; --stagger-step: 0; }
+.dlw-anim[data-reveal-type="stats"] { --stagger-base: 80; --stagger-step: 80; }
+.dlw-anim[data-reveal-type="story"] { --stagger-base: 120; --stagger-step: 100; }
+.dlw-anim[data-reveal-type="roadmap"] { --stagger-base: 100; --stagger-step: 120; }
+.dlw-anim[data-reveal-type="hiw"] { --stagger-base: 0; --stagger-step: 0; }
+.dlw-anim[data-reveal-type="card"] { --stagger-base: 60; --stagger-step: 60; }
+.dlw-anim[data-reveal-type="timeline"] { --stagger-base: 80; --stagger-step: 80; }
+.dlw-anim[data-reveal-type="cta"] { --stagger-base: 0; --stagger-step: 0; }
+
 /* Subtle living gradient on gradient text */
 .dlw-text-gradient, .dlw-text-gradient-down { background-size: 200% 100%; animation: dlw-grad-pan 9s ease-in-out infinite; }
 @keyframes dlw-grad-pan { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }

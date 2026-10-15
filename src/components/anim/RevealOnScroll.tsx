@@ -8,6 +8,10 @@ import { usePathname } from 'next/navigation';
  * wiring needed — it targets class names that already exist. Reduced-motion
  * users get everything shown instantly, and each element drops back to its
  * native transitions once revealed so hover effects stay snappy.
+ *
+ * Variants: elements can opt into a reveal variant via `data-reveal-type`.
+ * Supported types: section-head, manifesto, stats, story, roadmap, hiw, card, timeline, cta.
+ * Variant styling (transform, transition, stagger) is defined in globals.css.
  */
 const SELECTORS = [
   '.dlw-section-head',
@@ -33,6 +37,55 @@ const SELECTORS = [
   '.dlw-cta-inner',
 ].join(',');
 
+// Default variant for each selector (matches the selector order above)
+const SELECTOR_VARIANTS: Record<string, string> = {
+  '.dlw-section-head': 'section-head',
+  '.dlw-story-item': 'story',
+  '.dlw-tier-head': 'section-head',
+  '.dlw-rost-card': 'card',
+  '.dlw-roadmap-head': 'roadmap',
+  '.dlw-roadmap-row': 'roadmap',
+  '.dlw-stat': 'stats',
+  '.dlw-manifesto-inner': 'manifesto',
+  '.dlw-hiw-stage': 'hiw',
+  '.dlw-market-card': 'card',
+  '.dlw-arch-row': 'card',
+  '.dlw-repo-card': 'card',
+  '.dlw-doc-kpi': 'stats',
+  '.dlw-doc-card': 'card',
+  '.dlw-doc-tlitem': 'timeline',
+  '.dlw-doc-pnode-wrap': 'card',
+  '.dlw-traction-card': 'card',
+  '.dlw-advisor': 'card',
+  '.dlw-team-detail': 'card',
+  '.dlw-revenue': 'card',
+  '.dlw-cta-inner': 'cta',
+};
+
+function getVariantForElement(el: HTMLElement): string {
+  // Explicit data-reveal-type takes precedence
+  const explicit = el.getAttribute('data-reveal-type');
+  if (explicit) return explicit;
+
+  // Fall back to selector-based mapping
+  for (const [selector, variant] of Object.entries(SELECTOR_VARIANTS)) {
+    if (el.matches(selector)) return variant;
+  }
+  return 'card';
+}
+
+function getStaggerConfig(variant: string): { base: number; step: number; max: number } {
+  // Base delay, step per sibling, max cap (ms)
+  switch (variant) {
+    case 'stats': return { base: 80, step: 80, max: 400 };
+    case 'story': return { base: 120, step: 100, max: 500 };
+    case 'roadmap': return { base: 100, step: 120, max: 600 };
+    case 'card': return { base: 60, step: 60, max: 360 };
+    case 'timeline': return { base: 80, step: 80, max: 480 };
+    default: return { base: 0, step: 0, max: 0 };
+  }
+}
+
 export function RevealOnScroll() {
   const pathname = usePathname();
   const ioRef = useRef<IntersectionObserver | null>(null);
@@ -50,21 +103,28 @@ export function RevealOnScroll() {
         return;
       }
 
-      // Stagger siblings that share a parent for a sequential reveal.
-      const byParent = new Map<Element, HTMLElement[]>();
+      // Group by parent AND variant for proper staggering
+      const byParentAndVariant = new Map<string, HTMLElement[]>();
       els.forEach((el) => {
         el.classList.add('dlw-anim');
+        const variant = getVariantForElement(el);
+        el.dataset.revealType = variant;
         const p = el.parentElement;
         if (!p) return;
-        const arr = byParent.get(p) || [];
+        const key = `${p.isEqualNode ? 'parent' : 'root'}-${variant}`;
+        const arr = byParentAndVariant.get(key) || [];
         arr.push(el);
-        byParent.set(p, arr);
+        byParentAndVariant.set(key, arr);
       });
-      byParent.forEach((arr) =>
+
+      byParentAndVariant.forEach((arr, key) => {
+        const variant = key.split('-').pop() || 'card';
+        const { base, step, max } = getStaggerConfig(variant);
         arr.forEach((el, i) => {
-          el.style.transitionDelay = `${Math.min(i * 60, 360)}ms`;
-        })
-      );
+          const delay = base + Math.min(i * step, max);
+          el.style.transitionDelay = `${delay}ms`;
+        });
+      });
 
       const io = new IntersectionObserver(
         (entries) => {
