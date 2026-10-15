@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { useInView } from 'framer-motion';
 
 interface CountUpProps {
   to: number;
@@ -20,16 +19,48 @@ interface CountUpProps {
  */
 export function CountUp({ to, from, duration = 1.4, decimals = 0, suffix = '', className }: CountUpProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.4 });
+  const [inView, setInView] = useState(false);
   const [value, setValue] = useState(to);
+  const ioRef = useRef<IntersectionObserver | null>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setInView(true);
+            if (ioRef.current) {
+              ioRef.current.unobserve(el);
+              ioRef.current.disconnect();
+              ioRef.current = null;
+            }
+          }
+        }
+      },
+      { threshold: 0.4 }
+    );
+
+    io.observe(el);
+    ioRef.current = io;
+
+    return () => {
+      ioRef.current?.disconnect();
+      ioRef.current = null;
+    };
+  }, []);
 
   useEffect(() => {
     if (!inView || from === undefined) return;
-    const reduce = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce) {
       setValue(to); // eslint-disable-line react-hooks/set-state-in-effect -- skip the animation, jump straight to the final value
       return;
     }
+
     let raf = 0;
     const start = performance.now();
     const tick = (now: number) => {
