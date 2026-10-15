@@ -26,9 +26,31 @@ const steps = [
 
 export function HowItWorks() {
   const trackRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   const [step, setStep] = useState(0);
+  const [reduceMotion, setReduceMotion] = useState(false);
 
   useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReduceMotion(mq.matches); // eslint-disable-line react-hooks/set-state-in-effect -- initial sync
+    const handler = (e: MediaQueryListEvent) => setReduceMotion(e.matches);
+    mq.addEventListener?.('change', handler);
+    return () => mq.removeEventListener?.('change', handler);
+  }, []);
+
+  // Pause SMIL animations when reduced-motion is preferred
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    if (reduceMotion) {
+      svg.pauseAnimations();
+    } else {
+      svg.unpauseAnimations();
+    }
+  }, [reduceMotion]);
+
+  useEffect(() => {
+    if (reduceMotion) return;
     const onScroll = () => {
       const t = trackRef.current;
       if (!t) return;
@@ -43,7 +65,7 @@ export function HowItWorks() {
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [reduceMotion]);
 
   return (
     <section id="how-it-works" className="dlw-howitworks">
@@ -75,7 +97,7 @@ export function HowItWorks() {
 
             <div className="dlw-hiw-stage">
               <div className="stage-label dlw-mono">STAGE · STEP {String(step + 1).padStart(2, '0')}</div>
-              <HiwStage step={step} />
+              <HiwStage step={step} ref={svgRef} />
             </div>
           </div>
 
@@ -90,9 +112,9 @@ export function HowItWorks() {
   );
 }
 
-function HiwStage({ step }: { step: number }) {
+function HiwStage({ step, ref }: { step: number; ref: React.RefObject<SVGSVGElement> }) {
   return (
-    <svg viewBox="0 0 600 450" preserveAspectRatio="xMidYMid meet">
+    <svg ref={ref} viewBox="0 0 600 450" preserveAspectRatio="xMidYMid meet" className="dlw-hiw-svg">
       <defs>
         <pattern id="hiwGrid" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
           <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(15,76,129,0.06)" strokeWidth="1" />
@@ -130,10 +152,14 @@ function HiwStage({ step }: { step: number }) {
             <rect x="-14" y="-10" width="22" height="20" rx="3" fill="rgba(255,255,255,0.7)" />
           </g>
           <path d="M 210 240 Q 320 220, 460 215 L 460 265 Q 320 260, 210 240 Z" fill="rgba(15,76,129,0.1)" stroke="rgba(15,76,129,0.3)" strokeDasharray="3 4" />
-          <path d="M 210 240 Q 340 240, 450 240" stroke="#0F4C81" strokeWidth="1.5" strokeDasharray="2 6" fill="none" />
+          <path d="M 210 240 Q 340 240, 450 240" stroke="#0F4C81" strokeWidth="1.5" strokeDasharray="2 6" fill="none">
+            <animate attributeName="stroke-dashoffset" from="0" to="-200" dur="2s" repeatCount="indefinite" />
+          </path>
           {[0.4, 0.8, 1.2].map((t, i) => (
             <g key={i}>
-              <circle cx={210 + (450 - 210) * t / 1.2} cy={240 - (i*4)} r="3" fill="#0F4C81" />
+              <circle cx={210 + (450 - 210) * t / 1.2} cy={240 - (i*4)} r="3" fill="#0F4C81">
+                <animate attributeName="opacity" from="0.4" to="1" dur="1.5s" repeatCount="indefinite" />
+              </circle>
               <text x={210 + (450 - 210) * t / 1.2} y={290} fontSize="9" fontFamily="ui-monospace, monospace" fill="#6b7280" textAnchor="middle">{t}s</text>
             </g>
           ))}
