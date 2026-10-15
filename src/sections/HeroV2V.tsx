@@ -86,6 +86,8 @@ function HeroMarquee() {
 
 const LOGICAL_W = 1000;
 const LOGICAL_H = 437.5;
+// Reduced speed for ambient hero feel (0.6 = slower, more relaxed motion)
+const AMBIENT_SPEED = 0.6;
 
 export function V2VSimulation() {
   const stageRef = useRef<HTMLDivElement>(null);
@@ -94,6 +96,11 @@ export function V2VSimulation() {
   const hud1 = useRef<HTMLDivElement>(null);
   const latRef = useRef<HTMLSpanElement>(null);
   const countRef = useRef<HTMLSpanElement>(null);
+  const rafRef = useRef<number>(0);
+  const simRef = useRef<SimState | null>(null);
+  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
+  const isVisibleRef = useRef(true);
+  const isTabVisibleRef = useRef(true);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -101,9 +108,11 @@ export function V2VSimulation() {
     if (!canvas || !stage) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+    ctxRef.current = ctx;
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const sim = createSim(LOGICAL_W, LOGICAL_H, { lanes: 3, density: 3, v2v: true, ramp: false, heatmap: false, speed: 1 });
+    const sim = createSim(LOGICAL_W, LOGICAL_H, { lanes: 3, density: 3, v2v: true, ramp: false, heatmap: false, speed: AMBIENT_SPEED });
+    simRef.current = sim;
 
     let cssW = 0;
     let cssH = 0;
@@ -134,20 +143,66 @@ export function V2VSimulation() {
       if (int) int.textContent = kmh === 0 ? 'Idle' : c.intent;
     };
 
-    let raf = 0;
     let last = performance.now();
 
-    const frame = (now: number) => {
+    const renderFrame = (now: number) => {
+      if (!isVisibleRef.current || !isTabVisibleRef.current) {
+        rafRef.current = requestAnimationFrame(renderFrame);
+        return;
+      }
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
+      const sim = simRef.current;
+      if (!sim) return;
       stepSim(sim, dt);
       const { latency, links } = renderSim(ctx, sim, cssW, cssH, dpr);
       placeHud(hud0.current, sim.cars[0]);
       placeHud(hud1.current, sim.cars[Math.min(4, sim.cars.length - 1)]);
       if (latRef.current) latRef.current.textContent = `${latency}ms`;
       if (countRef.current) countRef.current.textContent = `${sim.cars.length} vehicles · ${links} V2V links`;
-      raf = requestAnimationFrame(frame);
+      rafRef.current = requestAnimationFrame(renderFrame);
     };
+
+    const pauseSimulation = () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = 0;
+      }
+    };
+
+    const resumeSimulation = () => {
+      if (rafRef.current) return;
+      last = performance.now();
+      rafRef.current = requestAnimationFrame(renderFrame);
+    };
+
+    // IntersectionObserver to pause when hero is off-screen
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          // Pause when less than 50% visible
+          isVisibleRef.current = entry.intersectionRatio >= 0.5;
+          if (isVisibleRef.current && isTabVisibleRef.current) {
+            resumeSimulation();
+          } else {
+            pauseSimulation();
+          }
+        }
+      },
+      { threshold: [0, 0.5, 1] }
+    );
+    io.observe(stage);
+
+    // Pause when tab is hidden
+    const handleVisibilityChange = () => {
+      isTabVisibleRef.current = !document.hidden;
+      if (isTabVisibleRef.current && isVisibleRef.current) {
+        resumeSimulation();
+      } else {
+        pauseSimulation();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     if (reduce) {
       stepSim(sim, 0);
@@ -157,12 +212,14 @@ export function V2VSimulation() {
       if (latRef.current) latRef.current.textContent = `${latency}ms`;
       if (countRef.current) countRef.current.textContent = `${sim.cars.length} vehicles · ${links} V2V links`;
     } else {
-      raf = requestAnimationFrame(frame);
+      rafRef.current = requestAnimationFrame(renderFrame);
     }
 
     return () => {
-      cancelAnimationFrame(raf);
+      cancelAnimationFrame(rafRef.current);
       ro.disconnect();
+      io.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 
