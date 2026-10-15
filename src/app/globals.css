@@ -153,6 +153,40 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-section-tight { padding: 80px 0; }
 .dlw-section-dark { background: var(--bg-dark); color: #fff; padding: 160px 0; position: relative; overflow: hidden; }
 .dlw-section-paper { background: rgba(250,249,247,0.55); }
+
+/* Section theme transitions — smooth background shifts between sections.
+   Applied via data-theme on .dlw-page (set by RevealOnScroll). */
+.dlw-page {
+  transition: background-color 0.8s var(--ease-out), background-image 0.8s var(--ease-out);
+}
+.dlw-page[data-theme="dark"] {
+  background-color: var(--bg-dark);
+}
+.dlw-page[data-theme="paper"] {
+  background-color: rgba(250,249,247,0.55);
+}
+@media (prefers-reduced-motion: reduce) {
+  .dlw-page { transition: none; }
+}
+
+/* Hero entrance refinements — staggered reveal for hero content */
+.dlw-hero-top > * {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: dlw-hero-entrance 0.8s var(--ease-out) forwards;
+}
+.dlw-hero-top > *:nth-child(1) { animation-delay: 0ms; }
+.dlw-hero-top > *:nth-child(2) { animation-delay: 120ms; }
+.dlw-hero-top > *:nth-child(3) { animation-delay: 200ms; }
+.dlw-hero-top > *:nth-child(4) { animation-delay: 280ms; }
+.dlw-hero-top > *:nth-child(5) { animation-delay: 360ms; }
+@keyframes dlw-hero-entrance {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dlw-hero-top > * { animation: none; opacity: 1; transform: none; }
+}
 .dlw-section-head { max-width: 760px; margin: 0 auto 80px; }
 .dlw-section-head.center { text-align: center; margin-left: auto; margin-right: auto; }
 .dlw-section-title {

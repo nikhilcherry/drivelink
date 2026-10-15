@@ -12,6 +12,9 @@ import { usePathname } from 'next/navigation';
  * Variants: elements can opt into a reveal variant via `data-reveal-type`.
  * Supported types: section-head, manifesto, stats, story, roadmap, hiw, card, timeline, cta.
  * Variant styling (transform, transition, stagger) is defined in globals.css.
+ *
+ * Also manages section theme transitions by observing section roots and
+ * setting data-theme on .dlw-page for smooth background shifts.
  */
 const SELECTORS = [
   '.dlw-section-head',
@@ -62,6 +65,17 @@ const SELECTOR_VARIANTS: Record<string, string> = {
   '.dlw-cta-inner': 'cta',
 };
 
+// Section root selectors for theme transitions
+const SECTION_ROOTS = [
+  { selector: '.dlw-hero', theme: 'light' },
+  { selector: '.dlw-manifesto', theme: 'light' },
+  { selector: '.dlw-howitworks', theme: 'light' },
+  { selector: '.dlw-stats', theme: 'dark' },
+  { selector: '.dlw-section-paper', theme: 'paper' },
+  { selector: '.dlw-roadmap', theme: 'dark' },
+  { selector: '.dlw-cta', theme: 'dark' },
+];
+
 function getVariantForElement(el: HTMLElement): string {
   // Explicit data-reveal-type takes precedence
   const explicit = el.getAttribute('data-reveal-type');
@@ -75,7 +89,6 @@ function getVariantForElement(el: HTMLElement): string {
 }
 
 function getStaggerConfig(variant: string): { base: number; step: number; max: number } {
-  // Base delay, step per sibling, max cap (ms)
   switch (variant) {
     case 'stats': return { base: 80, step: 80, max: 400 };
     case 'story': return { base: 120, step: 100, max: 500 };
@@ -89,9 +102,41 @@ function getStaggerConfig(variant: string): { base: number; step: number; max: n
 export function RevealOnScroll() {
   const pathname = usePathname();
   const ioRef = useRef<IntersectionObserver | null>(null);
+  const themeIoRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const page = document.querySelector('.dlw-page') as HTMLElement | null;
+
+    // Theme observer — watches section roots to set data-theme on .dlw-page
+    const themeIo = new IntersectionObserver(
+      (entries) => {
+        if (reduce || !page) return;
+        // Find the section with highest intersection ratio
+        let bestEntry: IntersectionObserverEntry | null = null;
+        let bestRatio = -1;
+        for (const entry of entries) {
+          if (entry.isIntersecting && entry.intersectionRatio > bestRatio) {
+            bestRatio = entry.intersectionRatio;
+            bestEntry = entry;
+          }
+        }
+        if (bestEntry) {
+          const target = bestEntry.target as HTMLElement;
+          const section = SECTION_ROOTS.find(s => target.matches(s.selector));
+          if (section) {
+            page.dataset.theme = section.theme;
+          }
+        }
+      },
+      { threshold: [0, 0.25, 0.5, 0.75, 1], rootMargin: '0px 0px -20% 0px' }
+    );
+
+    SECTION_ROOTS.forEach(({ selector }) => {
+      const el = document.querySelector(selector);
+      if (el) themeIo.observe(el);
+    });
+    themeIoRef.current = themeIo;
 
     const raf = requestAnimationFrame(() => {
       const els = Array.from(document.querySelectorAll<HTMLElement>(SELECTORS))
@@ -150,7 +195,9 @@ export function RevealOnScroll() {
     return () => {
       cancelAnimationFrame(raf);
       ioRef.current?.disconnect();
+      themeIoRef.current?.disconnect();
       ioRef.current = null;
+      themeIoRef.current = null;
     };
   }, [pathname]);
 
