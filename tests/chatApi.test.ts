@@ -269,3 +269,80 @@ describe('rate limiting', () => {
     }
   });
 });
+
+describe('domain guardrails and rate-limit conservation', () => {
+  it.each([
+    ['2+2', 'basic arithmetic'],
+    ['what is 2 + 2?', 'math question phrase'],
+    ['15 * 4', 'multiplication'],
+    ['(100 / 5) + 3', 'parenthetical math'],
+    ['calculate 500 - 25', 'calculate keyword'],
+    ['how to bake chocolate cake', 'cooking recipe'],
+    ['what is the weather in Delhi', 'weather forecast'],
+    ['write python code for fibonacci', 'coding homework'],
+    ['who won the cricket world cup', 'sports trivia'],
+  ])('intercepts off-topic query "%s" (%s) without burning LLM tokens or calling Groq', async (query) => {
+    const fetchMock = groqReplies('should not happen');
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    const handler = await loadHandler();
+    const res = makeRes();
+
+    await handler(makeReq({ message: query }, '203.0.113.20'), res);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toMatchObject({
+      offTopic: true,
+      source: 'guardrail',
+    });
+    const reply = (res.body as { reply: string }).reply;
+    expect(reply).toContain('Lyra');
+    expect(reply).not.toContain('2 + 2 = 4');
+    expect(reply).not.toContain('= 4');
+    expect(fetchMock).not.toHaveBeenCalled(); // 0 Groq calls!
+  });
+
+  it('allows DriveLink queries that mention weather in an automotive context through to Groq', async () => {
+    const fetchMock = groqReplies('DriveLink V2V operates in rain and fog using RF mesh.');
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    const handler = await loadHandler();
+    const res = makeRes();
+
+    await handler(makeReq({ message: 'how does severe weather affect v2v sensors in drivelink?' }, '203.0.113.21'), res);
+
+    expect(res.statusCode).toBe(200);
+    expect(fetchMock).toHaveBeenCalled();
+  });
+});
+
+describe('continuous improvement & feedback telemetry', () => {
+  it('records user thumbs feedback without requiring GROQ_API_KEY', async () => {
+    delete process.env.GROQ_API_KEY;
+    const handler = await loadHandler();
+    const res = makeRes();
+
+    await handler(
+      makeReq({
+        action: 'feedback',
+        messageId: 'msg_1',
+        query: 'What is drv-mesh?',
+        reply: 'drv-mesh is our peer-to-peer V2V layer.',
+        rating: 'positive',
+      }, '203.0.113.22'),
+      res,
+    );
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toMatchObject({ success: true });
+  });
+
+  it('exports fine-tuning dataset formatted for LLM training', async () => {
+    const handler = await loadHandler();
+    const res = makeRes();
+
+    await handler(makeReq({ action: 'export' }, '203.0.113.23'), res);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty('dataset');
+    expect(Array.isArray((res.body as { dataset: unknown[] }).dataset)).toBe(true);
+  });
+});

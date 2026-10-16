@@ -122,7 +122,25 @@ export function getChatbotResponse(rawMessage: string): KnowledgeResponse {
     };
   }
 
-  // 3. Off-Topic & Unrelated queries (food, recipes, weather, movies, jokes, crypto, politics, sports, general trivia)
+  // 3. Math, arithmetic & calculations (e.g., "2+2", "what is 2 + 2", "15 * 4", "solve 2x+1=5")
+  const hasDriveLinkContext = /\b(drivelink|v2v|vehicle|car|sensor|protocol|latency|mesh|infra|hud|fleet|road|traffic|collision|hiring|team|sub-50ms|50ms|ms)\b/i.test(lower);
+  const isPureArithmetic = /^(\s*(what\s+is|calculate|evaluate|solve|compute)\s+)?[\d\s().+*^%=/-]+(\s*\?)?\s*$/i.test(raw) && /\d/.test(raw) && /[+*^%=/-]/.test(raw);
+  const isMathQuery =
+    !hasDriveLinkContext &&
+    (isPureArithmetic ||
+      /^\s*(calculate|solve math|square root of|solve the equation|evaluate the expression)\b/i.test(lower) ||
+      (/^\s*(solve|calculate)\s+.*[\d=]/i.test(lower) && !hasDriveLinkContext));
+
+  if (isMathQuery) {
+    return {
+      category: 'off_topic',
+      reply:
+        "I am **Lyra**, DriveLink's AI assistant, dedicated to our Vehicle-to-Vehicle (V2V) communication standard. " +
+        `I don't solve general math or off-topic problems, but I'd love to tell you about our **V2V Protocol**, ${ECOSYSTEM_LINK}, our **team**, or open **careers**!`,
+    };
+  }
+
+  // 4. Off-Topic & Unrelated queries (food, recipes, weather, movies, jokes, crypto, politics, sports, general trivia)
   const offTopicKeywords = [
     'weather',
     'temperature',

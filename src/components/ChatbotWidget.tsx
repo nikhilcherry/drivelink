@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, Sparkles } from 'lucide-react';
+import { X, Send, Sparkles, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { LogoMark } from './ui/Logo';
 import { formatMessageHtml } from '../lib/chatFormat';
@@ -31,10 +31,30 @@ export default function ChatbotWidget() {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [aiAvailable, setAiAvailable] = useState(true);
+  const [feedbackMap, setFeedbackMap] = useState<Record<number, 'positive' | 'negative'>>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
+
+  const handleFeedback = async (index: number, rating: 'positive' | 'negative') => {
+    setFeedbackMap((prev) => ({ ...prev, [index]: rating }));
+    try {
+      await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'feedback',
+          messageId: `msg_${index}`,
+          query: messages[index - 1]?.content || '',
+          reply: messages[index]?.content || '',
+          rating,
+        }),
+      });
+    } catch {
+      // Ignore background telemetry errors
+    }
+  };
 
   useEffect(() => {
     if (!isOpen) return;
@@ -292,6 +312,39 @@ export default function ChatbotWidget() {
                   >
                     {formatMessage(message.content)}
                   </div>
+                  {message.role === 'model' && i > 0 && (
+                    <div className="flex items-center gap-1.5 px-1 pt-0.5 text-zinc-400">
+                      <button
+                        type="button"
+                        onClick={() => handleFeedback(i, 'positive')}
+                        className={cn(
+                          "p-0.5 rounded hover:text-emerald-600 transition-colors cursor-pointer",
+                          feedbackMap[i] === 'positive' && "text-emerald-600 font-bold"
+                        )}
+                        aria-label="Helpful response"
+                        title="Helpful response"
+                      >
+                        <ThumbsUp size={11} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleFeedback(i, 'negative')}
+                        className={cn(
+                          "p-0.5 rounded hover:text-amber-600 transition-colors cursor-pointer",
+                          feedbackMap[i] === 'negative' && "text-amber-600 font-bold"
+                        )}
+                        aria-label="Needs improvement"
+                        title="Needs improvement"
+                      >
+                        <ThumbsDown size={11} />
+                      </button>
+                      {feedbackMap[i] && (
+                        <span className="text-[9.5px] text-zinc-400 italic">
+                          {feedbackMap[i] === 'positive' ? 'Thanks for the feedback!' : 'Noted, we will improve this!'}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
               {isLoading && (
