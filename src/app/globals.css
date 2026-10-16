@@ -1178,7 +1178,7 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-repo-contribs img { width: 24px; height: 24px; border-radius: 999px; border: 2px solid #fff; margin-left: -8px; box-shadow: 0 1px 4px rgba(0,0,0,0.12); background: #e2e8f0; }
 .dlw-repo-contribs img:first-of-type { margin-left: 2px; }
 .dlw-repo-branch { font-family: var(--mono); font-size: 10px; padding: 2px 8px; border-radius: 6px; background: rgba(15,76,129,0.07); color: var(--fg3); margin-left: 6px; }
-.dlw-repo-cta { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 9px; background: var(--drive-blue); color: #fff; font-family: var(--mono); font-size: 12px; font-weight: 600; transition: all .18s var(--ease-out); }
+.dlw-repo-cta { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 9px; background: #0f4c81; background: var(--drive-blue); color: #ffffff; font-family: var(--mono); font-size: 12px; font-weight: 600; transition: all .18s var(--ease-out); }
 .dlw-repo-cta:hover { background: #0c3d68; transform: translateY(-1px); }
 
 @media (max-width: 860px) {
