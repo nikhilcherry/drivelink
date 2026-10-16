@@ -44,11 +44,6 @@ export function AnnouncementBanner() {
     >
       <div className="dlw-container dlw-announcement-inner">
         <div className="dlw-announcement-content">
-          <div className="dlw-announcement-badge">
-            <span className="dlw-announcement-dot" aria-hidden="true" />
-            <span className="dlw-announcement-badge-text">SYSTEM UPDATE</span>
-          </div>
-
           <p className="dlw-announcement-text">
             <span className="dlw-announcement-highlight">Scheduled Maintenance:</span>{' '}
             We are currently updating the platform with system improvements and new features.
