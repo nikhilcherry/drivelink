@@ -1,8 +1,9 @@
 'use client';
-import { useSyncExternalStore } from 'react';
+import { useSyncExternalStore, useEffect } from 'react';
 import { X } from 'lucide-react';
 
-const STORAGE_KEY = 'dlw_banner_dismissed_v2';
+const STORAGE_KEY = 'dlw_maintenance_dismissed_v3';
+const LEGACY_STORAGE_KEYS = ['dlw_banner_dismissed_v2', 'dlw_banner_dismissed_v1'];
 
 const subscribe = (callback: () => void) => {
   window.addEventListener('storage', callback);
@@ -21,6 +22,18 @@ const getServerSnapshot = () => false;
 
 export function AnnouncementBanner() {
   const isDismissed = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+
+  // Clean up legacy dismissal keys so prior announcement dismissals don't hide
+  // new scheduled maintenance alerts.
+  useEffect(() => {
+    try {
+      for (const key of LEGACY_STORAGE_KEYS) {
+        localStorage.removeItem(key);
+      }
+    } catch {
+      // Ignore storage write issues
+    }
+  }, []);
 
   if (isDismissed) {
     return null;
