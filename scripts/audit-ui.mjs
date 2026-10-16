@@ -251,7 +251,11 @@ const browser = await chromium.launch({
 
 try {
   for (const width of WIDTHS) {
-    const context = await browser.newContext({ viewport: { width, height: 900 }, deviceScaleFactor: 1 });
+    const context = await browser.newContext({
+      viewport: { width, height: 900 },
+      deviceScaleFactor: 1,
+      reducedMotion: 'reduce',
+    });
     const page = await context.newPage();
 
     for (const route of ROUTES) {
@@ -263,7 +267,16 @@ try {
       // origin. Scrolling between the two puts them out of step.
       const full = await page.evaluate(() => document.documentElement.scrollHeight);
       await page.setViewportSize({ width, height: Math.min(full + 200, 16000) });
-      await page.waitForTimeout(700);
+      // Ensure all scroll-reveal and animated elements are settled in their resting state
+      await page.evaluate(() => {
+        for (const el of document.querySelectorAll('.dlw-reveal, .dlw-anim')) {
+          el.classList.add('is-in', 'dlw-in');
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+          el.style.transition = 'none';
+        }
+      });
+      await page.waitForTimeout(400);
 
       const { headings, pageOverflow, clipped, cut } =
         await page.evaluate(STRUCTURE.replace('${WIDTH}', String(width)));

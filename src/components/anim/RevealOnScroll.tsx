@@ -91,7 +91,7 @@ export function RevealOnScroll() {
 
     const raf = requestAnimationFrame(() => {
       const els = Array.from(document.querySelectorAll<HTMLElement>(SELECTORS))
-        .filter((el) => !el.classList.contains('dlw-in') && !el.classList.contains('dlw-anim'));
+        .filter((el) => !el.classList.contains('dlw-in') && !el.classList.contains('dlw-anim') && !el.classList.contains('dlw-reveal') && !el.hasAttribute('data-reveal-item'));
       if (!els.length) return;
 
       if (reduce) {
