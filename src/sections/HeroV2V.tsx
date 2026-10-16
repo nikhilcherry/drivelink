@@ -62,8 +62,6 @@ const MARQUEE_PHRASES = [
 ];
 
 function HeroMarquee() {
-  // Render the phrase list twice so the loop is seamless; the second copy is
-  // decorative-only so screen readers get the content exactly once.
   return (
     <div className="dlw-hero-marquee">
       <div className="dlw-hero-marquee-track">
@@ -88,14 +86,25 @@ const LOGICAL_W = 1000;
 const LOGICAL_H = 437.5;
 // Reduced speed for ambient hero feel (0.6 = slower, more relaxed motion)
 const AMBIENT_SPEED = 0.6;
+const FIXED_DT = 1 / 60; // 60Hz fixed simulation step for silky, deterministic physics
 
 export function V2VSimulation() {
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const hud0 = useRef<HTMLDivElement>(null);
-  const hud1 = useRef<HTMLDivElement>(null);
+
+  // Direct element references to eliminate querySelector calls in rAF loop
+  const hud0Ref = useRef<HTMLDivElement>(null);
+  const hud1Ref = useRef<HTMLDivElement>(null);
+  const hud0IdRef = useRef<HTMLDivElement>(null);
+  const hud0SpdRef = useRef<HTMLSpanElement>(null);
+  const hud0IntRef = useRef<HTMLSpanElement>(null);
+  const hud1IdRef = useRef<HTMLDivElement>(null);
+  const hud1SpdRef = useRef<HTMLSpanElement>(null);
+  const hud1IntRef = useRef<HTMLSpanElement>(null);
+
   const latRef = useRef<HTMLSpanElement>(null);
   const countRef = useRef<HTMLSpanElement>(null);
+
   const rafRef = useRef<number>(0);
   const simRef = useRef<SimState | null>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -111,55 +120,144 @@ export function V2VSimulation() {
     ctxRef.current = ctx;
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const sim = createSim(LOGICAL_W, LOGICAL_H, { lanes: 3, density: 3, v2v: true, ramp: false, heatmap: false, speed: AMBIENT_SPEED });
+    const sim = createSim(LOGICAL_W, LOGICAL_H, {
+      lanes: 3,
+      density: 3,
+      v2v: true,
+      ramp: false,
+      heatmap: false,
+      speed: AMBIENT_SPEED,
+    });
     simRef.current = sim;
 
     let cssW = 0;
     let cssH = 0;
     let dpr = 1;
+
     const resize = () => {
       const r = stage.getBoundingClientRect();
+      if (r.width === 0 || r.height === 0) return;
       cssW = r.width;
       cssH = r.height;
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.round(cssW * dpr);
       canvas.height = Math.round(cssH * dpr);
       resizeSim(sim, LOGICAL_W, LOGICAL_H);
+      if (reduce) {
+        renderSim(ctx, sim, cssW, cssH, dpr);
+      }
     };
     resize();
     const ro = new ResizeObserver(resize);
     ro.observe(stage);
 
-    const placeHud = (el: HTMLDivElement | null, c: SimState['cars'][number]) => {
+    // Track cached text values to avoid redundant DOM mutations
+    let h0LastId = '';
+    let h0LastKmh = -1;
+    let h0LastInt = '';
+    let h1LastId = '';
+    let h1LastKmh = -1;
+    let h1LastInt = '';
+    let lastLatency = -1;
+    let lastLinks = -1;
+    let lastCarCount = -1;
+
+    const updateHud0 = (c: SimState['cars'][number]) => {
+      const el = hud0Ref.current;
       if (!el) return;
-      el.style.left = `${(c.x / LOGICAL_W) * cssW}px`;
-      el.style.top = `${(laneY(sim, c.lf) / LOGICAL_H) * cssH - 20}px`;
-      const id = el.querySelector('.id');
-      const spd = el.querySelector('.spd');
-      const int = el.querySelector('.int');
+      const x = Math.round((c.x / LOGICAL_W) * cssW);
+      const y = Math.round((laneY(sim, c.lf) / LOGICAL_H) * cssH - 20);
+      el.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -100%)`;
+
       const kmh = Math.round(c.v * 0.7);
-      if (id) id.textContent = c.id;
-      if (spd) spd.textContent = `${kmh} km/h`;
-      if (int) int.textContent = kmh === 0 ? 'Idle' : c.intent;
+      const intent = kmh === 0 ? 'Idle' : c.intent;
+
+      if (h0LastId !== c.id) {
+        h0LastId = c.id;
+        if (hud0IdRef.current) hud0IdRef.current.textContent = c.id;
+      }
+      if (h0LastKmh !== kmh) {
+        h0LastKmh = kmh;
+        if (hud0SpdRef.current) hud0SpdRef.current.textContent = `${kmh} km/h`;
+      }
+      if (h0LastInt !== intent) {
+        h0LastInt = intent;
+        if (hud0IntRef.current) hud0IntRef.current.textContent = intent;
+      }
+    };
+
+    const updateHud1 = (c: SimState['cars'][number]) => {
+      const el = hud1Ref.current;
+      if (!el) return;
+      const x = Math.round((c.x / LOGICAL_W) * cssW);
+      const y = Math.round((laneY(sim, c.lf) / LOGICAL_H) * cssH - 20);
+      el.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -100%)`;
+
+      const kmh = Math.round(c.v * 0.7);
+      const intent = kmh === 0 ? 'Idle' : c.intent;
+
+      if (h1LastId !== c.id) {
+        h1LastId = c.id;
+        if (hud1IdRef.current) hud1IdRef.current.textContent = c.id;
+      }
+      if (h1LastKmh !== kmh) {
+        h1LastKmh = kmh;
+        if (hud1SpdRef.current) hud1SpdRef.current.textContent = `${kmh} km/h`;
+      }
+      if (h1LastInt !== intent) {
+        h1LastInt = intent;
+        if (hud1IntRef.current) hud1IntRef.current.textContent = intent;
+      }
     };
 
     let last = performance.now();
+    let accumulator = 0;
 
     const renderFrame = (now: number) => {
+      // If hero is off-screen or tab is hidden, stop the loop completely
       if (!isVisibleRef.current || !isTabVisibleRef.current) {
-        rafRef.current = requestAnimationFrame(renderFrame);
+        rafRef.current = 0;
         return;
       }
-      const dt = Math.min((now - last) / 1000, 0.05);
+
+      const elapsed = Math.min((now - last) / 1000, 0.1);
       last = now;
+
       const sim = simRef.current;
-      if (!sim) return;
-      stepSim(sim, dt);
+      if (!sim) {
+        rafRef.current = 0;
+        return;
+      }
+
+      // Fixed timestep accumulator for butter-smooth, frame-rate independent physics
+      accumulator += elapsed;
+      let steps = 0;
+      while (accumulator >= FIXED_DT && steps < 3) {
+        stepSim(sim, FIXED_DT);
+        accumulator -= FIXED_DT;
+        steps++;
+      }
+      if (steps >= 3) accumulator = 0; // Prevent spiral of death on long pause
+
       const { latency, links } = renderSim(ctx, sim, cssW, cssH, dpr);
-      placeHud(hud0.current, sim.cars[0]);
-      placeHud(hud1.current, sim.cars[Math.min(4, sim.cars.length - 1)]);
-      if (latRef.current) latRef.current.textContent = `${latency}ms`;
-      if (countRef.current) countRef.current.textContent = `${sim.cars.length} vehicles · ${links} V2V links`;
+
+      if (sim.cars.length > 0) {
+        updateHud0(sim.cars[0]);
+        updateHud1(sim.cars[Math.min(4, sim.cars.length - 1)]);
+      }
+
+      if (lastLatency !== latency) {
+        lastLatency = latency;
+        if (latRef.current) latRef.current.textContent = `${latency}ms`;
+      }
+      if (lastCarCount !== sim.cars.length || lastLinks !== links) {
+        lastCarCount = sim.cars.length;
+        lastLinks = links;
+        if (countRef.current) {
+          countRef.current.textContent = `${sim.cars.length} vehicles · ${links} V2V links`;
+        }
+      }
+
       rafRef.current = requestAnimationFrame(renderFrame);
     };
 
@@ -172,31 +270,36 @@ export function V2VSimulation() {
 
     const resumeSimulation = () => {
       if (rafRef.current) return;
+      if (!isVisibleRef.current || !isTabVisibleRef.current) return;
       last = performance.now();
+      accumulator = 0;
       rafRef.current = requestAnimationFrame(renderFrame);
     };
 
-    // IntersectionObserver to pause when hero is off-screen
+    // IntersectionObserver to cleanly pause when hero is off-screen
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          // Pause when less than 50% visible
-          isVisibleRef.current = entry.intersectionRatio >= 0.5;
-          if (isVisibleRef.current && isTabVisibleRef.current) {
-            resumeSimulation();
-          } else {
-            pauseSimulation();
+          const visible = entry.isIntersecting && entry.intersectionRatio > 0.05;
+          if (visible !== isVisibleRef.current) {
+            isVisibleRef.current = visible;
+            if (visible && isTabVisibleRef.current) {
+              resumeSimulation();
+            } else {
+              pauseSimulation();
+            }
           }
         }
       },
-      { threshold: [0, 0.5, 1] }
+      { threshold: [0, 0.05, 0.2] }
     );
     io.observe(stage);
 
-    // Pause when tab is hidden
+    // Pause when tab is hidden, resume when active
     const handleVisibilityChange = () => {
-      isTabVisibleRef.current = !document.hidden;
-      if (isTabVisibleRef.current && isVisibleRef.current) {
+      const tabVisible = !document.hidden;
+      isTabVisibleRef.current = tabVisible;
+      if (tabVisible && isVisibleRef.current) {
         resumeSimulation();
       } else {
         pauseSimulation();
@@ -207,16 +310,22 @@ export function V2VSimulation() {
     if (reduce) {
       stepSim(sim, 0);
       const { latency, links } = renderSim(ctx, sim, cssW, cssH, dpr);
-      placeHud(hud0.current, sim.cars[0]);
-      placeHud(hud1.current, sim.cars[Math.min(4, sim.cars.length - 1)]);
+      if (sim.cars.length > 0) {
+        updateHud0(sim.cars[0]);
+        updateHud1(sim.cars[Math.min(4, sim.cars.length - 1)]);
+      }
       if (latRef.current) latRef.current.textContent = `${latency}ms`;
-      if (countRef.current) countRef.current.textContent = `${sim.cars.length} vehicles · ${links} V2V links`;
+      if (countRef.current) {
+        countRef.current.textContent = `${sim.cars.length} vehicles · ${links} V2V links`;
+      }
     } else {
+      last = performance.now();
+      accumulator = 0;
       rafRef.current = requestAnimationFrame(renderFrame);
     }
 
     return () => {
-      cancelAnimationFrame(rafRef.current);
+      pauseSimulation();
       ro.disconnect();
       io.disconnect();
       document.removeEventListener('visibilitychange', handleVisibilityChange);
@@ -235,13 +344,17 @@ export function V2VSimulation() {
       <div className="corner-label bl"><span ref={countRef}>9 vehicles</span></div>
       <div className="corner-label br">Protocol v0.1 · drv-mesh</div>
 
-      <div className="dlw-car-hud" ref={hud0} style={{ left: 0, top: 0 }}>
-        <div className="id">DRV-A1</div>
-        <div className="row"><span className="spd">46 km/h</span> · <span className="int">Cruising</span></div>
+      <div className="dlw-car-hud" ref={hud0Ref}>
+        <div className="id" ref={hud0IdRef}>DRV-A1</div>
+        <div className="row">
+          <span className="spd" ref={hud0SpdRef}>46 km/h</span> · <span className="int" ref={hud0IntRef}>Cruising</span>
+        </div>
       </div>
-      <div className="dlw-car-hud" ref={hud1} style={{ left: 0, top: 0 }}>
-        <div className="id">DRV-D4</div>
-        <div className="row"><span className="spd">58 km/h</span> · <span className="int">Cruising</span></div>
+      <div className="dlw-car-hud" ref={hud1Ref}>
+        <div className="id" ref={hud1IdRef}>DRV-D4</div>
+        <div className="row">
+          <span className="spd" ref={hud1SpdRef}>58 km/h</span> · <span className="int" ref={hud1IntRef}>Cruising</span>
+        </div>
       </div>
     </div>
   );

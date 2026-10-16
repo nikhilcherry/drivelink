@@ -65,6 +65,10 @@ export interface SimState {
   links: number; // active V2V links this frame
   opts: SimOptions;
   seq: number;
+  _roadGrad?: CanvasGradient;
+  _cachedW?: number;
+  _cachedH?: number;
+  _cachedDpr?: number;
 };
 
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
@@ -133,6 +137,7 @@ export function resizeSim(s: SimState, W: number, H: number) {
   s.H = H;
   s.roadTop = (H - s.roadH) / 2 - (s.opts.ramp ? 26 : 0);
   s.mergeX = W * 0.56;
+  s._roadGrad = undefined;
 }
 
 function neighbor(s: SimState, self: Car, lane: number, ahead: boolean): Car | null {
@@ -327,6 +332,12 @@ export function computeConflicts(s: SimState): Conflict[] {
 /* ---------------------- rendering ---------------------- */
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+  if (typeof (ctx as unknown as { roundRect?: (x: number, y: number, w: number, h: number, r: number) => void }).roundRect === 'function') {
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, Math.min(r, w / 2, h / 2));
+    ctx.closePath();
+    return;
+  }
   const rr = Math.min(r, w / 2, h / 2);
   ctx.beginPath();
   ctx.moveTo(x + rr, y);
@@ -354,13 +365,19 @@ export function renderSim(
   const X = (x: number) => x * sx;
   const Y = (y: number) => y * sy;
 
-  // road band
+  // road band with cached gradient
   const top = s.roadTop;
   const bottom = s.roadTop + s.roadH;
-  const grad = ctx.createLinearGradient(0, Y(top), 0, Y(bottom));
-  grad.addColorStop(0, 'rgba(15,76,129,0.05)');
-  grad.addColorStop(1, 'rgba(15,76,129,0.02)');
-  ctx.fillStyle = grad;
+  if (!s._roadGrad || s._cachedW !== cssW || s._cachedH !== cssH || s._cachedDpr !== dpr) {
+    const grad = ctx.createLinearGradient(0, Y(top), 0, Y(bottom));
+    grad.addColorStop(0, 'rgba(15,76,129,0.05)');
+    grad.addColorStop(1, 'rgba(15,76,129,0.02)');
+    s._roadGrad = grad;
+    s._cachedW = cssW;
+    s._cachedH = cssH;
+    s._cachedDpr = dpr;
+  }
+  ctx.fillStyle = s._roadGrad;
   roundRect(ctx, X(40), Y(top), X(s.W - 80) - X(40), s.roadH * sy, 16 * sy);
   ctx.fill();
   ctx.strokeStyle = 'rgba(15,76,129,0.10)';
@@ -391,11 +408,11 @@ export function renderSim(
     ctx.setLineDash([]);
   }
 
-  // conflict-zone heatmap (risk field) — drawn under dividers/cars
-  const conflictPts = computeConflicts(s);
+  // conflict-zone heatmap (risk field) — only calculated when heatmap option is active
   let conflicts = 0;
-  for (const p of conflictPts) if (p.risk > 0.42) conflicts++;
   if (s.opts.heatmap) {
+    const conflictPts = computeConflicts(s);
+    for (const p of conflictPts) if (p.risk > 0.42) conflicts++;
     ctx.save();
     ctx.globalCompositeOperation = 'multiply';
     const pulse = 0.78 + 0.22 * Math.sin(s.time * 4);
@@ -445,9 +462,48 @@ export function renderSim(
   }
   ctx.setLineDash([]);
 
-  // V2V mesh links + travelling packets
+  // V2V mesh links + travelling packets (batched paths)
   let links = 0;
   if (s.opts.v2v) {
+    ctx.lineWidth = 1.1 * sy;
+    ctx.setLineDash([2 * sx, 7 * sx]);
+
+    // Pass 1: standard mesh links (batched single path)
+    ctx.strokeStyle = 'rgba(15,76,129,0.28)';
+    ctx.beginPath();
+    for (let i = 0; i < s.cars.length; i++) {
+      for (let j = i + 1; j < s.cars.length; j++) {
+        const a = s.cars[i];
+        const b = s.cars[j];
+        const dist = Math.hypot(a.x - b.x, laneY(s, a.lf) - laneY(s, b.lf));
+        if (dist > V2V_R) continue;
+        links++;
+        if (a.yieldT <= 0 && b.yieldT <= 0) {
+          ctx.moveTo(X(a.x), Y(laneY(s, a.lf)));
+          ctx.lineTo(X(b.x), Y(laneY(s, b.lf)));
+        }
+      }
+    }
+    ctx.stroke();
+
+    // Pass 2: negotiating mesh links (batched single path)
+    ctx.strokeStyle = 'rgba(245,140,55,0.8)';
+    ctx.beginPath();
+    for (let i = 0; i < s.cars.length; i++) {
+      for (let j = i + 1; j < s.cars.length; j++) {
+        const a = s.cars[i];
+        const b = s.cars[j];
+        if (a.yieldT <= 0 && b.yieldT <= 0) continue;
+        const dist = Math.hypot(a.x - b.x, laneY(s, a.lf) - laneY(s, b.lf));
+        if (dist > V2V_R) continue;
+        ctx.moveTo(X(a.x), Y(laneY(s, a.lf)));
+        ctx.lineTo(X(b.x), Y(laneY(s, b.lf)));
+      }
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Pass 3: travelling packets
     for (let i = 0; i < s.cars.length; i++) {
       for (let j = i + 1; j < s.cars.length; j++) {
         const a = s.cars[i];
@@ -458,18 +514,8 @@ export function renderSim(
         const by = laneY(s, b.lf);
         const dist = Math.hypot(ax - bx, ay - by);
         if (dist > V2V_R) continue;
-        links++;
         const negotiating = a.yieldT > 0 || b.yieldT > 0;
         const fade = 1 - dist / V2V_R;
-        const alpha = fade * (negotiating ? 0.8 : 0.28);
-        ctx.strokeStyle = negotiating ? `rgba(245,140,55,${alpha})` : `rgba(15,76,129,${alpha})`;
-        ctx.lineWidth = (negotiating ? 1.3 : 0.9) * sy;
-        ctx.setLineDash([2 * sx, 7 * sx]);
-        ctx.beginPath();
-        ctx.moveTo(X(ax), Y(ay));
-        ctx.lineTo(X(bx), Y(by));
-        ctx.stroke();
-        ctx.setLineDash([]);
         const t = (s.time * 0.9 + i * 0.17 + j * 0.07) % 1;
         const px = ax + (bx - ax) * t;
         const py = ay + (by - ay) * t;

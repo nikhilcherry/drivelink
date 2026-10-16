@@ -68,6 +68,10 @@ export function SimPlayground() {
     let raf = 0;
     let last = performance.now();
     let acc = 0;
+    let physAcc = 0;
+    const FIXED_DT = 1 / 60;
+    let isVisible = true;
+    let isTabVisible = !document.hidden;
 
     const publishStats = (sim: SimState, latency: number, links: number, conflicts: number) => {
       const flow = sim.cars.length
@@ -76,24 +80,72 @@ export function SimPlayground() {
       setStats({ vehicles: sim.cars.length, links, latency, flow, conflicts });
     };
 
-    const render = (dt: number) => {
+    const frame = (now: number) => {
+      if (!isVisible || !isTabVisible) {
+        raf = 0;
+        return;
+      }
+      const elapsed = Math.min((now - last) / 1000, 0.1);
+      last = now;
       const sim = simRef.current;
-      if (!sim) return;
-      stepSim(sim, dt);
+      if (!sim) {
+        raf = 0;
+        return;
+      }
+
+      physAcc += elapsed;
+      let steps = 0;
+      while (physAcc >= FIXED_DT && steps < 3) {
+        stepSim(sim, FIXED_DT);
+        physAcc -= FIXED_DT;
+        steps++;
+      }
+      if (steps >= 3) physAcc = 0;
+
       const { latency, links, conflicts } = renderSim(ctx, sim, cssW, cssH, dpr);
-      acc += dt;
+      acc += elapsed;
       if (acc > 0.25) {
         acc = 0;
         publishStats(sim, latency, links, conflicts);
       }
-    };
-
-    const frame = (now: number) => {
-      const dt = Math.min((now - last) / 1000, 0.05);
-      last = now;
-      render(dt);
       raf = requestAnimationFrame(frame);
     };
+
+    const pauseSim = () => {
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+    };
+
+    const resumeSim = () => {
+      if (raf || !isVisible || !isTabVisible) return;
+      last = performance.now();
+      physAcc = 0;
+      raf = requestAnimationFrame(frame);
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const visible = entry.isIntersecting && entry.intersectionRatio > 0.05;
+          if (visible !== isVisible) {
+            isVisible = visible;
+            if (visible && isTabVisible) resumeSim();
+            else pauseSim();
+          }
+        }
+      },
+      { threshold: [0, 0.05, 0.2] }
+    );
+    io.observe(stage);
+
+    const onVisibility = () => {
+      isTabVisible = !document.hidden;
+      if (isTabVisible && isVisible) resumeSim();
+      else pauseSim();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
 
     if (reduce) {
       const sim = simRef.current;
@@ -103,12 +155,16 @@ export function SimPlayground() {
         publishStats(sim, latency, links, conflicts);
       }
     } else {
+      last = performance.now();
+      physAcc = 0;
       raf = requestAnimationFrame(frame);
     }
 
     return () => {
-      cancelAnimationFrame(raf);
+      pauseSim();
       ro.disconnect();
+      io.disconnect();
+      document.removeEventListener('visibilitychange', onVisibility);
     };
   }, []);
 
