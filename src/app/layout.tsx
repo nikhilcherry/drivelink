@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { Nav } from "../components/Nav";
 import { Footer } from "../components/layout/Footer";
@@ -9,18 +9,18 @@ import { PointerFX } from "../components/anim/PointerFX";
 import { SITE_URL, OG_IMAGE, SITE_NAME } from "../lib/seo";
 import { Chatbot } from "../components/Chatbot";
 
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
+const inter = localFont({
+  src: "../fonts/Inter-Variable.woff2",
   variable: "--font-inter",
   display: "swap",
+  weight: "100 900",
 });
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
+const spaceGrotesk = localFont({
+  src: "../fonts/SpaceGrotesk-Variable.woff2",
   variable: "--font-space-grotesk",
   display: "swap",
+  weight: "300 700",
 });
 
 export const metadata: Metadata = {
