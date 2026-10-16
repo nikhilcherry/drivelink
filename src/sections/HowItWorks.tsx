@@ -51,20 +51,34 @@ export function HowItWorks() {
 
   useEffect(() => {
     if (reduceMotion) return;
-    const onScroll = () => {
+    let rafId = 0;
+
+    const update = () => {
+      rafId = 0;
       const t = trackRef.current;
       if (!t) return;
       const rect = t.getBoundingClientRect();
       const vh = window.innerHeight;
       const total = t.offsetHeight - vh;
+      if (total <= 0) return;
       const passed = -rect.top;
       const p = Math.max(0, Math.min(1, passed / total));
       const idx = Math.min(3, Math.floor(p * 4 + 0.0001));
-      setStep(idx);
+      setStep((prev) => (prev !== idx ? idx : prev));
     };
-    onScroll();
+
+    const onScroll = () => {
+      if (!rafId) {
+        rafId = requestAnimationFrame(update);
+      }
+    };
+
+    update();
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      window.removeEventListener('scroll', onScroll);
+    };
   }, [reduceMotion]);
 
   return (

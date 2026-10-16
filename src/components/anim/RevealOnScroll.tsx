@@ -10,11 +10,8 @@ import { usePathname } from 'next/navigation';
  * native transitions once revealed so hover effects stay snappy.
  *
  * Variants: elements can opt into a reveal variant via `data-reveal-type`.
- * Supported types: section-head, manifesto, stats, story, roadmap, hiw, card, timeline, cta.
+ * Supported types: section-head, content, stats.
  * Variant styling (transform, transition, stagger) is defined in globals.css.
- *
- * Also manages section theme transitions by observing section roots and
- * setting data-theme on .dlw-page for smooth background shifts.
  */
 const SELECTORS = [
   '.dlw-section-head',
@@ -40,41 +37,30 @@ const SELECTORS = [
   '.dlw-cta-inner',
 ].join(',');
 
-// Default variant for each selector (matches the selector order above)
+// Default variant for each selector
 const SELECTOR_VARIANTS: Record<string, string> = {
   '.dlw-section-head': 'section-head',
-  '.dlw-story-item': 'story',
+  '.dlw-story-item': 'content',
   '.dlw-tier-head': 'section-head',
-  '.dlw-rost-card': 'card',
-  '.dlw-roadmap-head': 'roadmap',
-  '.dlw-roadmap-row': 'roadmap',
+  '.dlw-rost-card': 'content',
+  '.dlw-roadmap-head': 'section-head',
+  '.dlw-roadmap-row': 'content',
   '.dlw-stat': 'stats',
-  '.dlw-manifesto-inner': 'manifesto',
-  '.dlw-hiw-stage': 'hiw',
-  '.dlw-market-card': 'card',
-  '.dlw-arch-row': 'card',
-  '.dlw-repo-card': 'card',
+  '.dlw-manifesto-inner': 'content',
+  '.dlw-hiw-stage': 'content',
+  '.dlw-market-card': 'content',
+  '.dlw-arch-row': 'content',
+  '.dlw-repo-card': 'content',
   '.dlw-doc-kpi': 'stats',
-  '.dlw-doc-card': 'card',
-  '.dlw-doc-tlitem': 'timeline',
-  '.dlw-doc-pnode-wrap': 'card',
-  '.dlw-traction-card': 'card',
-  '.dlw-advisor': 'card',
-  '.dlw-team-detail': 'card',
-  '.dlw-revenue': 'card',
-  '.dlw-cta-inner': 'cta',
+  '.dlw-doc-card': 'content',
+  '.dlw-doc-tlitem': 'content',
+  '.dlw-doc-pnode-wrap': 'content',
+  '.dlw-traction-card': 'content',
+  '.dlw-advisor': 'content',
+  '.dlw-team-detail': 'content',
+  '.dlw-revenue': 'content',
+  '.dlw-cta-inner': 'content',
 };
-
-// Section root selectors for theme transitions
-const SECTION_ROOTS = [
-  { selector: '.dlw-hero', theme: 'light' },
-  { selector: '.dlw-manifesto', theme: 'light' },
-  { selector: '.dlw-howitworks', theme: 'light' },
-  { selector: '.dlw-stats', theme: 'dark' },
-  { selector: '.dlw-section-paper', theme: 'paper' },
-  { selector: '.dlw-roadmap', theme: 'dark' },
-  { selector: '.dlw-cta', theme: 'dark' },
-];
 
 function getVariantForElement(el: HTMLElement): string {
   // Explicit data-reveal-type takes precedence
@@ -85,16 +71,13 @@ function getVariantForElement(el: HTMLElement): string {
   for (const [selector, variant] of Object.entries(SELECTOR_VARIANTS)) {
     if (el.matches(selector)) return variant;
   }
-  return 'card';
+  return 'content';
 }
 
 function getStaggerConfig(variant: string): { base: number; step: number; max: number } {
   switch (variant) {
     case 'stats': return { base: 80, step: 80, max: 400 };
-    case 'story': return { base: 120, step: 100, max: 500 };
-    case 'roadmap': return { base: 100, step: 120, max: 600 };
-    case 'card': return { base: 60, step: 60, max: 360 };
-    case 'timeline': return { base: 80, step: 80, max: 480 };
+    case 'content': return { base: 60, step: 60, max: 360 };
     default: return { base: 0, step: 0, max: 0 };
   }
 }
@@ -102,41 +85,9 @@ function getStaggerConfig(variant: string): { base: number; step: number; max: n
 export function RevealOnScroll() {
   const pathname = usePathname();
   const ioRef = useRef<IntersectionObserver | null>(null);
-  const themeIoRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const page = document.querySelector('.dlw-page') as HTMLElement | null;
-
-    // Theme observer — watches section roots to set data-theme on .dlw-page
-    const themeIo = new IntersectionObserver(
-      (entries) => {
-        if (reduce || !page) return;
-        // Find the section with highest intersection ratio
-        let bestEntry: IntersectionObserverEntry | null = null;
-        let bestRatio = -1;
-        for (const entry of entries) {
-          if (entry.isIntersecting && entry.intersectionRatio > bestRatio) {
-            bestRatio = entry.intersectionRatio;
-            bestEntry = entry;
-          }
-        }
-        if (bestEntry) {
-          const target = bestEntry.target as HTMLElement;
-          const section = SECTION_ROOTS.find(s => target.matches(s.selector));
-          if (section) {
-            page.dataset.theme = section.theme;
-          }
-        }
-      },
-      { threshold: [0, 0.25, 0.5, 0.75, 1], rootMargin: '0px 0px -20% 0px' }
-    );
-
-    SECTION_ROOTS.forEach(({ selector }) => {
-      const el = document.querySelector(selector);
-      if (el) themeIo.observe(el);
-    });
-    themeIoRef.current = themeIo;
 
     const raf = requestAnimationFrame(() => {
       const els = Array.from(document.querySelectorAll<HTMLElement>(SELECTORS))
@@ -163,7 +114,7 @@ export function RevealOnScroll() {
       });
 
       byParentAndVariant.forEach((arr, key) => {
-        const variant = key.split('-').pop() || 'card';
+        const variant = key.split('-').pop() || 'content';
         const { base, step, max } = getStaggerConfig(variant);
         arr.forEach((el, i) => {
           const delay = base + Math.min(i * step, max);
@@ -195,9 +146,7 @@ export function RevealOnScroll() {
     return () => {
       cancelAnimationFrame(raf);
       ioRef.current?.disconnect();
-      themeIoRef.current?.disconnect();
       ioRef.current = null;
-      themeIoRef.current = null;
     };
   }, [pathname]);
 
