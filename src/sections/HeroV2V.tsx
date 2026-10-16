@@ -336,13 +336,13 @@ export function V2VSimulation() {
     <div className="dlw-hero-stage" ref={stageRef} aria-hidden="true">
       <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
       <div className="corner-label tl">
-        <span className="dot" /> <span className="num">CONCEPT SIMULATION</span> · planned Bangalore corridor
+        <span className="dot" /> <span className="num">CONCEPT SIMULATION</span><span className="full-text"> · planned Bangalore corridor</span>
       </div>
       <div className="corner-label tr">
-        <span className="num" ref={latRef}>34ms</span> · simulated latency · target &lt;50ms
+        <span className="num" ref={latRef}>34ms</span><span className="full-text"> · simulated latency</span> · &lt;50ms target
       </div>
       <div className="corner-label bl"><span ref={countRef}>9 vehicles</span></div>
-      <div className="corner-label br">Protocol v0.1 · drv-mesh</div>
+      <div className="corner-label br"><span className="full-text">Protocol v0.1 · </span>drv-mesh</div>
 
       <div className="dlw-car-hud" ref={hud0Ref}>
         <div className="id" ref={hud0IdRef}>DRV-A1</div>
