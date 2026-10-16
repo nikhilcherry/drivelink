@@ -370,7 +370,23 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-nav-right { display: flex; align-items: center; gap: 12px; }
 .dlw-nav-pill { padding: 8px 16px; border-radius: 999px; background: var(--drive-blue); color: #fff; font-weight: 600; font-size: 13px; border: none; transition: transform .15s, box-shadow .15s; box-shadow: 0 6px 14px -4px rgba(15,76,129,0.4); }
 .dlw-nav-pill:hover { transform: translateY(-1px); box-shadow: 0 10px 20px -4px rgba(15,76,129,0.5); }
-.dlw-nav-mobile { display: none; align-items: center; background: none; border: none; padding: 6px; color: var(--fg2); }
+.dlw-nav-mobile {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: none;
+  border: none;
+  padding: 8px;
+  color: var(--fg2);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.dlw-nav-mobile:active {
+  background: rgba(15,76,129,0.08);
+}
 @media (max-width: 768px) {
   .dlw-nav-center, .dlw-nav-right { display: none; }
   .dlw-nav-mobile { display: flex; }
@@ -379,11 +395,29 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 /* Mobile drawer */
 .dlw-nav-drawer {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 49;
-  background: rgba(255,255,255,0.96); backdrop-filter: blur(20px);
-  display: flex; flex-direction: column; padding: 100px 28px 40px; gap: 8px;
+  background: rgba(255,255,255,0.97); backdrop-filter: blur(24px);
+  display: flex; flex-direction: column; padding: 110px 24px 40px; gap: 8px;
+  animation: dlw-drawer-in 0.2s var(--ease-out);
 }
-.dlw-nav-drawer-tab { padding: 14px 16px; border-radius: 12px; border: none; background: transparent; color: var(--fg1); font-size: 18px; font-weight: 500; text-align: left; }
-.dlw-nav-drawer-tab.is-active { background: rgba(15,76,129,0.06); color: var(--drive-blue); }
+@keyframes dlw-drawer-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.dlw-nav-drawer-tab {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; border-radius: 14px; border: 1px solid transparent;
+  background: transparent; color: var(--fg1); font-size: 18px; font-weight: 500;
+  text-align: left; transition: all .16s var(--ease-out);
+}
+.dlw-nav-drawer-tab:active {
+  background: rgba(15,76,129,0.06);
+}
+.dlw-nav-drawer-tab.is-active {
+  background: rgba(15,76,129,0.07);
+  border-color: rgba(15,76,129,0.14);
+  color: var(--drive-blue);
+  font-weight: 600;
+}
 
 /* ============================================================
    BUTTONS
@@ -471,6 +505,46 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-hero-caption { text-align: center; font-size: 12.5px; color: var(--fg3); margin: 12px auto 0; max-width: 1200px; }
 .dlw-hero-stage .corner-label .dot { width: 6px; height: 6px; border-radius: 999px; background: #22c55e; box-shadow: 0 0 8px #22c55e; animation: dlw-pulse 2s infinite; }
 
+@media (max-width: 768px) {
+  .dlw-hero-stage {
+    aspect-ratio: 16 / 9.5;
+    min-height: 220px;
+    border-radius: 18px;
+    margin-top: 18px;
+  }
+  .dlw-hero-stage .corner-label {
+    padding: 4px 7px;
+    font-size: 9px;
+    gap: 5px;
+  }
+  .dlw-hero-stage .corner-label.tl { top: 10px; left: 10px; }
+  .dlw-hero-stage .corner-label.tr { top: 10px; right: 10px; }
+  .dlw-hero-stage .corner-label.bl { bottom: 10px; left: 10px; }
+  .dlw-hero-stage .corner-label.br { bottom: 10px; right: 10px; }
+  .dlw-hero-stage .corner-label .full-text { display: none; }
+  .dlw-car-hud {
+    padding: 3px 6px;
+    border-radius: 6px;
+    font-size: 9.5px;
+  }
+}
+
+@media (max-width: 560px) {
+  .dlw-hero-ctas {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 12px;
+  }
+  .dlw-hero-ctas .dlw-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 /* Running-text ticker under the live mesh widget */
 .dlw-hero-marquee {
   position: relative;
@@ -551,43 +625,157 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-manifesto-text .highlight { background: linear-gradient(90deg, #0F4C81, #2563eb); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
 /* ============================================================
-   HOW IT WORKS
+   HOW IT WORKS — STACKED CARDS (Desktop & Mobile)
    ============================================================ */
-.dlw-howitworks { position: relative; background: radial-gradient(900px 500px at 80% 30%, rgba(15,76,129,0.05), transparent 70%), rgba(250,250,248,0.5); }
-.dlw-hiw-track { height: 400vh; position: relative; }
-.dlw-hiw-sticky { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; }
-.dlw-hiw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; width: 100%; max-width: var(--container); margin: 0 auto; padding: 0 28px; }
-.dlw-hiw-text { position: relative; min-height: 280px; }
-.dlw-hiw-step { position: absolute; inset: 0; opacity: 0; transform: translateY(20px); transition: opacity .5s var(--ease-out), transform .5s var(--ease-out); pointer-events: none; }
-.dlw-hiw-step.is-active { opacity: 1; transform: translateY(0); pointer-events: auto; }
-.dlw-hiw-step .num { font-family: var(--mono); font-size: 12px; color: var(--drive-blue); letter-spacing: 0.1em; margin-bottom: 14px; display: flex; gap: 10px; align-items: center; }
-.dlw-hiw-step .num::before { content: ""; width: 28px; height: 1px; background: var(--drive-blue); }
-.dlw-hiw-step h3 { font-size: clamp(2rem, 3.4vw, 3rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; margin: 0 0 18px; color: var(--fg1); }
-.dlw-hiw-step p { font-size: 1.1rem; color: var(--fg3); line-height: 1.6; margin: 0 0 22px; max-width: 520px; }
-.dlw-hiw-step .props { display: flex; gap: 18px; font-family: var(--mono); font-size: 11px; color: #64748b; border-top: var(--line); padding-top: 14px; flex-wrap: wrap; }
-.dlw-hiw-step .props b { color: var(--fg1); font-weight: 600; }
-/* Stage card — promoted to its own GPU compositor layer so scroll-driven
-   opacity/transform transitions never trigger a main-thread paint.           */
-.dlw-hiw-stage { position: relative; aspect-ratio: 4 / 3; border-radius: 24px; background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.6)); border: 1px solid rgba(15,76,129,0.08); box-shadow: 0 30px 60px -16px rgba(15,76,129,0.12); overflow: hidden; contain: layout style paint; }
-/* GPU layer promotion — lives on the inner wrapper so the card border/shadow
-   are not promoted (unnecessary, wastes VRAM).                                */
-.dlw-hcw-stage-wrap { will-change: transform; transform: translateZ(0); }
-/* Always-rendered cross-fade panels — avoids SVG remount flash on step change */
-.dlw-hcw-panel { position: absolute; inset: 0; opacity: 0; transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; }
-.dlw-hcw-panel.is-active { opacity: 1; pointer-events: auto; }
-.dlw-hiw-stage svg { width: 100%; height: 100%; display: block; }
-.dlw-hiw-stage .stage-label { position: absolute; top: 14px; left: 14px; padding: 5px 10px; border-radius: 6px; background: rgba(255,255,255,0.92); border: 1px solid rgba(15,76,129,0.1); font-family: var(--mono); font-size: 10px; font-weight: 500; color: var(--fg2); letter-spacing: 0.05em; }
-.dlw-hiw-progress { position: absolute; left: 28px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 16px; z-index: 4; }
-.dlw-hiw-progress-dot { width: 8px; height: 8px; border-radius: 999px; background: rgba(15,76,129,0.18); transition: background .3s, transform .3s; }
-.dlw-hiw-progress-dot.is-active { background: var(--drive-blue); transform: scale(1.4); box-shadow: 0 0 12px rgba(15,76,129,0.5); }
-@media (max-width: 768px) {
-  .dlw-hiw-grid { grid-template-columns: 1fr; gap: 32px; }
-  .dlw-hiw-track { height: auto; }
-  .dlw-hiw-sticky { position: relative; height: auto; padding: 60px 0; }
-  .dlw-hiw-text { min-height: auto; }
-  .dlw-hiw-step { position: relative; inset: auto; opacity: 1; transform: none; display: none; }
-  .dlw-hiw-step.is-active { display: block; }
-  .dlw-hiw-progress { display: none; }
+.dlw-howitworks {
+  position: relative;
+  background: radial-gradient(900px 500px at 80% 30%, rgba(15,76,129,0.06), transparent 70%), #fafaf8;
+  padding-bottom: 60px;
+}
+.dlw-hiw-stack {
+  position: relative;
+  width: 100%;
+  max-width: var(--container);
+  margin: 48px auto 90px;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+}
+.dlw-hiw-card {
+  position: sticky;
+  top: calc(112px + var(--card-index, 0) * 22px);
+  margin-bottom: 48px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(15, 76, 129, 0.12);
+  border-radius: 26px;
+  box-shadow:
+    0 1px 0 #ffffff inset,
+    0 24px 60px -16px rgba(15, 76, 129, 0.12),
+    0 0 0 1px rgba(15, 76, 129, 0.04);
+  overflow: hidden;
+  will-change: transform, filter;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, filter 0.25s ease;
+}
+.dlw-hiw-card-inner {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 40px;
+  padding: 42px 48px;
+  align-items: center;
+}
+.dlw-hiw-step {
+  display: flex;
+  flex-direction: column;
+}
+.dlw-hiw-step .num {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--drive-blue);
+  letter-spacing: 0.1em;
+  margin-bottom: 14px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.dlw-hiw-step .num::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: var(--drive-blue);
+}
+.dlw-hiw-step h3 {
+  font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  margin: 0 0 16px;
+  color: var(--fg1);
+}
+.dlw-hiw-step p {
+  font-size: 1.05rem;
+  color: var(--fg3);
+  line-height: 1.6;
+  margin: 0 0 24px;
+  max-width: 520px;
+}
+.dlw-hiw-step .props {
+  display: flex;
+  gap: 18px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: #64748b;
+  border-top: var(--line);
+  padding-top: 14px;
+  flex-wrap: wrap;
+}
+.dlw-hiw-step .props b {
+  color: var(--fg1);
+  font-weight: 600;
+}
+.dlw-hiw-stage {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.65));
+  border: 1px solid rgba(15, 76, 129, 0.08);
+  box-shadow: 0 12px 30px -10px rgba(15, 76, 129, 0.08);
+  overflow: hidden;
+}
+.dlw-hiw-stage svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.dlw-hiw-stage .stage-label {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(15, 76, 129, 0.1);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--fg2);
+  letter-spacing: 0.05em;
+  z-index: 2;
+}
+@media (max-width: 960px) {
+  .dlw-hiw-card-inner {
+    grid-template-columns: 1fr;
+    gap: 26px;
+    padding: 32px 28px;
+  }
+}
+@media (max-width: 640px) {
+  .dlw-hiw-stack {
+    margin: 32px auto 60px;
+    padding: 0 16px;
+  }
+  .dlw-hiw-card {
+    top: calc(108px + var(--card-index, 0) * 14px);
+    margin-bottom: 24px;
+    border-radius: 20px;
+  }
+  .dlw-hiw-card-inner {
+    padding: 22px 18px;
+    gap: 20px;
+  }
+  .dlw-hiw-step h3 {
+    font-size: 1.45rem;
+    margin-bottom: 12px;
+  }
+  .dlw-hiw-step p {
+    font-size: 0.95rem;
+    margin-bottom: 18px;
+  }
+  .dlw-hiw-step .props {
+    gap: 12px;
+    font-size: 10.5px;
+  }
 }
 
 /* ============================================================
@@ -1024,17 +1212,63 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-sim-caption b { color: var(--fg1); font-weight: 600; }
 
 @media (max-width: 640px) {
-  /* Five stats forced onto one line left no room for the longest label
-     ("CONFLICTS"), which then ran under the neighbouring card. Let them wrap. */
-  .dlw-sim-stat { min-width: 76px; flex: 1 1 76px; padding: 6px 8px; }
-  .dlw-sim-stat .k { letter-spacing: 0.06em; }
-  .dlw-sim-stat .v { font-size: 13px; }
-  .dlw-sim-reseed { margin-left: 0; width: 100%; }
-  .dlw-sim-ctl input[type="range"] { width: 100%; }
-  .dlw-sim-ctl { flex: 1; min-width: 130px; }
-  /* The three mesh toggles are wider than a 130px column, so on a phone they
-     used to spill out of their flex item and sit on top of the Lanes label.
-     Give that group the full row and let the buttons wrap inside it. */
+  .dlw-sim-stage {
+    aspect-ratio: 16 / 10;
+    min-height: 230px;
+    border-radius: 16px;
+  }
+  .dlw-sim-badges {
+    top: 8px;
+    left: 8px;
+    gap: 6px;
+  }
+  .dlw-sim-badge {
+    padding: 3px 7px;
+    font-size: 9px;
+  }
+  .dlw-sim-stats {
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    gap: 4px;
+  }
+  .dlw-sim-stat {
+    min-width: 58px;
+    flex: 1 1 58px;
+    padding: 4px 6px;
+    border-radius: 8px;
+  }
+  .dlw-sim-stat .k { font-size: 8px; letter-spacing: 0.04em; }
+  .dlw-sim-stat .v { font-size: 12px; }
+  .dlw-sim-controls {
+    padding: 14px 14px;
+    gap: 12px 14px;
+    border-radius: 14px;
+  }
+  .dlw-sim-toggle {
+    padding: 7px 10px;
+    font-size: 10.5px;
+  }
+  .dlw-sim-ctl input[type="range"] {
+    width: 100%;
+    height: 6px;
+  }
+  .dlw-sim-ctl input[type="range"]::-webkit-slider-thumb {
+    width: 22px;
+    height: 22px;
+  }
+  .dlw-sim-ctl input[type="range"]::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+  }
+  .dlw-sim-reseed {
+    margin-left: 0;
+    width: 100%;
+    padding: 10px;
+    font-size: 12px;
+    text-align: center;
+  }
+  .dlw-sim-ctl { flex: 1; min-width: 120px; }
   .dlw-sim-ctl.is-toggles { flex: 1 0 100%; min-width: 0; }
 }
 

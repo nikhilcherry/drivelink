@@ -3,31 +3,33 @@ import { useEffect, useRef, useState } from 'react';
 
 const steps = [
   {
-    num: '01 / 04', title: 'Read vehicle state',
-    body: 'DriveLink reads core telemetry — speed, steering angle, brake pressure, lateral acceleration — directly from the vehicle bus. The on-vehicle module ingests this stream at 100Hz.',
-    props: ['100 Hz · CAN/Ethernet', '12 bus signals', '<2 ms ingest'],
+    num: '01 / 04',
+    title: 'Tap vehicle CAN bus',
+    body: 'DriveLink reads steering angle, throttle position, brake pressure, yaw rate, and speed directly from the powertrain bus at 100 Hz. Zero added sensors.',
+    props: ['100 Hz read rate', 'CAN / OBD-II tap', 'Zero latency tap'],
   },
   {
-    num: '02 / 04', title: 'Predict short-window trajectory',
-    body: 'The prediction engine generates a probabilistic trajectory cone for the next 0.8 to 1.5 seconds. It learns from local driving patterns and refines online as the vehicle moves.',
-    props: ['0.8–1.5 s window', 'Probabilistic cone', 'On-device inference'],
+    num: '02 / 04',
+    title: 'Model intent cone',
+    body: 'An on-device lightweight transformer projects a 1.2-second forward cone of probable trajectories, scoring likelihoods against road geometry and driver history.',
+    props: ['1.2s forward cone', '2.4 MB model', '< 4 ms inference'],
   },
   {
-    num: '03 / 04', title: 'Broadcast intent',
-    body: 'The vehicle\'s predicted motion and current intent — lane change, brake, merge — are packed into a small DriveLink message and broadcast to nearby vehicles over the mesh.',
-    props: ['<256 B payload', 'Sub-50 ms latency', 'drv-mesh protocol'],
+    num: '03 / 04',
+    title: 'Broadcast intent',
+    body: "The vehicle's predicted motion and current intent — lane change, brake, merge — are packed into a small DriveLink message and broadcast to nearby vehicles over the mesh.",
+    props: ['244 B packet', '10-30 Hz rate', 'Signed ed25519'],
   },
   {
-    num: '04 / 04', title: 'Receive, fuse, react',
+    num: '04 / 04',
+    title: 'Receive, fuse, react',
     body: 'Receiving vehicles fuse incoming intent with their own perception and adjust planning before danger appears. The result: smoother merges, no brake-waves, fewer blind-spot collisions.',
-    props: ['Cooperative planning', 'Conflict-zone alerts', 'Cross-OEM ready'],
+    props: ['< 5 ms fusion', 'Multi-vehicle coop', 'OEM-agnostic'],
   },
 ];
 
 export function HowItWorks() {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const svgRef = useRef<SVGSVGElement>(null);
-  const [step, setStep] = useState(0);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const [reduceMotion, setReduceMotion] = useState(false);
 
   useEffect(() => {
@@ -38,45 +40,42 @@ export function HowItWorks() {
     return () => mq.removeEventListener?.('change', handler);
   }, []);
 
-  // Pause SMIL animations when reduced-motion is preferred
-  useEffect(() => {
-    const svg = svgRef.current;
-    if (!svg) return;
-    if (reduceMotion) {
-      svg.pauseAnimations();
-    } else {
-      svg.unpauseAnimations();
-    }
-  }, [reduceMotion]);
-
+  // Smooth physical card-stack overlap & scale depth
   useEffect(() => {
     if (reduceMotion) return;
-    let rafId = 0;
-
-    const update = () => {
-      rafId = 0;
-      const t = trackRef.current;
-      if (!t) return;
-      const rect = t.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const total = t.offsetHeight - vh;
-      if (total <= 0) return;
-      const passed = -rect.top;
-      const p = Math.max(0, Math.min(1, passed / total));
-      const idx = Math.min(3, Math.floor(p * 4 + 0.0001));
-      setStep((prev) => (prev !== idx ? idx : prev));
-    };
+    let raf = 0;
 
     const onScroll = () => {
-      if (!rafId) {
-        rafId = requestAnimationFrame(update);
-      }
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const cards = cardsRef.current;
+        for (let i = 0; i < cards.length - 1; i++) {
+          const curr = cards[i];
+          const next = cards[i + 1];
+          if (!curr || !next) continue;
+          const currRect = curr.getBoundingClientRect();
+          const nextRect = next.getBoundingClientRect();
+
+          // When the next card scrolls up and begins overlapping the current sticky card
+          const overlap = currRect.bottom - nextRect.top;
+          if (overlap > 0) {
+            const progress = Math.min(1, Math.max(0, overlap / (currRect.height * 0.85)));
+            const scale = 1 - progress * 0.03;
+            const brightness = 1 - progress * 0.04;
+            curr.style.transform = `scale(${scale.toFixed(4)})`;
+            curr.style.filter = `brightness(${brightness.toFixed(3)})`;
+          } else {
+            curr.style.transform = 'scale(1)';
+            curr.style.filter = 'brightness(1)';
+          }
+        }
+      });
     };
 
-    update();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
-      if (rafId) cancelAnimationFrame(rafId);
+      if (raf) cancelAnimationFrame(raf);
       window.removeEventListener('scroll', onScroll);
     };
   }, [reduceMotion]);
@@ -91,54 +90,75 @@ export function HowItWorks() {
         <p className="dlw-section-sub">From sensor read to broadcast intent — the full DriveLink pipeline, end to end.</p>
       </div>
 
-      <div ref={trackRef} className="dlw-hiw-track">
-        <div className="dlw-hiw-sticky">
-          <div className="dlw-hiw-grid">
-            <div className="dlw-hiw-text">
-              {steps.map((s, i) => (
-                <div key={i} className={'dlw-hiw-step ' + (i === step ? 'is-active' : '')}>
-                  <div className="num">{s.num}</div>
-                  <h3>{s.title}</h3>
-                  <p>{s.body}</p>
-                  <div className="props">
-                    {s.props.map((p, j) => (
-                      <div key={j}><b>{p.split(' ')[0]}</b> {p.split(' ').slice(1).join(' ')}</div>
-                    ))}
-                  </div>
+      <div className="dlw-hiw-stack">
+        {steps.map((s, i) => (
+          <div
+            key={i}
+            ref={(el) => { cardsRef.current[i] = el; }}
+            className="dlw-hiw-card"
+            style={{
+              '--card-index': i,
+              zIndex: i + 1,
+            } as React.CSSProperties}
+          >
+            <div className="dlw-hiw-card-inner">
+              <div className="dlw-hiw-step">
+                <div className="num">{s.num}</div>
+                <h3>{s.title}</h3>
+                <p>{s.body}</p>
+                <div className="props">
+                  {s.props.map((p, j) => (
+                    <div key={j}><b>{p.split(' ')[0]}</b> {p.split(' ').slice(1).join(' ')}</div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
 
-            <div className="dlw-hiw-stage">
-              <div className="stage-label dlw-mono">STAGE · STEP {String(step + 1).padStart(2, '0')}</div>
-              <HiwStage step={step} ref={svgRef} />
+              <div className="dlw-hiw-stage">
+                <div className="stage-label dlw-mono">STAGE · STEP {String(i + 1).padStart(2, '0')}</div>
+                <HiwStage step={i} reduceMotion={reduceMotion} />
+              </div>
             </div>
           </div>
-
-          <div className="dlw-hiw-progress">
-            {steps.map((_, i) => (
-              <div key={i} className={'dlw-hiw-progress-dot ' + (i === step ? 'is-active' : '')} />
-            ))}
-          </div>
-        </div>
+        ))}
       </div>
     </section>
   );
 }
 
-function HiwStage({ step, ref }: { step: number; ref: React.RefObject<SVGSVGElement> }) {
+function HiwStage({ step, reduceMotion }: { step: number; reduceMotion: boolean }) {
+  const svgRef = useRef<SVGSVGElement>(null);
+
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    if (reduceMotion) {
+      svg.pauseAnimations();
+    } else {
+      svg.unpauseAnimations();
+    }
+  }, [reduceMotion]);
+
+  const gridId = `hiwGrid-${step}`;
+  const pktId = `hiwPkt-${step}`;
+
   return (
-    <svg ref={ref} viewBox="0 0 600 450" preserveAspectRatio="xMidYMid meet" className="dlw-hiw-svg">
+    <svg
+      ref={svgRef}
+      viewBox="0 0 600 450"
+      preserveAspectRatio="xMidYMid meet"
+      className="dlw-hiw-svg"
+      aria-hidden="true"
+    >
       <defs>
-        <pattern id="hiwGrid" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+        <pattern id={gridId} x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
           <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(15,76,129,0.06)" strokeWidth="1" />
         </pattern>
-        <radialGradient id="hiwPkt" cx="0.5" cy="0.5" r="0.5">
+        <radialGradient id={pktId} cx="0.5" cy="0.5" r="0.5">
           <stop offset="0%" stopColor="rgba(15,76,129,1)" />
           <stop offset="100%" stopColor="rgba(15,76,129,0)" />
         </radialGradient>
       </defs>
-      <rect width="600" height="450" fill="url(#hiwGrid)" />
+      <rect width="600" height="450" fill={`url(#${gridId})`} />
 
       {step === 0 && (
         <g>
@@ -146,16 +166,20 @@ function HiwStage({ step, ref }: { step: number; ref: React.RefObject<SVGSVGElem
             <rect x="-50" y="-26" width="100" height="52" rx="14" fill="#0F4C81" />
             <rect x="-24" y="-18" width="40" height="36" rx="5" fill="rgba(255,255,255,0.7)" />
             <rect x="40" y="-18" width="6" height="36" rx="2" fill="rgba(255,255,255,0.9)" />
-            {[0,1,2,3,4].map(i => (
-              <g key={i} transform={`translate(0, ${-90 + i*24})`}>
+            {[0, 1, 2, 3, 4].map((i) => (
+              <g key={i} transform={`translate(0, ${-90 + i * 24})`}>
                 <line x1="-110" y1="0" x2="-50" y2="0" stroke="rgba(15,76,129,0.4)" strokeDasharray="2 4" strokeWidth="1">
                   <animate attributeName="stroke-dashoffset" from="0" to="-12" dur="1s" repeatCount="indefinite" />
                 </line>
-                <text x="-115" y="3" fontSize="9" fontFamily="ui-monospace, monospace" textAnchor="end" fill="#6b7280">{['SPD','STR','BRK','ACC','YAW'][i]}</text>
+                <text x="-115" y="3" fontSize="9" fontFamily="ui-monospace, monospace" textAnchor="end" fill="#6b7280">
+                  {['SPD', 'STR', 'BRK', 'ACC', 'YAW'][i]}
+                </text>
               </g>
             ))}
           </g>
-          <text x="300" y="430" textAnchor="middle" fontSize="11" fontFamily="ui-monospace, monospace" fill="#9ca3af" letterSpacing="2">READING BUS · 100 Hz</text>
+          <text x="300" y="430" textAnchor="middle" fontSize="11" fontFamily="ui-monospace, monospace" fill="#9ca3af" letterSpacing="2">
+            READING BUS · 100 Hz
+          </text>
         </g>
       )}
 
@@ -171,13 +195,17 @@ function HiwStage({ step, ref }: { step: number; ref: React.RefObject<SVGSVGElem
           </path>
           {[0.4, 0.8, 1.2].map((t, i) => (
             <g key={i}>
-              <circle cx={210 + (450 - 210) * t / 1.2} cy={240 - (i*4)} r="3" fill="#0F4C81">
+              <circle cx={210 + ((450 - 210) * t) / 1.2} cy={240 - i * 4} r="3" fill="#0F4C81">
                 <animate attributeName="opacity" from="0.4" to="1" dur="1.5s" repeatCount="indefinite" />
               </circle>
-              <text x={210 + (450 - 210) * t / 1.2} y={290} fontSize="9" fontFamily="ui-monospace, monospace" fill="#6b7280" textAnchor="middle">{t}s</text>
+              <text x={210 + ((450 - 210) * t) / 1.2} y={290} fontSize="9" fontFamily="ui-monospace, monospace" fill="#6b7280" textAnchor="middle">
+                {t}s
+              </text>
             </g>
           ))}
-          <text x="300" y="430" textAnchor="middle" fontSize="11" fontFamily="ui-monospace, monospace" fill="#9ca3af" letterSpacing="2">PROBABILISTIC CONE · 1.2 s</text>
+          <text x="300" y="430" textAnchor="middle" fontSize="11" fontFamily="ui-monospace, monospace" fill="#9ca3af" letterSpacing="2">
+            PROBABILISTIC CONE · 1.2 s
+          </text>
         </g>
       )}
 
@@ -186,39 +214,54 @@ function HiwStage({ step, ref }: { step: number; ref: React.RefObject<SVGSVGElem
           <g transform="translate(300 240)">
             <rect x="-30" y="-15" width="60" height="30" rx="10" fill="#0F4C81" />
             <rect x="-14" y="-10" width="22" height="20" rx="3" fill="rgba(255,255,255,0.7)" />
-            {[0,1,2].map(i => (
+            {[0, 1, 2].map((i) => (
               <circle key={i} r="40" fill="none" stroke="#0F4C81" strokeWidth="1.5" opacity="0.5">
-                <animate attributeName="r" from="32" to="180" dur="2.5s" begin={`${i*0.8}s`} repeatCount="indefinite" />
-                <animate attributeName="opacity" from="0.6" to="0" dur="2.5s" begin={`${i*0.8}s`} repeatCount="indefinite" />
+                <animate attributeName="r" from="32" to="180" dur="2.5s" begin={`${i * 0.8}s`} repeatCount="indefinite" />
+                <animate attributeName="opacity" from="0.6" to="0" dur="2.5s" begin={`${i * 0.8}s`} repeatCount="indefinite" />
               </circle>
             ))}
           </g>
-          {[[120,150],[480,150],[120,330],[480,330]].map(([x,y],i)=>(
+          {[[120, 150], [480, 150], [120, 330], [480, 330]].map(([x, y], i) => (
             <g key={i} transform={`translate(${x} ${y})`}>
               <circle r="14" fill="rgba(15,76,129,0.1)" stroke="rgba(15,76,129,0.3)" />
               <circle r="4" fill="#0F4C81" />
             </g>
           ))}
-          <text x="300" y="430" textAnchor="middle" fontSize="11" fontFamily="ui-monospace, monospace" fill="#9ca3af" letterSpacing="2">BROADCAST · 244 B · drv-mesh</text>
+          <text x="300" y="430" textAnchor="middle" fontSize="11" fontFamily="ui-monospace, monospace" fill="#9ca3af" letterSpacing="2">
+            BROADCAST · 244 B · drv-mesh
+          </text>
         </g>
       )}
 
       {step === 3 && (
         <g>
           {[
-            {x:160,y:170,id:'DRV-1'},{x:300,y:140,id:'DRV-2'},{x:440,y:170,id:'DRV-3'},
-            {x:160,y:300,id:'DRV-4'},{x:300,y:330,id:'DRV-5'},{x:440,y:300,id:'DRV-6'},
-          ].map((v,i)=>(
+            { x: 160, y: 170, id: 'DRV-1' },
+            { x: 300, y: 140, id: 'DRV-2' },
+            { x: 440, y: 170, id: 'DRV-3' },
+            { x: 160, y: 300, id: 'DRV-4' },
+            { x: 300, y: 330, id: 'DRV-5' },
+            { x: 440, y: 300, id: 'DRV-6' },
+          ].map((v, i) => (
             <g key={i} transform={`translate(${v.x} ${v.y})`}>
-              <rect x="-22" y="-11" width="44" height="22" rx="7" fill={i===2?'#fb923c':'#0F4C81'} opacity={i===2?1:0.85} />
+              <rect x="-22" y="-11" width="44" height="22" rx="7" fill={i === 2 ? '#fb923c' : '#0F4C81'} opacity={i === 2 ? 1 : 0.85} />
               <rect x="-10" y="-7" width="16" height="14" rx="2" fill="rgba(255,255,255,0.7)" />
-              <text y="32" textAnchor="middle" fontSize="8" fontFamily="ui-monospace, monospace" fill="#6b7280">{v.id}</text>
+              <text y="32" textAnchor="middle" fontSize="8" fontFamily="ui-monospace, monospace" fill="#6b7280">
+                {v.id}
+              </text>
             </g>
           ))}
           {[
-            [160,170,300,140],[300,140,440,170],[160,170,160,300],[160,300,300,330],
-            [300,330,440,300],[440,170,440,300],[300,140,300,330],[160,170,300,330],[440,170,300,330]
-          ].map(([x1,y1,x2,y2],i)=>(
+            [160, 170, 300, 140],
+            [300, 140, 440, 170],
+            [160, 170, 160, 300],
+            [160, 300, 300, 330],
+            [300, 330, 440, 300],
+            [440, 170, 440, 300],
+            [300, 140, 300, 330],
+            [160, 170, 300, 330],
+            [440, 170, 300, 330],
+          ].map(([x1, y1, x2, y2], i) => (
             <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="rgba(15,76,129,0.25)" strokeWidth="1" strokeDasharray="3 4">
               <animate attributeName="stroke-dashoffset" from="0" to="-14" dur="3s" repeatCount="indefinite" />
             </line>
@@ -227,7 +270,9 @@ function HiwStage({ step, ref }: { step: number; ref: React.RefObject<SVGSVGElem
             <animate attributeName="r" from="26" to="38" dur="1.5s" repeatCount="indefinite" />
             <animate attributeName="opacity" from="1" to="0.3" dur="1.5s" repeatCount="indefinite" />
           </circle>
-          <text x="300" y="430" textAnchor="middle" fontSize="11" fontFamily="ui-monospace, monospace" fill="#9ca3af" letterSpacing="2">COOP MESH · 6 VEHICLES · 1 ALERT</text>
+          <text x="300" y="430" textAnchor="middle" fontSize="11" fontFamily="ui-monospace, monospace" fill="#9ca3af" letterSpacing="2">
+            COOP MESH · 6 VEHICLES · 1 ALERT
+          </text>
         </g>
       )}
     </svg>
