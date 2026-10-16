@@ -53,7 +53,7 @@ const over = (fg, bg) => ({
  * gets gradients, background images and backdrop filters wrong, and reports
  * white-on-white for every element in a dark band.
  */
-async function modalColour(png, box) {
+async function modalColour(png, box, fg) {
   const { data, info } = await sharp(png)
     .extract({
       left: Math.round(box.x), top: Math.round(box.y),
@@ -65,6 +65,15 @@ async function modalColour(png, box) {
   for (let i = 0; i < data.length; i += info.channels) {
     // 6 bits per channel: anti-aliased edges shouldn't each count as their own colour.
     const key = (data[i] >> 2 << 12) | (data[i + 1] >> 2 << 6) | (data[i + 2] >> 2);
+    // Ignore pixels that match the foreground text color
+    if (fg) {
+      const pr = ((key >> 12) & 63) * 4;
+      const pg = ((key >> 6) & 63) * 4;
+      const pb = (key & 63) * 4;
+      if (Math.abs(pr - fg.r) < 24 && Math.abs(pg - fg.g) < 24 && Math.abs(pb - fg.b) < 24) {
+        continue;
+      }
+    }
     counts.set(key, (counts.get(key) || 0) + 1);
   }
   let best = 0;
@@ -281,7 +290,7 @@ try {
       const meta = await sharp(shot).metadata();
       for (const el of await page.evaluate(COLLECT_TEXT)) {
         if (el.box.y + el.box.h > meta.height || el.box.x + el.box.w > meta.width) continue;
-        const bg = await modalColour(shot, el.box);
+        const bg = await modalColour(shot, el.box, el.fg);
         const fg = over(el.fg, bg);
         const ratio = contrast(fg, bg);
         const need = el.large ? 3 : 4.5;
