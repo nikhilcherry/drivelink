@@ -21,10 +21,14 @@ HOW TO ANSWER:
    - Careers & Hiring: DriveLink is actively taking applications for App Dev, Web Dev, Machine Learning, Robotics · ROS, IoT & Embedded, and R&D. Point users to https://www.drivelink.tech/hiring (mentioning the application only takes a few minutes).
    - Contact: For investment, pilots, or partnerships, contact tech.drivelink@gmail.com.
 
-2. Unrelated / Off-Topic / Casual / Gibberish inputs:
-   - If the user types gibberish, random letters (e.g. "vhktchgccc"), or typos: playfully and politely acknowledge it (e.g., "That looks like a fun typo or random keystrokes! 😄 How can I assist you with DriveLink today?").
-   - If the user makes small talk or jokes: respond with warmth and wit, and then smoothly connect back to DriveLink.
-   - If the user asks general or off-topic questions: answer briefly and cordially, then invite them to explore DriveLink's V2V tech or careers.
+2. STRICT TOPIC ENFORCEMENT & OFF-TOPIC REFUSALS:
+   - You are EXCLUSIVELY an assistant for DriveLink and its connected vehicle technology.
+   - You must ONLY answer questions directly related to DriveLink (its V2V communication standard, vehicle intent prediction, 4-layer ecosystem [drv-mesh, drv-infra, Mobile HUD, Cloud Fleet Command], sub-50ms latency benchmarks, founding team, milestones, roadmap, partnerships, and open engineering careers).
+   - NEVER calculate math (e.g., do NOT answer "2+2=4" or solve arithmetic), do homework, provide general coding solutions, or answer general trivia, recipes, weather, sports, or pop culture questions.
+   - If asked an off-topic or unrelated question, NEVER answer the question itself. Politely decline:
+     "I am Lyra, DriveLink's AI assistant, exclusively dedicated to DriveLink and our connected vehicle platform. I can only assist with questions regarding our V2V technology, ecosystem, team, roadmap, and open roles! How can I help you explore DriveLink today?"
+   - If the user types gibberish, random letters, or typos: playfully and politely acknowledge it (e.g., "That looks like a typo or random keystrokes! 😄 How can I assist you with DriveLink today?").
+   - If the user makes brief friendly greetings (e.g. "hi", "thanks"): respond with warmth, and invite them to explore DriveLink.
 
 3. Deep Technical & Proprietary IP:
    - For confidential proprietary firmware, specific RF frequencies, or algorithm weights: explain that these are protected under NDA / in-flight patent evaluation, and warmly invite them to contact tech.drivelink@gmail.com.
@@ -54,10 +58,127 @@ function isRateLimited(ip) {
   return timestamps.length > RATE_LIMIT_MAX_REQUESTS;
 }
 
+// In-memory interaction & feedback telemetry for continuous improvement and fine-tuning dataset generation
+const telemetryLog = [];
+const MAX_TELEMETRY_ENTRIES = 500;
+
+export function recordInteraction({ query, reply, offTopic = false, model = 'unknown' }) {
+  const entry = {
+    id: `turn_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    timestamp: new Date().toISOString(),
+    query,
+    reply,
+    offTopic,
+    model,
+    feedback: null,
+  };
+  telemetryLog.push(entry);
+  if (telemetryLog.length > MAX_TELEMETRY_ENTRIES) {
+    telemetryLog.shift();
+  }
+  return entry;
+}
+
+export function recordFeedback({ messageId, query, reply, rating, note }) {
+  const item = telemetryLog.find((t) => t.id === messageId || (t.query === query && t.reply === reply));
+  if (item) {
+    item.feedback = { rating, note, timestamp: new Date().toISOString() };
+  } else {
+    telemetryLog.push({
+      id: messageId || `feedback_${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      query: query || '',
+      reply: reply || '',
+      offTopic: false,
+      model: 'feedback',
+      feedback: { rating, note, timestamp: new Date().toISOString() },
+    });
+  }
+}
+
+export function getTelemetryLog() {
+  return [...telemetryLog];
+}
+
+/**
+ * High-speed, zero-token domain guardrail:
+ * Checks whether an incoming message is clearly off-topic (math, arithmetic calculations,
+ * general trivia, cooking recipes, weather, sports, pop culture, non-DriveLink coding homework).
+ * Catches these before invoking Groq to preserve free LLM token and request quotas.
+ */
+export function isOffTopicQuery(message) {
+  if (typeof message !== 'string') return false;
+  const raw = message.trim();
+  const lower = raw.toLowerCase();
+
+  const hasDriveLinkContext = /\b(drivelink|v2v|vehicle|car|sensor|protocol|latency|mesh|infra|hud|fleet|road|traffic|collision|hiring|team|sub-50ms|50ms|ms)\b/i.test(lower);
+  if (hasDriveLinkContext) return false;
+
+  // 1. Math, arithmetic calculations & equations: e.g. "2+2", "what is 2 + 2", "15 * 4", "solve 2x+1=5"
+  const isPureArithmetic = /^(\s*(what\s+is|calculate|evaluate|solve|compute)\s+)?[\d\s().+*^%=/-]+(\s*\?)?\s*$/i.test(raw) && /\d/.test(raw) && /[+*^%=/-]/.test(raw);
+  const isMathExpr =
+    isPureArithmetic ||
+    /^\s*(calculate|solve math|square root of|solve the equation|evaluate the expression)\b/i.test(lower) ||
+    /^\s*(solve|calculate)\s+.*[\d=]/i.test(lower);
+
+  if (isMathExpr) return true;
+
+  // 2. Off-topic domain patterns (food, weather, sports, pop culture, general coding homework, politics)
+  const offTopicRegexes = [
+    /\b(weather|temperature|forecast|climate)\b/i,
+    /\b(recipe|how to cook|how to bake|pizza|pasta|burger|biryani|cake)\b/i,
+    /\b(cricket|football|soccer|basketball|olympics|world cup|ipl|nba|match score)\b/i,
+    /\b(movie recommendation|cinema|hollywood|bollywood|singer|taylor swift|ronaldo|messi|virat kohli)\b/i,
+    /\b(bitcoin|crypto|ethereum|dogecoin|solana|stock trading tip|buy shares)\b/i,
+    /\b(who is the president of|prime minister of|election result|parliament)\b/i,
+    /\b(write (python|java|c\+\+|javascript|sql|html|css) (code|script|program) for)\b/i,
+    /\b(leetcode|binary search tree|fibonacci|bubble sort|quicksort algorithm)\b/i,
+    /\b(tell me a joke|make me laugh|write a poem about|write an essay on)\b/i,
+    /\b(capital of france|tallest mountain in|distance from earth to|photosynthesis)\b/i,
+    /\b(ignore (all )?previous instructions|system prompt|dan mode|bypass filter|jailbreak)\b/i,
+  ];
+
+  for (const rx of offTopicRegexes) {
+    if (rx.test(lower)) {
+      // Allow if query contains DriveLink specific automotive AI / V2V context
+      const drivelinkContext = /\b(drivelink|v2v|vehicle|car|sensor|protocol|latency|mesh|infra|hud|fleet|road|traffic|collision|hiring|team)\b/i;
+      if (drivelinkContext.test(lower)) return false;
+      return true;
+    }
+  }
+
+  return false;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // 1. Continuous Improvement: Feedback & Dataset Export actions
+  if (req.body?.action === 'feedback') {
+    const { messageId, query, reply, rating, note } = req.body;
+    recordFeedback({ messageId, query, reply, rating, note });
+    return res.status(200).json({ success: true, message: 'Feedback recorded for continuous improvement' });
+  }
+
+  if (req.body?.action === 'export') {
+    return res.status(200).json({
+      count: telemetryLog.length,
+      dataset: telemetryLog.map((t) => ({
+        messages: [
+          { role: 'system', content: "You are Lyra, DriveLink's intelligent AI assistant." },
+          { role: 'user', content: t.query },
+          { role: 'assistant', content: t.reply },
+        ],
+        metadata: {
+          timestamp: t.timestamp,
+          offTopic: t.offTopic,
+          feedback: t.feedback?.rating || null,
+        },
+      })),
+    });
   }
 
   const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket?.remoteAddress || 'unknown';
@@ -77,6 +198,19 @@ export default async function handler(req, res) {
   }
   if (history !== undefined && !Array.isArray(history)) {
     return res.status(400).json({ error: 'Invalid history' });
+  }
+
+  // 2. Zero-token domain guardrail:
+  // Catch off-topic queries (math, recipes, weather, general trivia) immediately
+  // to avoid hitting free LLM rate limits.
+  if (isOffTopicQuery(message)) {
+    const refusalReply = "I am Lyra, DriveLink's dedicated AI assistant. I can only assist with questions regarding DriveLink, our ultra-low latency (<50ms) V2V communication standard, 4-layer ecosystem architecture, roadmap, and open engineering roles. How can I help you explore DriveLink today?";
+    recordInteraction({ query: message, reply: refusalReply, offTopic: true, model: 'guardrail' });
+    return res.status(200).json({
+      reply: refusalReply,
+      offTopic: true,
+      source: 'guardrail',
+    });
   }
 
   const priorTurns = (history || [])
@@ -137,7 +271,9 @@ export default async function handler(req, res) {
         continue;
       }
 
-      return res.status(200).json({ reply: text.trim() });
+      const trimmedReply = text.trim();
+      recordInteraction({ query: message, reply: trimmedReply, offTopic: false, model });
+      return res.status(200).json({ reply: trimmedReply });
     } catch (error) {
       lastError = error;
       // Continue to next model in candidate loop

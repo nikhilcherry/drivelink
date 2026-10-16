@@ -280,6 +280,25 @@ describe('Chatbot Knowledge Engine - Unwanted & Adversarial Queries', () => {
     });
   });
 
+  describe('Math, Arithmetic & General Calculations', () => {
+    it.each([
+      ['2+2', 'basic 2+2'],
+      ['2 + 2', '2 + 2 with spaces'],
+      ['what is 2+2?', 'what is 2+2 phrase'],
+      ['15 * 4', 'multiplication'],
+      ['(100 / 5) + 3', 'parenthetical math'],
+      ['calculate 500 - 25', 'calculate keyword'],
+      ['solve 2x + 4 = 10', 'algebraic equation'],
+    ])('refuses to solve math and directs to DriveLink: "%s" (%s)', (query) => {
+      const response = getChatbotResponse(query);
+      expect(response.category).toBe('off_topic');
+      expect(response.reply).toContain('Lyra');
+      expect(response.reply).not.toContain('2 + 2 = 4');
+      expect(response.reply).not.toContain('= 4');
+      expect(response.reply).toContain('V2V');
+    });
+  });
+
   describe('Financial Speculation & Crypto', () => {
     it.each([
       'should I buy bitcoin today?',
