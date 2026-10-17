@@ -32,9 +32,7 @@ type PillarId = 'all' | 'v2v' | 'v2i' | 'mobile' | 'web';
 function ProtocolBadge({ name }: { name: string }) {
   return (
     <span className="dlw-proto-bracket-tag" aria-label={`${name} protocol identifier`}>
-      <span className="dlw-proto-paren" aria-hidden="true">(</span>
-      <span className="dlw-proto-code">{name}</span>
-      <span className="dlw-proto-paren" aria-hidden="true">)</span>
+      ({name})
     </span>
   );
 }

@@ -1693,16 +1693,14 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
   font-family: inherit;
   font-weight: 700;
   letter-spacing: -0.02em;
+  color: var(--drive-blue);
   user-select: text;
 }
-.dlw-proto-bracket-tag .dlw-proto-paren {
-  color: var(--fg3);
-  font-weight: 500;
-}
+.dlw-proto-bracket-tag .dlw-proto-paren,
 .dlw-proto-bracket-tag .dlw-proto-code {
-  color: var(--drive-blue);
-  font-weight: 700;
-  margin: 0 1px;
+  color: inherit;
+  font-weight: inherit;
+  font-family: inherit;
 }
 
 .dlw-eco-pills-row {
