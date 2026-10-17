@@ -180,7 +180,7 @@ export function Nav() {
                 onFocus={() => setHoveredTab(t.id)}
               >
                 <FlipText text={t.label} />
-                <span className="sr-only">{t.label}</span>
+                <span className="dlw-sr-only">{t.label}</span>
               </Link>
             ))}
           </div>

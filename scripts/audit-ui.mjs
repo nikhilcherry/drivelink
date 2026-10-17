@@ -140,7 +140,7 @@ const STRUCTURE = `((viewportWidth) => {
     // Text cut off by its own box, with no scrollbar and no ellipsis.
     const own = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent.trim()).join('').trim();
     if (own && cs.textOverflow !== 'ellipsis' && !(cs.overflow === 'visible' && cs.overflowX === 'visible')
-        && !el.closest('.dlw-sr-only') && el.scrollWidth > el.clientWidth + 1) {
+        && !el.closest('.dlw-sr-only') && !el.closest('.sr-only') && el.scrollWidth > el.clientWidth + 1) {
       clipped.push(name(el) + ' ' + JSON.stringify(own.slice(0, 30)));
     }
 
