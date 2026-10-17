@@ -1022,6 +1022,9 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-footer-legal { display: inline-flex; align-items: center; gap: 18px; }
 .dlw-footer-legal a { color: rgba(255,255,255,0.6); text-decoration: none; transition: color .2s; }
 .dlw-footer-legal a:hover { color: #fff; }
+.dlw-footer-socials { display: inline-flex; align-items: center; gap: 14px; }
+.dlw-footer-socials a { color: rgba(255,255,255,0.6); display: inline-flex; align-items: center; justify-content: center; text-decoration: none; transition: color .2s, transform .2s; }
+.dlw-footer-socials a:hover { color: #fff; transform: translateY(-1px); }
 .dlw-footer-address { display: flex; flex-direction: column; gap: 3px; margin-top: 16px; font-style: normal; font-size: 12.5px; line-height: 1.5; color: rgba(255,255,255,0.62); max-width: 280px; }
 .dlw-footer-address .dlw-footer-addr-label { color: rgba(255,255,255,0.75); font-weight: 600; }
 .dlw-footer-address a { color: rgba(255,255,255,0.8); transition: color .2s; }

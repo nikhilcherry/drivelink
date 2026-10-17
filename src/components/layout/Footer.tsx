@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { LogoMark } from '../ui/Logo';
 import { useSiteBase } from '../../lib/nav';
+import { Instagram, Linkedin } from 'lucide-react';
 
 export function Footer() {
   const siteBase = useSiteBase();
@@ -65,6 +66,24 @@ export function Footer() {
             <Link href={siteBase + '/privacy'}>Privacy</Link>
             <Link href={siteBase + '/terms'}>Terms</Link>
           </span>
+          <div className="dlw-footer-socials" aria-label="Social links">
+            <a
+              href="https://www.linkedin.com/company/drivelink-tech/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="DriveLink on LinkedIn"
+            >
+              <Linkedin size={16} />
+            </a>
+            <a
+              href="https://www.instagram.com/drivelink.tech/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="DriveLink on Instagram"
+            >
+              <Instagram size={16} />
+            </a>
+          </div>
           <span className="dlw-mono">drivelink.tech</span>
         </div>
       </div>
