@@ -9,7 +9,7 @@
 
 /* Base reset */
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overscroll-behavior-y: none; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body { margin: 0; padding: 0; overflow-x: hidden; }
 a { color: inherit; text-decoration: none; }
@@ -73,10 +73,16 @@ img, svg { display: block; max-width: 100%; }
 /* ============================================================
    BASE STYLES
    ============================================================ */
-html, body {
+html {
+  min-height: 100%;
+  background: linear-gradient(180deg, #f9fafb 0%, #f9fafb 70%, #04060a 100%);
+  background-color: #04060a;
+}
+body {
+  min-height: 100%;
   font-family: var(--font-sans);
   font-feature-settings: "ss01", "ss02", "cv01", "cv02";
-  background: var(--bg-page);
+  background: transparent;
   color: var(--fg1);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -363,10 +369,84 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
   box-shadow: 0 6px 16px -4px rgba(15,76,129,0.4);
 }
 .dlw-brand-wm { background: linear-gradient(90deg, #0F4C81, #1E3A8A); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 700; font-size: 20px; letter-spacing: -0.025em; }
-.dlw-nav-center { display: flex; align-items: center; gap: 4px; }
-.dlw-nav-tab { padding: 8px 14px; border-radius: 999px; color: var(--fg2); font-weight: 500; font-size: 14px; transition: color .2s, background .2s; background: transparent; border: none; }
-.dlw-nav-tab:hover { color: var(--drive-blue); }
-.dlw-nav-tab.is-active { color: var(--drive-blue); background: rgba(15,76,129,0.06); }
+.dlw-nav-center { display: flex; align-items: center; gap: 4px; position: relative; }
+.dlw-nav-pill-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 999px;
+  background: rgba(15, 76, 129, 0.08);
+  border: 1px solid rgba(15, 76, 129, 0.12);
+  pointer-events: none;
+  z-index: 0;
+  transition: transform 0.28s var(--ease-out), width 0.28s var(--ease-out), height 0.28s var(--ease-out), opacity 0.2s ease;
+  will-change: transform, width, height, opacity;
+}
+.dlw-nav-tab {
+  position: relative;
+  z-index: 1;
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: var(--fg2);
+  font-weight: 500;
+  font-size: 14px;
+  transition: color .2s;
+  background: transparent;
+  border: none;
+  text-decoration: none;
+}
+.dlw-nav-tab:hover, .dlw-nav-tab:focus-visible { color: var(--drive-blue); }
+.dlw-nav-tab.is-active { color: var(--drive-blue); font-weight: 600; }
+
+/* Staggered kinetic flip roll for navigation tabs (reinterface wave style) */
+.dlw-nav-flip {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  line-height: 1.3;
+  vertical-align: middle;
+  pointer-events: none;
+}
+.dlw-nav-flip-track {
+  display: inline-flex;
+  white-space: nowrap;
+}
+.dlw-nav-flip-secondary {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.dlw-nav-flip-char {
+  display: inline-block;
+  will-change: transform;
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.dlw-nav-flip-primary .dlw-nav-flip-char {
+  transform: translateY(0%);
+}
+.dlw-nav-flip-secondary .dlw-nav-flip-char {
+  transform: translateY(100%);
+}
+
+.dlw-nav-tab:hover .dlw-nav-flip-primary .dlw-nav-flip-char,
+.dlw-nav-tab:focus-visible .dlw-nav-flip-primary .dlw-nav-flip-char {
+  transform: translateY(-100%);
+}
+.dlw-nav-tab:hover .dlw-nav-flip-secondary .dlw-nav-flip-char,
+.dlw-nav-tab:focus-visible .dlw-nav-flip-secondary .dlw-nav-flip-char {
+  transform: translateY(0%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dlw-nav-flip-char {
+    transition: none !important;
+  }
+  .dlw-nav-pill-indicator {
+    transition: none !important;
+  }
+}
 .dlw-nav-right { display: flex; align-items: center; gap: 12px; }
 .dlw-nav-pill { padding: 8px 16px; border-radius: 999px; background: var(--drive-blue); color: #fff; font-weight: 600; font-size: 13px; border: none; transition: transform .15s, box-shadow .15s; box-shadow: 0 6px 14px -4px rgba(15,76,129,0.4); }
 .dlw-nav-pill:hover { transform: translateY(-1px); box-shadow: 0 10px 20px -4px rgba(15,76,129,0.5); }
@@ -968,7 +1048,7 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
    ============================================================ */
 /* Bottom padding clears the fixed chat launcher, which otherwise sits on top
    of the last line of the footer once you scroll all the way down. */
-.dlw-footer { background: #04060a; color: rgba(255,255,255,0.7); padding: 56px 0 104px; border-top: 1px solid rgba(255,255,255,0.06); }
+.dlw-footer { background: #04060a; color: rgba(255,255,255,0.7); padding: 56px 0 0; border-top: 1px solid rgba(255,255,255,0.06); position: relative; overflow: hidden; }
 .dlw-footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
 @media (max-width: 768px) { .dlw-footer-grid { grid-template-columns: 1fr 1fr; } }
 .dlw-footer h2 { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.58); margin: 0 0 16px; }
@@ -976,6 +1056,30 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-footer-links a, .dlw-footer-links button { font-size: 14px; color: rgba(255,255,255,0.8); transition: color .2s; background: none; border: none; padding: 0; text-align: left; cursor: pointer; font-family: inherit; }
 .dlw-footer-links a:hover, .dlw-footer-links button:hover { color: #fff; }
 .dlw-footer-bottom { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 12px; color: rgba(255,255,255,0.58); }
+
+/* Oversized bottom cut-off brand watermark (inspired by reinterface.com) */
+.dlw-footer-cut-wrap {
+  overflow: hidden;
+  width: 100%;
+  margin-top: 40px;
+  user-select: none;
+  pointer-events: none;
+  line-height: 1;
+}
+.dlw-footer-cut-text {
+  font-family: var(--font-sans);
+  font-size: clamp(5rem, 16.5vw, 16rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 0.85;
+  text-align: center;
+  white-space: nowrap;
+  transform: translateY(30%);
+  color: #2b4f7a;
+  color: color-mix(in srgb, var(--drive-blue-400) 55%, #04060a);
+  user-select: none;
+  pointer-events: none;
+}
 /* ---------- 404 ---------- */
 .dlw-404-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 8px; }
 .dlw-404-card {
@@ -992,6 +1096,9 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-footer-legal { display: inline-flex; align-items: center; gap: 18px; }
 .dlw-footer-legal a { color: rgba(255,255,255,0.6); text-decoration: none; transition: color .2s; }
 .dlw-footer-legal a:hover { color: #fff; }
+.dlw-footer-socials { display: inline-flex; align-items: center; gap: 14px; }
+.dlw-footer-socials a { color: rgba(255,255,255,0.6); display: inline-flex; align-items: center; justify-content: center; text-decoration: none; transition: color .2s, transform .2s; }
+.dlw-footer-socials a:hover { color: #fff; transform: translateY(-1px); }
 .dlw-footer-address { display: flex; flex-direction: column; gap: 3px; margin-top: 16px; font-style: normal; font-size: 12.5px; line-height: 1.5; color: rgba(255,255,255,0.62); max-width: 280px; }
 .dlw-footer-address .dlw-footer-addr-label { color: rgba(255,255,255,0.75); font-weight: 600; }
 .dlw-footer-address a { color: rgba(255,255,255,0.8); transition: color .2s; }
@@ -1098,13 +1205,7 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-text-gradient, .dlw-text-gradient-down { background-size: 200% 100%; will-change: background-position; animation: dlw-grad-pan 9s ease-in-out infinite; }
 @keyframes dlw-grad-pan { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 
-/* Nav tab underline grow on hover */
-.dlw-nav-tab { position: relative; }
-.dlw-nav-tab::after {
-  content: ""; position: absolute; left: 14px; right: 14px; bottom: 5px; height: 1.5px; border-radius: 2px;
-  background: var(--drive-blue); transform: scaleX(0); transform-origin: left; transition: transform .25s var(--ease-out);
-}
-.dlw-nav-tab:hover::after { transform: scaleX(1); }
+
 
 /* Button shine sweep */
 .dlw-btn { position: relative; overflow: hidden; }
@@ -1693,16 +1794,14 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
   font-family: inherit;
   font-weight: 700;
   letter-spacing: -0.02em;
+  color: var(--drive-blue);
   user-select: text;
 }
-.dlw-proto-bracket-tag .dlw-proto-paren {
-  color: var(--fg3);
-  font-weight: 500;
-}
+.dlw-proto-bracket-tag .dlw-proto-paren,
 .dlw-proto-bracket-tag .dlw-proto-code {
-  color: var(--drive-blue);
-  font-weight: 700;
-  margin: 0 1px;
+  color: inherit;
+  font-weight: inherit;
+  font-family: inherit;
 }
 
 .dlw-eco-pills-row {
@@ -1754,21 +1853,18 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
   color: #fff;
 }
 
-/* 4-Card Hero Architecture Banner */
+/* 3-Card Hero Architecture Banner */
 .dlw-eco-arch-banner {
   margin-top: 48px;
 }
 .dlw-eco-arch-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  max-width: 1100px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  max-width: 1060px;
   margin: 0 auto;
 }
-@media (max-width: 960px) {
-  .dlw-eco-arch-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 540px) {
+@media (max-width: 860px) {
   .dlw-eco-arch-grid { grid-template-columns: 1fr; }
 }
 .dlw-eco-arch-card {
@@ -2076,6 +2172,56 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
   font-weight: 700;
   color: #fff;
   font-family: var(--mono);
+}
+
+/* App Dev View Mode Segmented Control (Mobile HUD vs Web Console) */
+.dlw-app-view-toggle-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto 36px;
+}
+.dlw-app-view-toggle {
+  display: inline-flex;
+  gap: 6px;
+  background: rgba(15, 76, 129, 0.06);
+  border: 1px solid rgba(15, 76, 129, 0.14);
+  padding: 6px;
+  border-radius: 999px;
+  box-shadow: inset 0 2px 4px rgba(15, 76, 129, 0.04);
+}
+.dlw-app-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: var(--fg2);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s var(--ease-out);
+}
+.dlw-app-toggle-btn:hover {
+  color: var(--fg1);
+}
+.dlw-app-toggle-btn.is-active {
+  background: var(--drive-blue);
+  color: #fff;
+  box-shadow: 0 4px 14px -2px rgba(15, 76, 129, 0.35);
+}
+@media (max-width: 640px) {
+  .dlw-app-view-toggle {
+    flex-direction: column;
+    width: 100%;
+    border-radius: 16px;
+  }
+  .dlw-app-toggle-btn {
+    width: 100%;
+    justify-content: center;
+    border-radius: 12px;
+  }
 }
 
 /* In-Cabin Mobile Phone Cockpit Frame */
