@@ -29,6 +29,16 @@ interface PageEcosystemProps {
 
 type PillarId = 'all' | 'v2v' | 'v2i' | 'mobile' | 'web';
 
+function ProtocolBadge({ name }: { name: string }) {
+  return (
+    <span className="dlw-proto-bracket-tag" aria-label={`${name} protocol identifier`}>
+      <span className="dlw-proto-paren" aria-hidden="true">(</span>
+      <span className="dlw-proto-code">{name}</span>
+      <span className="dlw-proto-paren" aria-hidden="true">)</span>
+    </span>
+  );
+}
+
 /* ───────────────────────────────────────────────────────────
    1. ISOLATED V2V PROTOCOL FRAME INSPECTOR WIDGET
    Zero raw code blocks — 100% visual interactive field explorer
@@ -258,6 +268,18 @@ function PhoneCockpitWidget() {
           {tab === 'radar' && (
             <div className="dlw-radar-view">
               <svg className="radar-svg" viewBox="0 0 240 240" aria-label="360 degree proximity radar">
+                <defs>
+                  <linearGradient id="dlwRadarSweep" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.35" />
+                    <stop offset="100%" stopColor="#38bdf8" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                {/* Rotating Sweep Beam */}
+                <g className="radar-sweep-arm">
+                  <path d="M 120 120 L 120 15 A 105 105 0 0 1 195 45 Z" fill="url(#dlwRadarSweep)" />
+                  <line x1="120" y1="120" x2="195" y2="45" stroke="#38bdf8" strokeWidth="1.5" strokeOpacity="0.8" />
+                </g>
+
                 {/* Concentric distance rings */}
                 <circle cx="120" cy="120" r="105" fill="none" stroke="rgba(56, 189, 248, 0.2)" strokeWidth="1" strokeDasharray="3 3" />
                 <circle cx="120" cy="120" r="70" fill="none" stroke="rgba(56, 189, 248, 0.25)" strokeWidth="1" strokeDasharray="3 3" />
@@ -585,28 +607,40 @@ export function PageEcosystem({ setPage }: PageEcosystemProps) {
           <div className="dlw-eco-arch-banner">
             <div className="dlw-eco-arch-grid">
               <div className="dlw-eco-arch-card" onClick={() => scrollToPillar('v2v')}>
-                <div className="badge"><Radio size={14} /> Peer Mesh</div>
+                <div className="dlw-eco-arch-top">
+                  <div className="badge"><Radio size={14} /> Peer Mesh</div>
+                  <span className="dlw-eco-arch-layer">L1</span>
+                </div>
                 <h4>Vehicle (V2V)</h4>
                 <p>100Hz bus telemetry + 1.5s trajectory cones broadcasted in &lt;50ms over 802.11bd.</p>
                 <span className="arrow">View Protocol <ArrowRight size={14} style={{ marginLeft: 4 }} /></span>
               </div>
 
               <div className="dlw-eco-arch-card" onClick={() => scrollToPillar('v2i')}>
-                <div className="badge"><Signal size={14} /> Roadside Node</div>
+                <div className="dlw-eco-arch-top">
+                  <div className="badge"><Signal size={14} /> Roadside Node</div>
+                  <span className="dlw-eco-arch-layer">L2</span>
+                </div>
                 <h4>Infrastructure (V2I)</h4>
                 <p>Smart traffic signals (SPaT), green-wave synchronization &amp; emergency vehicle preemption.</p>
                 <span className="arrow">View Protocol <ArrowRight size={14} style={{ marginLeft: 4 }} /></span>
               </div>
 
               <div className="dlw-eco-arch-card" onClick={() => scrollToPillar('mobile')}>
-                <div className="badge"><Smartphone size={14} /> In-Cabin HUD</div>
+                <div className="dlw-eco-arch-top">
+                  <div className="badge"><Smartphone size={14} /> In-Cabin HUD</div>
+                  <span className="dlw-eco-arch-layer">L3</span>
+                </div>
                 <h4>Mobile App Suite</h4>
                 <p>Low-latency driver HUD, proximity radar, and Bluetooth CAN bridge for iOS &amp; Android.</p>
                 <span className="arrow">View App Dev <ArrowRight size={14} style={{ marginLeft: 4 }} /></span>
               </div>
 
               <div className="dlw-eco-arch-card" onClick={() => scrollToPillar('web')}>
-                <div className="badge"><Server size={14} /> Cloud &amp; APIs</div>
+                <div className="dlw-eco-arch-top">
+                  <div className="badge"><Server size={14} /> Cloud &amp; APIs</div>
+                  <span className="dlw-eco-arch-layer">L4</span>
+                </div>
                 <h4>Web &amp; Fleet Cloud</h4>
                 <p>Corridor digital twins, millisecond event replay engine &amp; real-time dispatcher telemetry.</p>
                 <span className="arrow">View Web Dev <ArrowRight size={14} style={{ marginLeft: 4 }} /></span>
@@ -625,7 +659,7 @@ export function PageEcosystem({ setPage }: PageEcosystemProps) {
                 <span className="num">P1</span> Vehicle-to-Vehicle Intent Mesh
               </div>
               <h2 className="dlw-section-title">
-                DriveLink Protocol (<span className="dlw-text-gradient">drv-mesh</span>)
+                DriveLink Protocol <ProtocolBadge name="drv-mesh" />
               </h2>
               <p className="dlw-section-sub">
                 A vendor-neutral, peer-to-peer communication standard designed for vehicles to broadcast
@@ -636,23 +670,35 @@ export function PageEcosystem({ setPage }: PageEcosystemProps) {
             {/* V2V Key Metrics Grid */}
             <div className="dlw-traction" style={{ marginBottom: 40 }}>
               <div className="dlw-traction-card">
-                <div className="dlw-traction-lbl">End-to-End Latency</div>
-                <div className="dlw-traction-val">&lt;50<span style={{ fontSize: '1.2rem' }}>ms</span></div>
+                <div className="dlw-traction-top">
+                  <span className="dlw-traction-lbl">End-to-End Latency</span>
+                  <span className="dlw-traction-chip">Real-time</span>
+                </div>
+                <div className="dlw-traction-val">&lt;50<span className="dlw-traction-unit">ms</span></div>
                 <div className="dlw-traction-sub">CAN bus read to neighbor vehicle receipt.</div>
               </div>
               <div className="dlw-traction-card">
-                <div className="dlw-traction-lbl">Prediction Horizon</div>
-                <div className="dlw-traction-val">1.5<span style={{ fontSize: '1.2rem' }}>s</span></div>
+                <div className="dlw-traction-top">
+                  <span className="dlw-traction-lbl">Prediction Horizon</span>
+                  <span className="dlw-traction-chip">Forward Cone</span>
+                </div>
+                <div className="dlw-traction-val">1.5<span className="dlw-traction-unit">s</span></div>
                 <div className="dlw-traction-sub">Probabilistic forward trajectory cone.</div>
               </div>
               <div className="dlw-traction-card">
-                <div className="dlw-traction-lbl">Frame Payload</div>
-                <div className="dlw-traction-val">256<span style={{ fontSize: '1.2rem' }}>B</span></div>
+                <div className="dlw-traction-top">
+                  <span className="dlw-traction-lbl">Frame Payload</span>
+                  <span className="dlw-traction-chip">Zero Bloat</span>
+                </div>
+                <div className="dlw-traction-val">256<span className="dlw-traction-unit">B</span></div>
                 <div className="dlw-traction-sub">Ultra-compact binary gossip packet.</div>
               </div>
               <div className="dlw-traction-card">
-                <div className="dlw-traction-lbl">Ingest Frequency</div>
-                <div className="dlw-traction-val">100<span style={{ fontSize: '1.2rem' }}>Hz</span></div>
+                <div className="dlw-traction-top">
+                  <span className="dlw-traction-lbl">Ingest Frequency</span>
+                  <span className="dlw-traction-chip">Bus Polling</span>
+                </div>
+                <div className="dlw-traction-val">100<span className="dlw-traction-unit">Hz</span></div>
                 <div className="dlw-traction-sub">Direct vehicle CAN &amp; Ethernet telemetry.</div>
               </div>
             </div>
@@ -708,7 +754,7 @@ export function PageEcosystem({ setPage }: PageEcosystemProps) {
                 <span className="num">P2</span> Vehicle-to-Infrastructure Layer
               </div>
               <h2 className="dlw-section-title">
-                DriveLink V2I Protocol (<span className="dlw-text-gradient">drv-infra</span>)
+                DriveLink V2I Protocol <ProtocolBadge name="drv-infra" />
               </h2>
               <p className="dlw-section-sub">
                 Synchronizing moving vehicles with municipal roadside units (RSUs), smart traffic signals,
@@ -731,7 +777,9 @@ export function PageEcosystem({ setPage }: PageEcosystemProps) {
 
                 <div className="dlw-feature-checklist">
                   <div className="dlw-feature-checkitem">
-                    <CheckCircle2 size={18} color="#0F4C81" style={{ flexShrink: 0, marginTop: 2 }} />
+                    <div className="dlw-check-icon-box">
+                      <CheckCircle2 size={16} color="#0F4C81" />
+                    </div>
                     <div>
                       <b>Smart Signal Phase &amp; Timing (SPaT)</b>
                       <span>Streams live green-light countdowns so vehicles adjust cruise speed and glide through without stopping.</span>
@@ -739,7 +787,9 @@ export function PageEcosystem({ setPage }: PageEcosystemProps) {
                   </div>
 
                   <div className="dlw-feature-checkitem">
-                    <CheckCircle2 size={18} color="#0F4C81" style={{ flexShrink: 0, marginTop: 2 }} />
+                    <div className="dlw-check-icon-box">
+                      <CheckCircle2 size={16} color="#0F4C81" />
+                    </div>
                     <div>
                       <b>Emergency Vehicle Preemption (EVP)</b>
                       <span>Cryptographically verified sirens broadcast priority beacons, turning signals green blocks ahead.</span>
@@ -747,7 +797,9 @@ export function PageEcosystem({ setPage }: PageEcosystemProps) {
                   </div>
 
                   <div className="dlw-feature-checkitem">
-                    <CheckCircle2 size={18} color="#0F4C81" style={{ flexShrink: 0, marginTop: 2 }} />
+                    <div className="dlw-check-icon-box">
+                      <CheckCircle2 size={16} color="#0F4C81" />
+                    </div>
                     <div>
                       <b>Blind Corner &amp; Pedestrian Radar</b>
                       <span>Overhead intersection sensors beam alerts about occluded cross-traffic and crossing pedestrians directly into vehicles.</span>
@@ -755,7 +807,9 @@ export function PageEcosystem({ setPage }: PageEcosystemProps) {
                   </div>
 
                   <div className="dlw-feature-checkitem">
-                    <CheckCircle2 size={18} color="#0F4C81" style={{ flexShrink: 0, marginTop: 2 }} />
+                    <div className="dlw-check-icon-box">
+                      <CheckCircle2 size={16} color="#0F4C81" />
+                    </div>
                     <div>
                       <b>Dynamic Corridor Speed Advisories</b>
                       <span>Municipal traffic operations broadcast optimal speed advisories to eliminate bottleneck congestion.</span>
@@ -782,7 +836,7 @@ export function PageEcosystem({ setPage }: PageEcosystemProps) {
                 <span className="num">P3</span> In-Cabin &amp; Driver Awareness
               </div>
               <h2 className="dlw-section-title">
-                DriveLink App Development (<span className="dlw-text-gradient">drv-mobile</span>)
+                DriveLink App Development <ProtocolBadge name="drv-mobile" />
               </h2>
               <p className="dlw-section-sub">
                 Cross-platform mobile SDKs and in-cabin heads-up display (HUD) software for iOS, Android,
@@ -857,7 +911,7 @@ export function PageEcosystem({ setPage }: PageEcosystemProps) {
                 <span className="num">P4</span> Cloud Telematics &amp; Web Platform
               </div>
               <h2 className="dlw-section-title">
-                DriveLink Web Development (<span className="dlw-text-gradient">drv-cloud</span>)
+                DriveLink Web Development <ProtocolBadge name="drv-cloud" />
               </h2>
               <p className="dlw-section-sub">
                 Scalable web applications, browser-based digital twin visualizers, and enterprise APIs
@@ -931,7 +985,12 @@ export function PageEcosystem({ setPage }: PageEcosystemProps) {
                   <th>Architecture Dimension</th>
                   <th>Legacy Cellular Telematics</th>
                   <th>Raw C-V2X Direct Radio</th>
-                  <th className="highlight">DriveLink Unified Ecosystem</th>
+                  <th className="highlight">
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                      <span>DriveLink Unified Ecosystem</span>
+                      <span className="dlw-matrix-chip">RECOMMENDED</span>
+                    </div>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -939,43 +998,78 @@ export function PageEcosystem({ setPage }: PageEcosystemProps) {
                   <td><strong>End-to-End Latency</strong></td>
                   <td>800ms - 2,500ms (Cell Tower)</td>
                   <td>100ms - 250ms (Unstructured)</td>
-                  <td className="highlight"><strong>&lt;50ms (Direct Zero-Hop Mesh)</strong></td>
+                  <td className="highlight">
+                    <div className="dlw-matrix-cell-val">
+                      <CheckCircle2 size={15} color="#22c55e" style={{ flexShrink: 0 }} />
+                      <strong>&lt;50ms (Direct Zero-Hop Mesh)</strong>
+                    </div>
+                  </td>
                 </tr>
                 <tr>
                   <td><strong>Data Transmitted</strong></td>
                   <td>Past GPS coordinate trace</td>
                   <td>Raw coordinates only</td>
-                  <td className="highlight"><strong>1.5s Probabilistic Intent Cones</strong></td>
+                  <td className="highlight">
+                    <div className="dlw-matrix-cell-val">
+                      <CheckCircle2 size={15} color="#22c55e" style={{ flexShrink: 0 }} />
+                      <strong>1.5s Probabilistic Intent Cones</strong>
+                    </div>
+                  </td>
                 </tr>
                 <tr>
                   <td><strong>Cellular Outage Resilience</strong></td>
                   <td>Fails completely (0% uptime)</td>
                   <td>Radio layer operates only</td>
-                  <td className="highlight"><strong>100% Autonomous Peer Mesh</strong></td>
+                  <td className="highlight">
+                    <div className="dlw-matrix-cell-val">
+                      <CheckCircle2 size={15} color="#22c55e" style={{ flexShrink: 0 }} />
+                      <strong>100% Autonomous Peer Mesh</strong>
+                    </div>
+                  </td>
                 </tr>
                 <tr>
                   <td><strong>Driver Privacy</strong></td>
                   <td>Central server logs VIN &amp; trip</td>
                   <td>Fixed radio MAC address</td>
-                  <td className="highlight"><strong>Rotating Ed25519 Ephemeral IDs</strong></td>
+                  <td className="highlight">
+                    <div className="dlw-matrix-cell-val">
+                      <CheckCircle2 size={15} color="#22c55e" style={{ flexShrink: 0 }} />
+                      <strong>Rotating Ed25519 Ephemeral IDs</strong>
+                    </div>
+                  </td>
                 </tr>
                 <tr>
                   <td><strong>Multi-OEM Interoperability</strong></td>
                   <td>Walled gardens (OEM silos)</td>
                   <td>Hardware-only standard</td>
-                  <td className="highlight"><strong>Standardized Open Frame Spec (v0.1)</strong></td>
+                  <td className="highlight">
+                    <div className="dlw-matrix-cell-val">
+                      <CheckCircle2 size={15} color="#22c55e" style={{ flexShrink: 0 }} />
+                      <strong>Standardized Open Frame Spec (v0.1)</strong>
+                    </div>
+                  </td>
                 </tr>
                 <tr>
                   <td><strong>Infrastructure Integration</strong></td>
                   <td>Unsynchronized cloud</td>
                   <td>Requires costly RSU upgrades</td>
-                  <td className="highlight"><strong>SPaT &amp; Emergency Preemption Built-in</strong></td>
+                  <td className="highlight">
+                    <div className="dlw-matrix-cell-val">
+                      <CheckCircle2 size={15} color="#22c55e" style={{ flexShrink: 0 }} />
+                      <strong>SPaT &amp; Emergency Preemption Built-in</strong>
+                    </div>
+                  </td>
                 </tr>
                 <tr>
                   <td><strong>Driver HUD Integration</strong></td>
                   <td>Heavy cloud lag</td>
                   <td>No native UI or mobile SDK</td>
-                  <td className="highlight"><strong>Sub-50ms React Native &amp; AAOS HUD</strong></td>
+                  <td className="highlight">
+                    <div className="dlw-matrix-cell-val">
+                      <CheckCircle2 size={15} color="#22c55e" style={{ flexShrink: 0 }} />
+                      <strong>Sub-50ms React Native &amp; AAOS HUD</strong>
+                    </div>
+                  </td>
                 </tr>
               </tbody>
             </table>

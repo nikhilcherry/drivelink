@@ -1013,9 +1013,9 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-code code { color: inherit; background: none; border: none; padding: 0; }
 .dlw-market-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; max-width: 980px; margin: 0 auto; }
 @media (max-width: 700px) { .dlw-market-grid { grid-template-columns: 1fr; } }
-.dlw-market-card { padding: 28px; border-radius: 16px; background: rgba(255,255,255,0.6); backdrop-filter: blur(20px); border: 1px solid rgba(15,76,129,0.08); transition: transform .3s, border-color .3s, box-shadow .3s; }
-.dlw-market-card:hover { transform: translateY(-3px); border-color: rgba(15,76,129,0.25); box-shadow: 0 20px 40px -16px rgba(15,76,129,0.15); }
-.dlw-market-ic { width: 44px; height: 44px; border-radius: 12px; background: rgba(15,76,129,0.06); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+.dlw-market-card { padding: 28px 24px; border-radius: 18px; background: linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.72) 100%); backdrop-filter: blur(20px); border: 1px solid rgba(15,76,129,0.1); box-shadow: inset 0 1px 0 rgba(255,255,255,1), 0 8px 24px -6px rgba(15,76,129,0.05); transition: transform .3s var(--ease-out), border-color .3s, box-shadow .3s; }
+.dlw-market-card:hover { transform: translateY(-4px); border-color: rgba(15,76,129,0.28); box-shadow: inset 0 1px 0 #fff, 0 22px 42px -14px rgba(15,76,129,0.14); }
+.dlw-market-ic { width: 46px; height: 46px; border-radius: 14px; background: linear-gradient(135deg, rgba(15,76,129,0.08), rgba(56,189,248,0.12)); border: 1px solid rgba(15,76,129,0.14); box-shadow: 0 4px 12px -2px rgba(15,76,129,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
 .dlw-market-card h3 { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 8px; color: var(--fg1); }
 .dlw-market-card p { font-size: 14.5px; color: var(--fg2); line-height: 1.6; margin: 0; }
 
@@ -1027,15 +1027,19 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-faq-item p { font-size: 14.5px; color: var(--fg2); line-height: 1.6; margin: 0; }
 
 /* ============================================================
-   INVESTORS PAGE
+   INVESTORS PAGE & TRACTION CARDS
    ============================================================ */
 .dlw-traction { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 980px; margin: 32px auto 0; }
 @media (max-width: 720px) { .dlw-traction { grid-template-columns: repeat(2, 1fr); } }
-.dlw-traction-card { padding: 28px 24px; border-radius: 16px; background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.4)); border: 1px solid rgba(15,76,129,0.1); backdrop-filter: blur(20px); position: relative; overflow: hidden; }
-.dlw-traction-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #0F4C81, transparent); }
-.dlw-traction-lbl { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: var(--fg4); margin-bottom: 8px; }
-.dlw-traction-val { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1; color: var(--drive-blue); }
-.dlw-traction-sub { font-size: 13px; color: var(--fg3); margin-top: 8px; line-height: 1.4; }
+.dlw-traction-card { padding: 26px 22px; border-radius: 18px; background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 100%); border: 1px solid rgba(15,76,129,0.12); backdrop-filter: blur(20px); box-shadow: inset 0 1px 0 rgba(255,255,255,1), 0 10px 28px -10px rgba(15,76,129,0.07); position: relative; overflow: hidden; transition: transform .3s var(--ease-out), box-shadow .3s var(--ease-out), border-color .3s; }
+.dlw-traction-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, rgba(15,76,129,0.6), rgba(56,189,248,0.8), transparent); }
+.dlw-traction-card:hover { transform: translateY(-4px); border-color: rgba(15,76,129,0.28); box-shadow: inset 0 1px 0 #fff, 0 24px 44px -14px rgba(15,76,129,0.16); }
+.dlw-traction-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.dlw-traction-chip { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--drive-blue); background: rgba(15,76,129,0.06); border: 1px solid rgba(15,76,129,0.12); padding: 2px 8px; border-radius: 999px; letter-spacing: 0.02em; white-space: nowrap; flex-shrink: 0; }
+.dlw-traction-lbl { font-family: var(--mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg3); margin-bottom: 0; }
+.dlw-traction-val { font-size: clamp(2rem, 3.2vw, 2.7rem); font-weight: 800; letter-spacing: -0.035em; line-height: 1.05; color: var(--drive-blue); display: flex; align-items: baseline; }
+.dlw-traction-unit { font-size: 1.15rem; font-weight: 600; color: var(--fg2); margin-left: 2px; }
+.dlw-traction-sub { font-size: 13px; color: var(--fg3); margin-top: 10px; line-height: 1.45; }
 .dlw-two-col { display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; max-width: 1100px; margin: 0 auto; align-items: start; }
 @media (max-width: 900px) { .dlw-two-col { grid-template-columns: 1fr; } }
 .dlw-ask-list { list-style: none; padding: 0; margin: 0; border-top: var(--line); }
@@ -1681,6 +1685,26 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 /* ============================================================
    ECOSYSTEM PAGE — DRIVELINK MULTI-TIER ARCHITECTURE
    ============================================================ */
+
+/* Protocol Badge with non-breaking brackets & optical alignment */
+.dlw-proto-bracket-tag {
+  display: inline-block;
+  white-space: nowrap;
+  font-family: inherit;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  user-select: text;
+}
+.dlw-proto-bracket-tag .dlw-proto-paren {
+  color: var(--fg3);
+  font-weight: 500;
+}
+.dlw-proto-bracket-tag .dlw-proto-code {
+  color: var(--drive-blue);
+  font-weight: 700;
+  margin: 0 1px;
+}
+
 .dlw-eco-pills-row {
   display: flex;
   flex-wrap: wrap;
@@ -1695,26 +1719,27 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
   gap: 8px;
   padding: 10px 18px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(14px);
   border: 1px solid rgba(15, 76, 129, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1), 0 2px 8px rgba(15, 76, 129, 0.04);
   color: var(--fg2);
   font-size: 13.5px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 8px rgba(15, 76, 129, 0.04);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .dlw-eco-pill:hover {
   border-color: rgba(15, 76, 129, 0.3);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
   color: var(--drive-blue);
+  box-shadow: inset 0 1px 0 #fff, 0 8px 18px -4px rgba(15, 76, 129, 0.12);
 }
 .dlw-eco-pill.is-active {
   background: var(--drive-blue);
   color: #fff;
   border-color: var(--drive-blue);
-  box-shadow: 0 6px 18px -4px rgba(15, 76, 129, 0.45);
+  box-shadow: 0 6px 20px -4px rgba(15, 76, 129, 0.45);
 }
 .dlw-eco-pill-badge {
   font-family: var(--mono);
@@ -1748,20 +1773,52 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 }
 .dlw-eco-arch-card {
   padding: 24px 20px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(15, 76, 129, 0.1);
-  box-shadow: 0 4px 14px rgba(15, 76, 129, 0.04);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.68) 100%);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(15, 76, 129, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1), 0 8px 24px -6px rgba(15, 76, 129, 0.05);
   cursor: pointer;
-  transition: transform 0.2s var(--ease-out), border-color 0.2s, box-shadow 0.2s;
+  transition: transform 0.25s var(--ease-out), border-color 0.25s, box-shadow 0.25s;
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+.dlw-eco-arch-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(15, 76, 129, 0.7), rgba(56, 189, 248, 0.8), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 .dlw-eco-arch-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(15, 76, 129, 0.35);
-  box-shadow: 0 16px 32px -10px rgba(15, 76, 129, 0.12);
+  transform: translateY(-4px);
+  border-color: rgba(15, 76, 129, 0.3);
+  box-shadow: inset 0 1px 0 #fff, 0 20px 38px -10px rgba(15, 76, 129, 0.14);
+}
+.dlw-eco-arch-card:hover::before {
+  opacity: 1;
+}
+.dlw-eco-arch-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.dlw-eco-arch-layer {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(15, 76, 129, 0.45);
+  background: rgba(15, 76, 129, 0.05);
+  border: 1px solid rgba(15, 76, 129, 0.1);
+  padding: 2px 6px;
+  border-radius: 6px;
 }
 .dlw-eco-arch-card .badge {
   display: inline-flex;
@@ -1771,23 +1828,24 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
   font-size: 11px;
   color: var(--drive-blue);
   background: rgba(15, 76, 129, 0.06);
+  border: 1px solid rgba(15, 76, 129, 0.12);
   padding: 3px 9px;
   border-radius: 999px;
   font-weight: 600;
   align-self: flex-start;
-  margin-bottom: 12px;
+  margin-bottom: 0;
 }
 .dlw-eco-arch-card h4 {
-  font-size: 1.15rem;
+  font-size: 1.18rem;
   font-weight: 700;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
   margin: 0 0 6px;
   color: var(--fg1);
 }
 .dlw-eco-arch-card p {
   font-size: 13px;
   color: var(--fg2);
-  line-height: 1.5;
+  line-height: 1.55;
   margin: 0 0 16px;
   flex-grow: 1;
 }
@@ -1797,6 +1855,10 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
   color: var(--drive-blue);
   font-size: 12px;
   font-weight: 600;
+  transition: transform 0.2s ease;
+}
+.dlw-eco-arch-card:hover .arrow {
+  transform: translateX(4px);
 }
 
 /* Feature Checklist */
@@ -1809,6 +1871,18 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
   display: flex;
   align-items: flex-start;
   gap: 12px;
+}
+.dlw-check-icon-box {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(15, 76, 129, 0.08);
+  border: 1px solid rgba(15, 76, 129, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 .dlw-feature-checkitem b {
   display: block;
@@ -2080,10 +2154,19 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
   background: radial-gradient(circle, rgba(15, 76, 129, 0.25) 0%, rgba(7, 12, 18, 0.95) 80%);
   border-radius: 999px;
   border: 1px solid rgba(56, 189, 248, 0.3);
+  box-shadow: 0 0 20px rgba(15, 76, 129, 0.3);
+}
+@keyframes dlw-radar-sweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.radar-sweep-arm {
+  transform-origin: 120px 120px;
+  animation: dlw-radar-sweep 4s linear infinite;
 }
 .radar-caption {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.65);
   line-height: 1.4;
 }
 
@@ -2286,14 +2369,14 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 
 /* Architectural Comparison Table */
 .dlw-matrix-table-wrap {
-  max-width: 1000px;
+  max-width: 1020px;
   margin: 0 auto;
-  border-radius: 16px;
+  border-radius: 18px;
   overflow-x: auto;
-  background: rgba(255, 255, 255, 0.7);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(15, 76, 129, 0.1);
-  box-shadow: 0 16px 36px -16px rgba(15, 76, 129, 0.08);
+  border: 1px solid rgba(15, 76, 129, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1), 0 20px 44px -16px rgba(15, 76, 129, 0.1);
 }
 .dlw-matrix-table {
   width: 100%;
@@ -2302,27 +2385,51 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
   font-size: 13.5px;
 }
 .dlw-matrix-table th {
-  padding: 16px 20px;
+  padding: 18px 22px;
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.05em;
   color: var(--fg3);
-  border-bottom: 1px solid rgba(15, 76, 129, 0.1);
+  border-bottom: 1px solid rgba(15, 76, 129, 0.12);
   background: rgba(15, 76, 129, 0.03);
 }
 .dlw-matrix-table th.highlight {
   color: var(--drive-blue);
   background: rgba(15, 76, 129, 0.08);
   font-weight: 700;
+  border-bottom-color: rgba(15, 76, 129, 0.2);
+}
+.dlw-matrix-chip {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--drive-blue);
+  padding: 2px 7px;
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+}
+.dlw-matrix-cell-val {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
 }
 .dlw-matrix-table td {
-  padding: 16px 20px;
+  padding: 16px 22px;
   border-bottom: 1px solid rgba(15, 76, 129, 0.06);
   color: var(--fg2);
+  transition: background-color 0.2s;
 }
 .dlw-matrix-table td.highlight {
-  background: rgba(15, 76, 129, 0.03);
+  background: rgba(15, 76, 129, 0.035);
   color: var(--drive-blue);
+}
+.dlw-matrix-table tbody tr:hover td {
+  background: rgba(15, 76, 129, 0.02);
+}
+.dlw-matrix-table tbody tr:hover td.highlight {
+  background: rgba(15, 76, 129, 0.07);
 }
 .dlw-matrix-table tr:last-child td {
   border-bottom: none;
