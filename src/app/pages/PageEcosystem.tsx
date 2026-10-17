@@ -6,7 +6,6 @@ import {
   Smartphone,
   Globe,
   Cpu,
-  Layers,
   ShieldCheck,
   Activity,
   CheckCircle2,
@@ -27,7 +26,7 @@ interface PageEcosystemProps {
   setPage: (page: Page) => void;
 }
 
-type PillarId = 'all' | 'v2v' | 'v2i' | 'mobile' | 'web';
+type PillarId = 'all' | 'v2v' | 'v2i' | 'app';
 
 function ProtocolBadge({ name }: { name: string }) {
   return (
@@ -509,6 +508,7 @@ function FleetConsoleWidget() {
    ─────────────────────────────────────────────────────────── */
 export function PageEcosystem({ setPage }: PageEcosystemProps) {
   const [activePillar, setActivePillar] = useState<PillarId>('all');
+  const [appView, setAppView] = useState<'mobile' | 'web'>('mobile');
 
   const scrollToPillar = (id: PillarId) => {
     setActivePillar(id);
@@ -578,30 +578,18 @@ export function PageEcosystem({ setPage }: PageEcosystemProps) {
               <button
                 type="button"
                 role="tab"
-                aria-selected={activePillar === 'mobile'}
-                className={`dlw-eco-pill ${activePillar === 'mobile' ? 'is-active' : ''}`}
-                onClick={() => scrollToPillar('mobile')}
+                aria-selected={activePillar === 'app'}
+                className={`dlw-eco-pill ${activePillar === 'app' ? 'is-active' : ''}`}
+                onClick={() => scrollToPillar('app')}
               >
                 <Smartphone size={16} />
-                <span>Mobile App Dev</span>
-                <span className="dlw-eco-pill-badge">drv-mobile</span>
-              </button>
-
-              <button
-                type="button"
-                role="tab"
-                aria-selected={activePillar === 'web'}
-                className={`dlw-eco-pill ${activePillar === 'web' ? 'is-active' : ''}`}
-                onClick={() => scrollToPillar('web')}
-              >
-                <Globe size={16} />
-                <span>Web &amp; Cloud Dev</span>
-                <span className="dlw-eco-pill-badge">drv-cloud</span>
+                <span>Application Dev</span>
+                <span className="dlw-eco-pill-badge">Mobile &amp; Web</span>
               </button>
             </div>
           </div>
 
-          {/* Unified High-Level Architecture Flow Diagram */}
+          {/* Unified High-Level Architecture Flow Diagram (3 Pillars) */}
           <div className="dlw-eco-arch-banner">
             <div className="dlw-eco-arch-grid">
               <div className="dlw-eco-arch-card" onClick={() => scrollToPillar('v2v')}>
@@ -624,24 +612,14 @@ export function PageEcosystem({ setPage }: PageEcosystemProps) {
                 <span className="arrow">View Protocol <ArrowRight size={14} style={{ marginLeft: 4 }} /></span>
               </div>
 
-              <div className="dlw-eco-arch-card" onClick={() => scrollToPillar('mobile')}>
+              <div className="dlw-eco-arch-card" onClick={() => scrollToPillar('app')}>
                 <div className="dlw-eco-arch-top">
-                  <div className="badge"><Smartphone size={14} /> In-Cabin HUD</div>
+                  <div className="badge"><Smartphone size={14} /> Mobile &amp; Web</div>
                   <span className="dlw-eco-arch-layer">L3</span>
                 </div>
-                <h4>Mobile App Suite</h4>
-                <p>Low-latency driver HUD, proximity radar, and Bluetooth CAN bridge for iOS &amp; Android.</p>
+                <h4>Application Suite</h4>
+                <p>In-cabin driver HUD mobile SDKs, WebGL digital twins &amp; real-time cloud fleet telematics.</p>
                 <span className="arrow">View App Dev <ArrowRight size={14} style={{ marginLeft: 4 }} /></span>
-              </div>
-
-              <div className="dlw-eco-arch-card" onClick={() => scrollToPillar('web')}>
-                <div className="dlw-eco-arch-top">
-                  <div className="badge"><Server size={14} /> Cloud &amp; APIs</div>
-                  <span className="dlw-eco-arch-layer">L4</span>
-                </div>
-                <h4>Web &amp; Fleet Cloud</h4>
-                <p>Corridor digital twins, millisecond event replay engine &amp; real-time dispatcher telemetry.</p>
-                <span className="arrow">View Web Dev <ArrowRight size={14} style={{ marginLeft: 4 }} /></span>
               </div>
             </div>
           </div>
@@ -825,135 +803,139 @@ export function PageEcosystem({ setPage }: PageEcosystemProps) {
         </section>
       )}
 
-      {/* ── 04 PILLAR 3: DRIVELINK APP DEV (CABIN & DRIVER) ── */}
-      {(activePillar === 'all' || activePillar === 'mobile') && (
-        <section id="mobile" className="dlw-section" style={{ scrollMarginTop: 100 }}>
+      {/* ── 04 PILLAR 3: APPLICATION DEVELOPMENT (MOBILE & WEB) ── */}
+      {(activePillar === 'all' || activePillar === 'app') && (
+        <section id="app" className="dlw-section" style={{ scrollMarginTop: 100 }}>
           <div className="dlw-container">
             <div className="dlw-section-head">
               <div className="dlw-eyebrow">
-                <span className="num">P3</span> In-Cabin &amp; Driver Awareness
+                <span className="num">P3</span> In-Cabin, Mobile &amp; Cloud Platform
               </div>
               <h2 className="dlw-section-title">
-                DriveLink App Development <ProtocolBadge name="drv-mobile" />
+                DriveLink Application Development <ProtocolBadge name="drv-app" />
               </h2>
               <p className="dlw-section-sub">
-                Cross-platform mobile SDKs and in-cabin heads-up display (HUD) software for iOS, Android,
-                and automotive Android Automotive OS (AAOS) infotainment displays.
+                Unified software suite spanning cross-platform driver HUD mobile SDKs (iOS, Android, AAOS)
+                and real-time browser digital twins and fleet telematics command consoles for commercial operators.
               </p>
             </div>
 
-            <div className="dlw-two-col" style={{ alignItems: 'center', marginBottom: 20 }}>
-              {/* Left Column: Phone Frame HUD */}
-              <div>
-                <PhoneCockpitWidget />
+            {/* View Mode Toggle: Mobile Driver HUD vs Web Fleet Console */}
+            <div className="dlw-app-view-toggle-wrap">
+              <div className="dlw-app-view-toggle" role="tablist" aria-label="Application preview mode">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={appView === 'mobile'}
+                  className={`dlw-app-toggle-btn ${appView === 'mobile' ? 'is-active' : ''}`}
+                  onClick={() => setAppView('mobile')}
+                >
+                  <Smartphone size={16} />
+                  <span>Mobile Driver HUD (iOS / Android / AAOS)</span>
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={appView === 'web'}
+                  className={`dlw-app-toggle-btn ${appView === 'web' ? 'is-active' : ''}`}
+                  onClick={() => setAppView('web')}
+                >
+                  <Globe size={16} />
+                  <span>Web Fleet Command Console (drv-cloud)</span>
+                </button>
               </div>
+            </div>
 
-              {/* Right Column: App Dev Capabilities & Features */}
-              <div>
-                <div className="dlw-arch-body" style={{ marginBottom: 24 }}>
-                  <h3 style={{ fontSize: '1.3rem', fontWeight: 700, margin: '0 0 10px' }}>
-                    Cross-Platform Mobile SDK
-                  </h3>
-                  <p style={{ color: 'var(--fg2)', lineHeight: 1.6, fontSize: '14px' }}>
-                    DriveLink delivers production-grade native bindings for iOS, Android, and automotive infotainment OS
-                    (Android Automotive / AAOS), enabling fleets and automakers to integrate cooperative intelligence in days.
-                  </p>
+            {/* Interactive View Display */}
+            {appView === 'mobile' ? (
+              <div className="dlw-two-col" style={{ alignItems: 'center', marginBottom: 36 }}>
+                {/* Left Column: Phone Frame HUD */}
+                <div>
+                  <PhoneCockpitWidget />
                 </div>
 
-                <div className="dlw-market-grid" style={{ gridTemplateColumns: '1fr', gap: 14 }}>
-                  <div className="dlw-market-card" style={{ padding: 18 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-                      <Smartphone size={20} color="#0F4C81" />
-                      <h4 style={{ margin: 0, fontSize: '1.05rem' }}>React Native &amp; Flutter Modules</h4>
-                    </div>
-                    <p style={{ margin: 0, fontSize: '13px' }}>
-                      Plug-and-play reactive hooks (<code>useDriveLinkMesh</code>) exposing neighbor radar streams,
-                      hazard alerts, and intent vectors with millisecond update intervals.
+                {/* Right Column: Mobile SDK Capabilities */}
+                <div>
+                  <div className="dlw-arch-body" style={{ marginBottom: 20 }}>
+                    <h3 style={{ fontSize: '1.35rem', fontWeight: 700, margin: '0 0 10px' }}>
+                      In-Cabin Driver HUD &amp; Native SDKs
+                    </h3>
+                    <p style={{ color: 'var(--fg2)', lineHeight: 1.6, fontSize: '14px' }}>
+                      DriveLink delivers production-grade native bindings for iOS, Android, and automotive infotainment OS
+                      (Android Automotive / AAOS), enabling fleets and automakers to integrate cooperative intelligence in days.
                     </p>
                   </div>
 
-                  <div className="dlw-market-card" style={{ padding: 18 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-                      <Wifi size={20} color="#0F4C81" />
-                      <h4 style={{ margin: 0, fontSize: '1.05rem' }}>Bluetooth Low Energy &amp; Wi-Fi Direct Bridge</h4>
+                  <div className="dlw-market-grid" style={{ gridTemplateColumns: '1fr', gap: 14 }}>
+                    <div className="dlw-market-card" style={{ padding: 18 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+                        <Smartphone size={20} color="#0F4C81" />
+                        <h4 style={{ margin: 0, fontSize: '1.05rem' }}>React Native &amp; Flutter Modules</h4>
+                      </div>
+                      <p style={{ margin: 0, fontSize: '13px' }}>
+                        Plug-and-play reactive hooks (<code>useDriveLinkMesh</code>) exposing neighbor radar streams,
+                        hazard alerts, and intent vectors with millisecond update intervals.
+                      </p>
                     </div>
-                    <p style={{ margin: 0, fontSize: '13px' }}>
-                      Ultra-low latency hardware bridge connecting driver smartphones directly to the on-vehicle OBD-II
-                      hardware transceiver without proprietary cables or pairing delays.
-                    </p>
-                  </div>
 
-                  <div className="dlw-market-card" style={{ padding: 18 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-                      <Zap size={20} color="#0F4C81" />
-                      <h4 style={{ margin: 0, fontSize: '1.05rem' }}>Directional Spatial Audio &amp; Haptic Cues</h4>
+                    <div className="dlw-market-card" style={{ padding: 18 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+                        <Wifi size={20} color="#0F4C81" />
+                        <h4 style={{ margin: 0, fontSize: '1.05rem' }}>BLE &amp; Wi-Fi Direct Hardware Bridge</h4>
+                      </div>
+                      <p style={{ margin: 0, fontSize: '13px' }}>
+                        Ultra-low latency hardware bridge connecting driver smartphones directly to the on-vehicle OBD-II
+                        hardware transceiver without proprietary cables or pairing delays.
+                      </p>
                     </div>
-                    <p style={{ margin: 0, fontSize: '13px' }}>
-                      Pre-integrated triggers for driver seat motors and stereos that vibrate or chime left/right
-                      when an occluded vehicle initiates a blindspot merge.
-                    </p>
+
+                    <div className="dlw-market-card" style={{ padding: 18 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+                        <Zap size={20} color="#0F4C81" />
+                        <h4 style={{ margin: 0, fontSize: '1.05rem' }}>Directional Spatial Audio &amp; Haptic Cues</h4>
+                      </div>
+                      <p style={{ margin: 0, fontSize: '13px' }}>
+                        Pre-integrated triggers for driver seat motors and stereos that vibrate or chime left/right
+                        when an occluded vehicle initiates a blindspot merge.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── 05 PILLAR 4: DRIVELINK WEB DEV (CLOUD & FLEET) ── */}
-      {(activePillar === 'all' || activePillar === 'web') && (
-        <section id="web" className="dlw-section dlw-section-paper" style={{ scrollMarginTop: 100 }}>
-          <div className="dlw-container">
-            <div className="dlw-section-head">
-              <div className="dlw-eyebrow">
-                <span className="num">P4</span> Cloud Telematics &amp; Web Platform
+            ) : (
+              <div style={{ marginBottom: 36 }}>
+                <FleetConsoleWidget />
               </div>
-              <h2 className="dlw-section-title">
-                DriveLink Web Development <ProtocolBadge name="drv-cloud" />
-              </h2>
-              <p className="dlw-section-sub">
-                Scalable web applications, browser-based digital twin visualizers, and enterprise APIs
-                built for commercial fleet dispatchers and smart city transport authorities.
-              </p>
-            </div>
+            )}
 
-            {/* Web Console Mockup */}
-            <div style={{ marginBottom: 40 }}>
-              <FleetConsoleWidget />
-            </div>
-
-            {/* 4 Web Platform Feature Cards */}
-            <div className="dlw-market-grid">
+            {/* Unified 4 Ecosystem Feature Cards (Mobile + Web Cloud) */}
+            <div className="dlw-market-grid" style={{ marginTop: 24 }}>
+              <div className="dlw-market-card">
+                <div className="dlw-market-ic"><Smartphone size={22} color="#0F4C81" /></div>
+                <h3>Cross-Platform Mobile SDK</h3>
+                <p>
+                  Native iOS, Android, and AAOS infotainment packages with zero-copy binary deserializers and sub-50ms reactive hooks.
+                </p>
+              </div>
               <div className="dlw-market-card">
                 <div className="dlw-market-ic"><Globe size={22} color="#0F4C81" /></div>
                 <h3>Browser Digital Twin Engine</h3>
                 <p>
-                  High-performance WebGL and Canvas 2D engine rendering millions of vehicle coordinate
-                  updates with smooth 60 FPS interpolation without server-side video streaming.
-                </p>
-              </div>
-              <div className="dlw-market-card">
-                <div className="dlw-market-ic"><Server size={22} color="#0F4C81" /></div>
-                <h3>Near-Miss &amp; Incident Replay</h3>
-                <p>
-                  Black-box telemetry recording engine capturing every millisecond of bus telemetry and
-                  intent vectors before, during, and after safety events for dispute resolution.
+                  High-performance WebGL digital twin rendering real-time vehicle mesh coordinates and corridor heatmaps at smooth 60 FPS.
                 </p>
               </div>
               <div className="dlw-market-card">
                 <div className="dlw-market-ic"><Zap size={22} color="#0F4C81" /></div>
                 <h3>Streaming WebSockets &amp; gRPC</h3>
                 <p>
-                  Low-overhead bidirectional streams delivering real-time vehicle kinematics to fleet dispatch
-                  portals, municipal command centers, and automated dispatch engines.
+                  Low-overhead bidirectional streams delivering real-time vehicle kinematics to fleet dispatch portals and municipal command centers.
                 </p>
               </div>
               <div className="dlw-market-card">
-                <div className="dlw-market-ic"><Layers size={22} color="#0F4C81" /></div>
+                <div className="dlw-market-ic"><Server size={22} color="#0F4C81" /></div>
                 <h3>RESTful Fleet Management APIs</h3>
                 <p>
-                  Developer-first endpoints for historical corridor audits, driver safety scores,
-                  hardware firmware updates, and geographic corridor fence configurations.
+                  Developer-first endpoints for historical corridor incident replays, driver safety audits, and automated fleet telematics ingest.
                 </p>
               </div>
             </div>
