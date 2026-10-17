@@ -974,17 +974,7 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
    ============================================================ */
 /* Bottom padding clears the fixed chat launcher, which otherwise sits on top
    of the last line of the footer once you scroll all the way down. */
-.dlw-footer { background: #04060a; color: rgba(255,255,255,0.7); padding: 56px 0 0; border-top: 1px solid rgba(255,255,255,0.06); position: relative; }
-.dlw-footer::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  height: 100vh;
-  background: #04060a;
-  pointer-events: none;
-}
+.dlw-footer { background: #04060a; color: rgba(255,255,255,0.7); padding: 56px 0 0; border-top: 1px solid rgba(255,255,255,0.06); position: relative; overflow: hidden; }
 .dlw-footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
 @media (max-width: 768px) { .dlw-footer-grid { grid-template-columns: 1fr 1fr; } }
 .dlw-footer h2 { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.58); margin: 0 0 16px; }
