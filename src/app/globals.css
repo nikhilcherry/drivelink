@@ -369,10 +369,84 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
   box-shadow: 0 6px 16px -4px rgba(15,76,129,0.4);
 }
 .dlw-brand-wm { background: linear-gradient(90deg, #0F4C81, #1E3A8A); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 700; font-size: 20px; letter-spacing: -0.025em; }
-.dlw-nav-center { display: flex; align-items: center; gap: 4px; }
-.dlw-nav-tab { padding: 8px 14px; border-radius: 999px; color: var(--fg2); font-weight: 500; font-size: 14px; transition: color .2s, background .2s; background: transparent; border: none; }
-.dlw-nav-tab:hover { color: var(--drive-blue); }
-.dlw-nav-tab.is-active { color: var(--drive-blue); background: rgba(15,76,129,0.06); }
+.dlw-nav-center { display: flex; align-items: center; gap: 4px; position: relative; }
+.dlw-nav-pill-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 999px;
+  background: rgba(15, 76, 129, 0.08);
+  border: 1px solid rgba(15, 76, 129, 0.12);
+  pointer-events: none;
+  z-index: 0;
+  transition: transform 0.28s var(--ease-out), width 0.28s var(--ease-out), height 0.28s var(--ease-out), opacity 0.2s ease;
+  will-change: transform, width, height, opacity;
+}
+.dlw-nav-tab {
+  position: relative;
+  z-index: 1;
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: var(--fg2);
+  font-weight: 500;
+  font-size: 14px;
+  transition: color .2s;
+  background: transparent;
+  border: none;
+  text-decoration: none;
+}
+.dlw-nav-tab:hover, .dlw-nav-tab:focus-visible { color: var(--drive-blue); }
+.dlw-nav-tab.is-active { color: var(--drive-blue); font-weight: 600; }
+
+/* Staggered kinetic flip roll for navigation tabs (reinterface wave style) */
+.dlw-nav-flip {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  line-height: 1.3;
+  vertical-align: middle;
+  pointer-events: none;
+}
+.dlw-nav-flip-track {
+  display: inline-flex;
+  white-space: nowrap;
+}
+.dlw-nav-flip-secondary {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.dlw-nav-flip-char {
+  display: inline-block;
+  will-change: transform;
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.dlw-nav-flip-primary .dlw-nav-flip-char {
+  transform: translateY(0%);
+}
+.dlw-nav-flip-secondary .dlw-nav-flip-char {
+  transform: translateY(100%);
+}
+
+.dlw-nav-tab:hover .dlw-nav-flip-primary .dlw-nav-flip-char,
+.dlw-nav-tab:focus-visible .dlw-nav-flip-primary .dlw-nav-flip-char {
+  transform: translateY(-100%);
+}
+.dlw-nav-tab:hover .dlw-nav-flip-secondary .dlw-nav-flip-char,
+.dlw-nav-tab:focus-visible .dlw-nav-flip-secondary .dlw-nav-flip-char {
+  transform: translateY(0%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dlw-nav-flip-char {
+    transition: none !important;
+  }
+  .dlw-nav-pill-indicator {
+    transition: none !important;
+  }
+}
 .dlw-nav-right { display: flex; align-items: center; gap: 12px; }
 .dlw-nav-pill { padding: 8px 16px; border-radius: 999px; background: var(--drive-blue); color: #fff; font-weight: 600; font-size: 13px; border: none; transition: transform .15s, box-shadow .15s; box-shadow: 0 6px 14px -4px rgba(15,76,129,0.4); }
 .dlw-nav-pill:hover { transform: translateY(-1px); box-shadow: 0 10px 20px -4px rgba(15,76,129,0.5); }
@@ -1131,13 +1205,7 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-text-gradient, .dlw-text-gradient-down { background-size: 200% 100%; will-change: background-position; animation: dlw-grad-pan 9s ease-in-out infinite; }
 @keyframes dlw-grad-pan { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 
-/* Nav tab underline grow on hover */
-.dlw-nav-tab { position: relative; }
-.dlw-nav-tab::after {
-  content: ""; position: absolute; left: 14px; right: 14px; bottom: 5px; height: 1.5px; border-radius: 2px;
-  background: var(--drive-blue); transform: scaleX(0); transform-origin: left; transition: transform .25s var(--ease-out);
-}
-.dlw-nav-tab:hover::after { transform: scaleX(1); }
+
 
 /* Button shine sweep */
 .dlw-btn { position: relative; overflow: hidden; }

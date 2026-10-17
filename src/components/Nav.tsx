@@ -15,6 +15,36 @@ const tabs: { id: Page; label: string }[] = [
   { id: 'investors', label: 'Investors' },
 ];
 
+function FlipText({ text }: { text: string }) {
+  const chars = text.split('');
+  return (
+    <span className="dlw-nav-flip" aria-hidden="true">
+      <span className="dlw-nav-flip-track dlw-nav-flip-primary">
+        {chars.map((char, i) => (
+          <span
+            key={i}
+            className="dlw-nav-flip-char"
+            style={{ transitionDelay: `${i * 18}ms` }}
+          >
+            {char === ' ' ? '\u00A0' : char}
+          </span>
+        ))}
+      </span>
+      <span className="dlw-nav-flip-track dlw-nav-flip-secondary">
+        {chars.map((char, i) => (
+          <span
+            key={i}
+            className="dlw-nav-flip-char"
+            style={{ transitionDelay: `${i * 18}ms` }}
+          >
+            {char === ' ' ? '\u00A0' : char}
+          </span>
+        ))}
+      </span>
+    </span>
+  );
+}
+
 export function Nav() {
   const pathname = usePathname();
   const path = pathname || '/';
@@ -25,6 +55,50 @@ export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
+
+  const navCenterRef = useRef<HTMLDivElement>(null);
+  const [hoveredTab, setHoveredTab] = useState<Page | null>(null);
+  const [pillStyle, setPillStyle] = useState<{
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+    opacity: number;
+  }>({
+    left: 0,
+    top: 0,
+    width: 0,
+    height: 0,
+    opacity: 0,
+  });
+
+  const activeTabId = hoveredTab ?? current;
+
+  useEffect(() => {
+    const updatePill = () => {
+      if (!navCenterRef.current) return;
+      if (!activeTabId) {
+        setPillStyle((prev) => ({ ...prev, opacity: 0 }));
+        return;
+      }
+      const tabEl = navCenterRef.current.querySelector<HTMLElement>(`[data-tab-id="${activeTabId}"]`);
+      if (tabEl) {
+        setPillStyle({
+          left: tabEl.offsetLeft,
+          top: tabEl.offsetTop,
+          width: tabEl.offsetWidth,
+          height: tabEl.offsetHeight,
+          opacity: 1,
+        });
+      } else {
+        setPillStyle((prev) => ({ ...prev, opacity: 0 }));
+      }
+    };
+
+    updatePill();
+    window.addEventListener('resize', updatePill);
+    return () => window.removeEventListener('resize', updatePill);
+  }, [activeTabId, current]);
 
   useEffect(() => {
     // Passive + rAF-coalesced: this fires on every scroll frame, and a
@@ -80,15 +154,33 @@ export function Nav() {
             <span className="dlw-brand-wm">DriveLink</span>
           </Link>
 
-          <div className="dlw-nav-center">
+          <div
+            ref={navCenterRef}
+            className="dlw-nav-center"
+            onMouseLeave={() => setHoveredTab(null)}
+          >
+            <div
+              className="dlw-nav-pill-indicator"
+              style={{
+                transform: `translate3d(${pillStyle.left}px, ${pillStyle.top}px, 0)`,
+                width: pillStyle.width,
+                height: pillStyle.height,
+                opacity: pillStyle.opacity,
+              }}
+              aria-hidden="true"
+            />
             {tabs.map((t) => (
               <Link
                 key={t.id}
+                data-tab-id={t.id}
                 href={siteBase + hrefFor(t.id)}
                 className={'dlw-nav-tab ' + (current === t.id ? 'is-active' : '')}
                 aria-current={current === t.id ? 'page' : undefined}
+                onMouseEnter={() => setHoveredTab(t.id)}
+                onFocus={() => setHoveredTab(t.id)}
               >
-                {t.label}
+                <FlipText text={t.label} />
+                <span className="sr-only">{t.label}</span>
               </Link>
             ))}
           </div>
