@@ -68,6 +68,13 @@ export function Footer() {
           <span className="dlw-mono">drivelink.tech</span>
         </div>
       </div>
+
+      {/* Oversized bottom cut-off brand watermark */}
+      <div className="dlw-footer-cut-wrap" aria-hidden="true">
+        <div className="dlw-footer-cut-text">
+          DriveLink
+        </div>
+      </div>
     </footer>
   );
 }

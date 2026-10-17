@@ -968,7 +968,7 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
    ============================================================ */
 /* Bottom padding clears the fixed chat launcher, which otherwise sits on top
    of the last line of the footer once you scroll all the way down. */
-.dlw-footer { background: #04060a; color: rgba(255,255,255,0.7); padding: 56px 0 104px; border-top: 1px solid rgba(255,255,255,0.06); }
+.dlw-footer { background: #04060a; color: rgba(255,255,255,0.7); padding: 56px 0 0; border-top: 1px solid rgba(255,255,255,0.06); position: relative; overflow: hidden; }
 .dlw-footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
 @media (max-width: 768px) { .dlw-footer-grid { grid-template-columns: 1fr 1fr; } }
 .dlw-footer h2 { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.58); margin: 0 0 16px; }
@@ -976,6 +976,30 @@ h1, h2, h3, h4 { margin: 0; color: var(--fg1); }
 .dlw-footer-links a, .dlw-footer-links button { font-size: 14px; color: rgba(255,255,255,0.8); transition: color .2s; background: none; border: none; padding: 0; text-align: left; cursor: pointer; font-family: inherit; }
 .dlw-footer-links a:hover, .dlw-footer-links button:hover { color: #fff; }
 .dlw-footer-bottom { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 12px; color: rgba(255,255,255,0.58); }
+
+/* Oversized bottom cut-off brand watermark (inspired by reinterface.com) */
+.dlw-footer-cut-wrap {
+  overflow: hidden;
+  width: 100%;
+  margin-top: 40px;
+  user-select: none;
+  pointer-events: none;
+  line-height: 1;
+}
+.dlw-footer-cut-text {
+  font-family: var(--font-sans);
+  font-size: clamp(5rem, 16.5vw, 16rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 0.85;
+  text-align: center;
+  white-space: nowrap;
+  transform: translateY(30%);
+  color: #2b4f7a;
+  color: color-mix(in srgb, var(--drive-blue-400) 55%, #04060a);
+  user-select: none;
+  pointer-events: none;
+}
 /* ---------- 404 ---------- */
 .dlw-404-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 8px; }
 .dlw-404-card {
