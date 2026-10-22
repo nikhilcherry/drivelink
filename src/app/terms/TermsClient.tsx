@@ -12,7 +12,7 @@ export function TermsClient() {
     >
       <p style={legalP}>
         The website at <strong>drivelink.tech</strong> (including <strong>www.drivelink.tech</strong> and{' '}
-        <strong>core.drivelink.tech</strong>) is operated by DriveLink Technologies, Bengaluru, Karnataka, India
+        <strong>core.drivelink.tech</strong>) is operated by DriveLink V2V Intelligence LLP, Bengaluru, Karnataka, India
         (&ldquo;DriveLink&rdquo;, &ldquo;we&rdquo;). By using the site you agree to these terms. If you do not agree,
         please do not use it.
       </p>

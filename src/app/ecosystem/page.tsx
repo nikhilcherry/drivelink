@@ -17,12 +17,12 @@ const ecosystemJsonLd = {
   url: `${SITE_URL}/ecosystem`,
   author: {
     "@type": "Organization",
-    name: "DriveLink Technologies",
+    name: "DriveLink V2V Intelligence LLP",
     url: SITE_URL,
   },
   publisher: {
     "@type": "Organization",
-    name: "DriveLink Technologies",
+    name: "DriveLink V2V Intelligence LLP",
     url: SITE_URL,
   },
 };

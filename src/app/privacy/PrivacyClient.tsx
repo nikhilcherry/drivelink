@@ -12,8 +12,8 @@ export function PrivacyClient() {
     >
       <p style={legalP}>
         This policy covers the website at <strong>drivelink.tech</strong> (including{' '}
-        <strong>www.drivelink.tech</strong> and <strong>core.drivelink.tech</strong>), operated by DriveLink
-        Technologies, Bengaluru, Karnataka, India (&ldquo;DriveLink&rdquo;, &ldquo;we&rdquo;). It does not cover the
+        <strong>www.drivelink.tech</strong> and <strong>core.drivelink.tech</strong>), operated by DriveLink V2V
+        Intelligence LLP, Bengaluru, Karnataka, India (&ldquo;DriveLink&rdquo;, &ldquo;we&rdquo;). It does not cover the
         DriveLink protocol, on-vehicle module, or any pilot deployment — none of which are in public operation, and
         each of which will carry its own data agreement when they are.
       </p>

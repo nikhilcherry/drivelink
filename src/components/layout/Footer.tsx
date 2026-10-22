@@ -35,7 +35,7 @@ export function Footer() {
             </p>
 
             <address className="dlw-footer-address">
-              <span className="dlw-footer-addr-label">DriveLink Technologies</span>
+              <span className="dlw-footer-addr-label">DriveLink V2V Intelligence LLP</span>
               <span>Bengaluru, Karnataka, India</span>
               <a href="mailto:tech.drivelink@gmail.com?subject=DriveLink%20enquiry">tech.drivelink@gmail.com</a>
             </address>
@@ -76,7 +76,7 @@ export function Footer() {
         </div>
 
         <div className="dlw-footer-bottom">
-          <span>© {new Date().getFullYear()} DriveLink Technologies. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} DriveLink V2V Intelligence LLP. All rights reserved.</span>
           <span className="dlw-footer-legal">
             <Link href={siteBase + '/privacy'}>Privacy</Link>
             <Link href={siteBase + '/terms'}>Terms</Link>

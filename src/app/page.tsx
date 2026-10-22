@@ -21,7 +21,7 @@ const graphJsonLd = {
     {
       "@type": "Organization",
       "@id": `${SITE_URL}/#organization`,
-      name: "DriveLink Technologies",
+      name: "DriveLink V2V Intelligence LLP",
       alternateName: "DriveLink",
       url: SITE_URL,
       logo: {
