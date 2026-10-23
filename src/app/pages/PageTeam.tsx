@@ -70,7 +70,7 @@ export function PageTeam({ setPage }: PageTeamProps) {
         <div className="dlw-container">
           <div className="dlw-section-head" style={{ maxWidth: 880 }}>
             <div className="dlw-eyebrow"><span className="num">T</span> Team</div>
-            <h1 className="dlw-section-title" style={{ fontSize: 'clamp(2.6rem, 5.4vw, 4.8rem)', letterSpacing: '-0.04em' }}>
+            <h1 className="dlw-section-title dlw-page-title">
               The team building <span className="dlw-text-gradient">the backbone.</span>
             </h1>
             <p className="dlw-section-sub">Three co-founders and the technical core — systems, software, hardware, and the ML brain — owned end to end.</p>

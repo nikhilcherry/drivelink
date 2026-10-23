@@ -22,8 +22,8 @@ export function V2VClient() {
       <section className="dlw-section" style={{ paddingTop: 160, paddingBottom: 40 }}>
         <div className="dlw-container" style={{ maxWidth: 820 }}>
           <Reveal className="dlw-section-head" direction="up" as="div">
-            <div className="dlw-eyebrow"><span className="num">V2V</span> Glossary</div>
-            <h1 className="dlw-section-title" style={{ fontSize: 'clamp(2.2rem, 4.6vw, 3.4rem)' }}>
+            <div className="dlw-eyebrow"><span className="num">V</span> Glossary</div>
+            <h1 className="dlw-section-title dlw-page-title is-article">
               What is <span className="dlw-text-gradient">V2V (Vehicle-to-Vehicle) Communication?</span>
             </h1>
             <p className="dlw-section-sub">
