@@ -60,11 +60,11 @@ export function PageDocs({ setPage, repoStats }: Props) {
   return (
     <main className="dlw-docs">
       {/* ---------- Hero ---------- */}
-      <section className="dlw-section" style={{ paddingTop: 150, paddingBottom: 40 }}>
+      <section className="dlw-section" style={{ paddingTop: 160, paddingBottom: 40 }}>
         <div className="dlw-container">
           <Reveal className="dlw-section-head" direction="up" as="div">
-            <div className="dlw-eyebrow"><span className="num">DOC</span> Technical Documentation</div>
-            <h1 className="dlw-section-title" style={{ fontSize: 'clamp(2.6rem, 5.4vw, 4.8rem)', letterSpacing: '-0.04em' }}>
+            <div className="dlw-eyebrow"><span className="num">D</span> Documentation</div>
+            <h1 className="dlw-section-title dlw-page-title">
               How DriveLink <span className="dlw-text-gradient">actually works.</span>
             </h1>
             <p className="dlw-section-sub">

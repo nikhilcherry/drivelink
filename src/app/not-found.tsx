@@ -24,11 +24,11 @@ const links = [
 export default function NotFound() {
   return (
     <main>
-      <section className="dlw-section" style={{ paddingTop: 170, paddingBottom: 90 }}>
+      <section className="dlw-section" style={{ paddingTop: 160, paddingBottom: 90 }}>
         <div className="dlw-container" style={{ maxWidth: 820 }}>
           <div className="dlw-section-head">
             <div className="dlw-eyebrow"><span className="num">404</span> Link lost</div>
-            <h1 className="dlw-section-title" style={{ fontSize: "clamp(2.2rem, 4.6vw, 3.6rem)" }}>
+            <h1 className="dlw-section-title dlw-page-title is-article">
               This node isn&apos;t <span className="dlw-text-gradient">on the mesh.</span>
             </h1>
             <p className="dlw-section-sub">

@@ -30,11 +30,8 @@ export function HiringClient() {
       <section className="dlw-section" style={{ paddingTop: 160, paddingBottom: 60 }}>
         <div className="dlw-container">
           <div className="dlw-section-head" style={{ maxWidth: 880, marginBottom: 0 }}>
-            <div className="dlw-eyebrow"><span className="num">→</span> Join us</div>
-            <h1
-              className="dlw-section-title"
-              style={{ fontSize: 'clamp(2.6rem, 5.4vw, 4.8rem)', letterSpacing: '-0.04em' }}
-            >
+            <div className="dlw-eyebrow"><span className="num">H</span> Hiring</div>
+            <h1 className="dlw-section-title dlw-page-title">
               Help build <span className="dlw-text-gradient">the layer cars are missing.</span>
             </h1>
             <p className="dlw-section-sub">
