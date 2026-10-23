@@ -432,14 +432,14 @@ export function SimPlayground() {
           </div>
         )}
 
-        {/* Status Badges (in 3rd-person & 2D modes) */}
-        {cameraMode !== 'cockpit' && (
+        {/* Status Badges (in 2D mode) */}
+        {viewMode === '2d' && (
           <div className="dlw-sim-badges">
             <span className={`dlw-sim-badge ${v2v ? 'on' : 'off'}`}>
               <span className="d" /> V2V mesh {v2v ? 'ON' : 'OFF'}
             </span>
             <span className="dlw-sim-badge muted">
-              {viewMode === '3d' ? `7D · ${cameraMode.toUpperCase()} VIEW` : 'drv-mesh · v0.1'}
+              drv-mesh · v0.1
             </span>
           </div>
         )}
