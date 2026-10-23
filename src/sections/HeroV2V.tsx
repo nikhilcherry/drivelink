@@ -10,6 +10,7 @@ interface HeroProps {
 }
 
 export function HeroV2V({ onCTA }: HeroProps) {
+
   return (
     <section className="dlw-hero">
       <div className="dlw-hero-bg-grid" />
@@ -31,7 +32,7 @@ export function HeroV2V({ onCTA }: HeroProps) {
 
           <div className="dlw-hero-ctas">
             <button className="dlw-btn dlw-btn-primary" onClick={() => onCTA('product')}>
-              Explore Technology
+              Explore 3D Walkthrough
               <ArrowRight size={16} />
             </button>
             <button className="dlw-btn dlw-btn-ghost" onClick={() => onCTA('investors')}>
