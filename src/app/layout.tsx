@@ -23,6 +23,13 @@ const spaceGrotesk = localFont({
   weight: "300 700",
 });
 
+const jetbrainsMono = localFont({
+  src: "../fonts/JetBrainsMono-Variable.woff2",
+  variable: "--font-jetbrains",
+  display: "swap",
+  weight: "100 800",
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "DriveLink · V2V Communication Backbone for Automotive AI",
@@ -50,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
+    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
       <head>
         {/* The reveal classes ship hidden in the HTML and are shown by an
             IntersectionObserver. Without JS there is no observer, so the

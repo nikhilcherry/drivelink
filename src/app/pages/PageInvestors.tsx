@@ -16,7 +16,7 @@ export function PageInvestors() {
         <div className="dlw-container">
           <div className="dlw-section-head" style={{ maxWidth: 880 }}>
             <div className="dlw-eyebrow"><span className="num">I</span> Investors</div>
-            <h1 className="dlw-section-title" style={{ fontSize: 'clamp(2.6rem, 5.4vw, 4.8rem)', letterSpacing: '-0.04em' }}>
+            <h1 className="dlw-section-title dlw-page-title">
               Cooperative mobility is <span className="dlw-text-gradient">a category, not a feature.</span>
             </h1>
             <p className="dlw-section-sub">

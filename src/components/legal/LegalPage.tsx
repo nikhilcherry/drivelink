@@ -21,7 +21,7 @@ export function LegalPage({
         <div className="dlw-container" style={{ maxWidth: 760 }}>
           <div className="dlw-section-head">
             <div className="dlw-eyebrow"><span className="num">§</span> {eyebrow}</div>
-            <h1 className="dlw-section-title" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>{title}</h1>
+            <h1 className="dlw-section-title dlw-page-title is-article">{title}</h1>
             <p className="dlw-section-sub">{intro}</p>
             <p className="dlw-mono" style={{ fontSize: 12, color: 'var(--fg3)', marginTop: 8 }}>Last updated {updated}</p>
           </div>

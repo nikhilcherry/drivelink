@@ -523,17 +523,14 @@ export function PageEcosystem({ setPage }: PageEcosystemProps) {
   return (
     <main className="dlw-ecosystem-page">
       {/* ── 01 HERO SECTION ── */}
-      <section className="dlw-section" style={{ paddingTop: 140, paddingBottom: 60 }}>
+      <section className="dlw-section" style={{ paddingTop: 160, paddingBottom: 60 }}>
         <div className="dlw-container">
-          <div className="dlw-section-head center" style={{ maxWidth: 960 }}>
-            <div className="dlw-eyebrow">
-              <span className="num" style={{ background: '#0F4C81', color: '#fff' }}>02</span>
-              {' '}Unified Automotive Intelligence
-            </div>
-            <h1 className="dlw-section-title" style={{ fontSize: 'clamp(2.5rem, 5.2vw, 4.6rem)', letterSpacing: '-0.04em' }}>
+          <div className="dlw-section-head" style={{ maxWidth: 880 }}>
+            <div className="dlw-eyebrow"><span className="num">E</span> Ecosystem</div>
+            <h1 className="dlw-section-title dlw-page-title">
               The complete <span className="dlw-text-gradient">DriveLink Ecosystem.</span>
             </h1>
-            <p className="dlw-section-sub" style={{ maxWidth: 780, margin: '0 auto 28px' }}>
+            <p className="dlw-section-sub" style={{ margin: '0 0 28px' }}>
               From sub-50ms vehicle-to-vehicle intent meshes and municipal smart traffic signals
               to cross-platform mobile driver HUDs and cloud fleet telemetry consoles — explore
               every layer of the DriveLink technology stack.
